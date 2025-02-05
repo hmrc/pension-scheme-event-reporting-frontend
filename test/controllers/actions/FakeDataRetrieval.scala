@@ -36,7 +36,7 @@ class FakeDataRetrievalActionForPSP(json: Option[UserAnswers]) extends DataRetri
 class FakeDataRetrieval(dataToReturn: Option[UserAnswers]) extends DataRetrieval {
 
   override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] =
-    Future(OptionalDataRequest("87219363YN", "schemeName", "returnUrl", request.request, LoggedInUser("user-id", Administrator, "psaId"), dataToReturn))
+    Future(OptionalDataRequest("87219363YN", "schemeName", "returnUrl", request.request, LoggedInUser("user-id", Administrator, "psaId"), dataToReturn, "srn"))
 
   override protected implicit val executionContext: ExecutionContext =
     scala.concurrent.ExecutionContext.Implicits.global
@@ -45,7 +45,7 @@ class FakeDataRetrieval(dataToReturn: Option[UserAnswers]) extends DataRetrieval
 class FakeDataRetrievalForPSP(dataToReturn: Option[UserAnswers]) extends DataRetrieval {
 
   override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] =
-    Future(OptionalDataRequest("87219363YN", "schemeName", "returnUrl", request.request, LoggedInUser("user-id", Practitioner, "pspId"), dataToReturn))
+    Future(OptionalDataRequest("87219363YN", "schemeName", "returnUrl", request.request, LoggedInUser("user-id", Practitioner, "pspId"), dataToReturn, "srn"))
 
   override protected implicit val executionContext: ExecutionContext =
     scala.concurrent.ExecutionContext.Implicits.global

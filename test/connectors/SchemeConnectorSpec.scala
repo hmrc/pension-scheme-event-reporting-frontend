@@ -101,7 +101,7 @@ class SchemeConnectorSpec
   }
 
   "getSchemeDetails" must {
-    val schemeDetailsUrl = s"/pensions-scheme/scheme"
+    val schemeDetailsUrl = s"/pensions-scheme/scheme/$idNumber"
     "return the SchemeDetails for a valid request/response" in {
       val jsonResponse = """{"schemeName":"test scheme", "pstr": "test pstr", "schemeStatus": "test status"}"""
       server.stubFor(

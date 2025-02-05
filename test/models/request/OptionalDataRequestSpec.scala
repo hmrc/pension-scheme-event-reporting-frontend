@@ -35,7 +35,7 @@ class OptionalDataRequestSpec extends SpecBase {
       val request = FakeRequest.apply(Call("GET", "/"))
       val ua = UserAnswers().setOrException(VersionInfoPage, VersionInfo(1, Submitted), nonEventTypeData = true)
 
-      val dataRequest = OptionalDataRequest("", "", "", request, LoggedInUser("user", Practitioner, "pspId"), Some(ua))
+      val dataRequest = OptionalDataRequest("", "", "", request, LoggedInUser("user", Practitioner, "pspId"), Some(ua), "srn")
 
       dataRequest.isReportSubmitted mustBe true
     }
@@ -45,7 +45,7 @@ class OptionalDataRequestSpec extends SpecBase {
       val request = FakeRequest.apply(Call("GET", "/"))
       val ua = UserAnswers().setOrException(VersionInfoPage, VersionInfo(1, Compiled), nonEventTypeData = true)
 
-      val dataRequest = OptionalDataRequest("", "", "", request, LoggedInUser("user", Practitioner, "pspId"), Some(ua))
+      val dataRequest = OptionalDataRequest("", "", "", request, LoggedInUser("user", Practitioner, "pspId"), Some(ua), "srn")
 
       dataRequest.isReportSubmitted mustBe false
     }
@@ -55,7 +55,7 @@ class OptionalDataRequestSpec extends SpecBase {
       val request = FakeRequest.apply(Call("GET", "/"))
       val ua = UserAnswers()
 
-      val dataRequest = OptionalDataRequest("", "", "", request, LoggedInUser("user", Practitioner, "pspId"), Some(ua))
+      val dataRequest = OptionalDataRequest("", "", "", request, LoggedInUser("user", Practitioner, "pspId"), Some(ua), "srn")
 
       dataRequest.isReportSubmitted mustBe false
     }

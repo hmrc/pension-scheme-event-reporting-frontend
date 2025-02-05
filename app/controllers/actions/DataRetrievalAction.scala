@@ -37,7 +37,7 @@ class DataRetrievalImpl(eventType: EventType,
     for {
       data <- userAnswersCacheConnector.get(request.pstr, eventType)
     } yield {
-      OptionalDataRequest[A](request.pstr, request.schemeName, request.returnUrl, request, request.loggedInUser, data)
+      OptionalDataRequest[A](request.pstr, request.schemeName, request.returnUrl, request, request.loggedInUser, data, request.srn)
     }
   }
 }
@@ -53,7 +53,7 @@ class DataRetrievalNoEventTypeImpl(userAnswersCacheConnector: UserAnswersCacheCo
     for {
       data <- userAnswersCacheConnector.get(request.pstr)
     } yield {
-      OptionalDataRequest[A](request.pstr, request.schemeName, request.returnUrl, request, request.loggedInUser, data)
+      OptionalDataRequest[A](request.pstr, request.schemeName, request.returnUrl, request, request.loggedInUser, data, request.srn)
     }
   }
 }

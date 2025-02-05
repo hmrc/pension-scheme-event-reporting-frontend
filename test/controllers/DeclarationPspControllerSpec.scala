@@ -145,7 +145,7 @@ class DeclarationPspControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     "must save the answer and redirect to the next page when valid data is submitted" in {
       when(mockMinimalConnector.getMinimalDetails(any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
-      when(mockSchemeDetailsConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockSchemeDetails))
+      when(mockSchemeDetailsConnector.getPspSchemeDetails(any(), any(), any())(any(), any())).thenReturn(Future.successful(mockSchemeDetails))
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
       when(mockSubmitService.submitReport(any(), any())(any(), any())).thenReturn(Future.successful(Ok))
@@ -168,7 +168,7 @@ class DeclarationPspControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     "must return bad request when invalid data is submitted" in {
       when(mockMinimalConnector.getMinimalDetails(any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
-      when(mockSchemeDetailsConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockSchemeDetails))
+      when(mockSchemeDetailsConnector.getPspSchemeDetails(any(), any(), any())(any(), any())).thenReturn(Future.successful(mockSchemeDetails))
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
@@ -210,7 +210,7 @@ class DeclarationPspControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     "must redirect to the cannot resume page for method onClick when report has been submitted multiple times in quick succession" in {
       when(mockMinimalConnector.getMinimalDetails(any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
-      when(mockSchemeDetailsConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockSchemeDetails))
+      when(mockSchemeDetailsConnector.getPspSchemeDetails(any(), any(), any())(any(), any())).thenReturn(Future.successful(mockSchemeDetails))
       when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
       when(mockSubmitService.submitReport(any(), any())(any(), any())).thenReturn(Future.successful(BadRequest))
