@@ -32,6 +32,8 @@ trait Constraints {
   val regexPostcode = """^[A-Z]{1,2}[0-9][0-9A-Z]?\s?[0-9][A-Z]{2}$"""
   val regexAddressLine = """^[A-Za-z0-9 &!'‘’(),./\u2014\u2013\u2010\u002d]{1,35}$"""
   val regexSafeText = """^[a-zA-Z0-9\u00C0-\u00FF !#$%&'‘’"“”«»()*+,./:;=?@\\\[\]|~£€¥\u005C\u2014\u2013\u2010\u005F\u005E\u0060\u002d]{1,160}$"""
+  val regexTightText = """^[a-zA-ZàÀ-ÿ '&.^-]{1,160}$"""
+  val regexTightTextWithNumber = """^[a-zA-Z0-9àÀ-ÿ '&.^-]{1,160}$"""
   val regexEvent1Description = """^[a-zA-Z0-9\u00C0-\u00FF !#$%&'‘’"“”«»()*+,./:;=?@\\\[\]£€¥\u005C\u2014\u2013\u2010\u002d]{1,}$"""
   val regexCrn = "^[A-Za-z0-9 -]{7,8}$"
   val inputProtectionTypeRegex = "^[A-Za-z0-9]{8,15}$"
@@ -88,6 +90,10 @@ trait Constraints {
     }
 
   protected def safeText(errorKey: String): Constraint[String] = regexp(regexSafeText, errorKey)
+
+  protected def tightText(errorKey: String): Constraint[String] = regexp(regexTightText, errorKey)
+
+  protected def tightTextWithNumber(errorKey: String): Constraint[String] = regexp(regexTightTextWithNumber, errorKey)
 
   protected def companyNumber(errorKey: String): Constraint[String] = regexp(regexCrn, errorKey)
 
