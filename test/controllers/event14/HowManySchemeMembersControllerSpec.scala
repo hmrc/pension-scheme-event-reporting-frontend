@@ -98,7 +98,7 @@ class HowManySchemeMembersControllerSpec extends SpecBase with BeforeAndAfterEac
     }
 
     "must save the answer and redirect to the next page when valid data is submitted" in {
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(()))
 
       val application =
@@ -114,7 +114,7 @@ class HowManySchemeMembersControllerSpec extends SpecBase with BeforeAndAfterEac
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual HowManySchemeMembersPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any(), any())
       }
     }
 
@@ -134,7 +134,7 @@ class HowManySchemeMembersControllerSpec extends SpecBase with BeforeAndAfterEac
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result).removeAllNonces()mustEqual view(boundForm, waypoints, taxYearRange)(request, messages(application)).toString
-        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any(), any())
       }
     }
   }

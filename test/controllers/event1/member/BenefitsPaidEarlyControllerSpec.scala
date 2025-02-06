@@ -84,7 +84,7 @@ class BenefitsPaidEarlyControllerSpec extends SpecBase with BeforeAndAfterEach w
     }
 
     "must save the answer and redirect to the next page when valid data is submitted" in {
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(()))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
@@ -95,7 +95,7 @@ class BenefitsPaidEarlyControllerSpec extends SpecBase with BeforeAndAfterEach w
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual BenefitsPaidEarlyPage(0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any(), any())
       }
     }
     "must return bad request when submitting an empty value" in {
@@ -107,7 +107,7 @@ class BenefitsPaidEarlyControllerSpec extends SpecBase with BeforeAndAfterEach w
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any(), any())
       }
     }
     "must return bad request when submitting data that is too long" in {
@@ -122,7 +122,7 @@ class BenefitsPaidEarlyControllerSpec extends SpecBase with BeforeAndAfterEach w
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result).removeAllNonces()mustEqual view.render(boundForm, waypoints, index = 0, request, messages(application)).toString
-        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any(), any())
       }
     }
 
@@ -138,7 +138,7 @@ class BenefitsPaidEarlyControllerSpec extends SpecBase with BeforeAndAfterEach w
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result).removeAllNonces()mustEqual view.render(boundForm, waypoints, index = 0, request, messages(application)).toString
-        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any(), any())
       }
     }
   }

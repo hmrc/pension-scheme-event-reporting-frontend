@@ -112,7 +112,7 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
     }
 
     "must return bad request when invalid data is submitted" in {
-      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
+      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(()))
 
       val application =
@@ -130,14 +130,14 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result).removeAllNonces() mustEqual view(boundForm, waypoints)(request, messages(application)).toString
-        verify(mockUserAnswersCacheConnector, never).save(any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, never).save(any(), any())(any(), any(), any())
       }
     }
 
     "must save the answer and redirect to declaration page on submit (when selecting YES) with correct year and Wind Up for a PSA" in {
-      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
+      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(()))
-      when(mockEventReportingConnector.getEventReportSummary(any(), ArgumentMatchers.eq("2023-04-06"), ArgumentMatchers.eq(1))(any())).thenReturn(
+      when(mockEventReportingConnector.getEventReportSummary(any(), ArgumentMatchers.eq("2023-04-06"), ArgumentMatchers.eq(1))(any(), any())).thenReturn(
         Future.successful(seqOfEventsWithWindUp))
 
       val application =
@@ -151,15 +151,15 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
         val userAnswerUpdated = UserAnswers().setOrException(WantToSubmitPage, true)
 
         status(result) mustEqual SEE_OTHER
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any(), any())
         redirectLocation(result).value mustEqual WantToSubmitPage.navigate(waypoints, userAnswerUpdated, userAnswerUpdated).url
       }
     }
 
     "must save the answer and redirect to declaration page on submit (when selecting YES) with correct year and event20A for a PSA" in {
-      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
+      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(()))
-      when(mockEventReportingConnector.getEventReportSummary(any(), ArgumentMatchers.eq("2023-04-06"), ArgumentMatchers.eq(1))(any())).thenReturn(
+      when(mockEventReportingConnector.getEventReportSummary(any(), ArgumentMatchers.eq("2023-04-06"), ArgumentMatchers.eq(1))(any(), any())).thenReturn(
         Future.successful(seqOfEventsWithEvent20A))
 
       val application =
@@ -173,15 +173,15 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
         val userAnswerUpdated = UserAnswers().setOrException(WantToSubmitPage, true)
 
         status(result) mustEqual SEE_OTHER
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any(), any())
         redirectLocation(result).value mustEqual WantToSubmitPage.navigate(waypoints, userAnswerUpdated, userAnswerUpdated).url
       }
     }
 
     "must redirect to cannot submit page on submit (when selecting YES) when current tax year and no wind up for a PSA" in {
-      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
+      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(()))
-      when(mockEventReportingConnector.getEventReportSummary(any(), ArgumentMatchers.eq("2023-04-06"), ArgumentMatchers.eq(1))(any())).thenReturn(
+      when(mockEventReportingConnector.getEventReportSummary(any(), ArgumentMatchers.eq("2023-04-06"), ArgumentMatchers.eq(1))(any(), any())).thenReturn(
         Future.successful(seqOfEvents))
 
       val application =
@@ -193,15 +193,15 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
 
         val result = route(application, request).value
         status(result) mustEqual SEE_OTHER
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any(), any())
         redirectLocation(result).value mustEqual routes.CannotSubmitController.onPageLoad(waypoints).url
       }
     }
 
     "must save the answer and redirect to event selection page on submit (when selecting YES) for a PSP" in {
-      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
+      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(()))
-      when(mockEventReportingConnector.getEventReportSummary(any(), ArgumentMatchers.eq("2022-04-06"), ArgumentMatchers.eq(1))(any())).thenReturn(
+      when(mockEventReportingConnector.getEventReportSummary(any(), ArgumentMatchers.eq("2022-04-06"), ArgumentMatchers.eq(1))(any(), any())).thenReturn(
         Future.successful(seqOfEvents))
 
       val application =
@@ -214,15 +214,15 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any(), any())
         redirectLocation(result).value mustEqual routes.DeclarationPspController.onPageLoad(waypoints).url
       }
     }
 
     "must save the answer and redirect to next page on submit (when selecting NO)" in {
-      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
+      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(()))
-      when(mockEventReportingConnector.getEventReportSummary(any(), ArgumentMatchers.eq("2023-04-06"), ArgumentMatchers.eq(1))(any())).thenReturn(
+      when(mockEventReportingConnector.getEventReportSummary(any(), ArgumentMatchers.eq("2023-04-06"), ArgumentMatchers.eq(1))(any(), any())).thenReturn(
         Future.successful(seqOfEvents))
 
       val application =
@@ -237,7 +237,7 @@ class WantToSubmitControllerSpec extends SpecBase with BeforeAndAfterEach with M
         UserAnswers().setOrException(WantToSubmitPage, false)
 
         status(result) mustEqual SEE_OTHER
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any(), any())
         redirectLocation(result).value mustEqual request.returnUrl
       }
     }

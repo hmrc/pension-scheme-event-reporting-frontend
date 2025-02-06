@@ -83,9 +83,9 @@ class Event18ConfirmationControllerSpec extends SpecBase with BeforeAndAfterEach
   "Event18Confirmation Controller onClick" - {
     "must always save the answer 'true' and redirect to the next page" in {
       val uaCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-      when(mockUserAnswersCacheConnector.save(any(), any(), uaCaptor.capture())(any(), any()))
+      when(mockUserAnswersCacheConnector.save(any(), any(), uaCaptor.capture())(any(), any(), any()))
         .thenReturn(Future.successful(()))
-      when(mockCompileService.compileEvent(ArgumentMatchers.eq(Event18), ArgumentMatchers.eq("87219363YN"), any(), any())(any()))
+      when(mockCompileService.compileEvent(ArgumentMatchers.eq(Event18), ArgumentMatchers.eq("87219363YN"), any(), any())(any(), any()))
         .thenReturn(Future.successful(()))
 
       val ua = emptyUserAnswers

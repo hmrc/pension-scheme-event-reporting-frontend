@@ -63,12 +63,9 @@ class DeclarationController @Inject()(
       }
   }
 
-  def onClick(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()).async {
+  def onClick(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async {
     implicit request =>
 
-      request.userAnswers.getOrElse(throw new NothingToSubmitException("User data not available"))
-
-      requireData.invokeBlock(request, { implicit request: DataRequest[_] =>
         val data: UserAnswers = UserAnswers(
           declarationData(
             request.pstr,
@@ -85,7 +82,7 @@ class DeclarationController @Inject()(
           sendEmail(minimalDetails.name, email, taxYear, schemeName)
         }
 
-        submitService.submitReport(request.pstr, data).flatMap { result =>
+        submitService.submitReport(request.pstr, data)(ec, hc, request).flatMap { result =>
           result.header.status match {
             case OK => emailFuture.map(_ => Redirect(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url))
             case BAD_REQUEST =>
@@ -97,7 +94,6 @@ class DeclarationController @Inject()(
             case _ => throw new RuntimeException(s"Invalid response returned from submit report: ${result.header.status}")
           }
         }
-      })
   }
 
   private def sendEmail(psaName: String, email: String, taxYear: String, schemeName: String)(

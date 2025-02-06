@@ -19,10 +19,11 @@ package services
 import com.google.inject.Inject
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import models.enumeration.VersionStatus.{Compiled, Submitted}
+import models.requests.{DataRequest, RequiredSchemeDataRequest}
 import models.{UserAnswers, VersionInfo}
 import pages.VersionInfoPage
 import play.api.http.Status.NO_CONTENT
-import play.api.mvc.Result
+import play.api.mvc.{AnyContent, Result}
 import play.api.mvc.Results.{BadRequest, NotFound, Ok}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -34,7 +35,7 @@ class SubmitService @Inject()(
                              ) {
 
   def submitReport(pstr: String, ua: UserAnswers)
-                  (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Result] = {
+                  (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier, req: RequiredSchemeDataRequest[AnyContent]): Future[Result] = {
     ua.get(VersionInfoPage) match {
       case Some(VersionInfo(version, Compiled)) =>
         eventReportingConnector.submitReport(pstr, ua, version.toString).flatMap { response =>

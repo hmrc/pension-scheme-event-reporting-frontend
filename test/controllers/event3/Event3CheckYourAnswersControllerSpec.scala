@@ -186,7 +186,7 @@ class Event3CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
     }
 
     "must redirect to the correct page onClick if all answers are present" in {
-      when(mockCompileService.compileEvent(any(), any(), any(), any())(any()))
+      when(mockCompileService.compileEvent(any(), any(), any(), any())(any(), any()))
         .thenReturn(Future.successful())
 
       val event3Answers = emptyUserAnswers.set(MembersDetailsPage(Event3, 0), MembersDetails("Jane", "Doe", "AB123456D")).get
@@ -202,11 +202,11 @@ class Event3CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, MemberSummaryPath(Event3)).url
-        verify(mockCompileService, times(1)).compileEvent(any(), any(), any(), any())(any())
+        verify(mockCompileService, times(1)).compileEvent(any(), any(), any(), any())(any(), any())
       }
     }
     "must redirect to the correct page onClick if an answer is missing" in {
-      when(mockCompileService.compileEvent(any(), any(), any(), any())(any()))
+      when(mockCompileService.compileEvent(any(), any(), any(), any())(any(), any()))
         .thenReturn(Future.successful())
 
       val event3Answers = emptyUserAnswers.set(MembersDetailsPage(Event3, 0), MembersDetails("Jane", "Doe", "AB123456D")).get

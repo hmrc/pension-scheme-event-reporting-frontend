@@ -95,7 +95,7 @@ class EmployerTangibleMoveablePropertyControllerSpec extends SpecBase with Befor
     }
 
     "must save the answer and redirect to the next page when valid data is submitted (non empty value)" in {
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(()))
 
       val application =
@@ -111,12 +111,12 @@ class EmployerTangibleMoveablePropertyControllerSpec extends SpecBase with Befor
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual EmployerTangibleMoveablePropertyPage(0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any(), any())
       }
     }
 
     "must return bad request when submitting an empty value" in {
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(()))
 
       val application =
@@ -130,7 +130,7 @@ class EmployerTangibleMoveablePropertyControllerSpec extends SpecBase with Befor
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any(), any())
       }
     }
 
@@ -146,7 +146,7 @@ class EmployerTangibleMoveablePropertyControllerSpec extends SpecBase with Befor
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any(), any())
       }
     }
 
@@ -162,7 +162,7 @@ class EmployerTangibleMoveablePropertyControllerSpec extends SpecBase with Befor
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any(), any())
       }
     }
   }

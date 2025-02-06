@@ -35,7 +35,7 @@ class DataRetrievalImpl(eventType: EventType,
   override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
     for {
-      data <- userAnswersCacheConnector.get(request.pstr, eventType)
+      data <- userAnswersCacheConnector.getBySrn(request.pstr, eventType, request.srn)
     } yield {
       OptionalDataRequest[A](request.pstr, request.schemeName, request.returnUrl, request, request.loggedInUser, data, request.srn)
     }
@@ -51,7 +51,7 @@ class DataRetrievalNoEventTypeImpl(userAnswersCacheConnector: UserAnswersCacheCo
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     for {
-      data <- userAnswersCacheConnector.get(request.pstr)
+      data <- userAnswersCacheConnector.getBySrn(request.pstr, request.srn)
     } yield {
       OptionalDataRequest[A](request.pstr, request.schemeName, request.returnUrl, request, request.loggedInUser, data, request.srn)
     }

@@ -21,10 +21,12 @@ import config.FrontendAppConfig
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import models.enumeration.EventType
 import models.enumeration.VersionStatus.{Compiled, NotStarted, Submitted}
+import models.requests.RequiredSchemeDataRequest
 import models.{EROverview, EROverviewVersion, EventDataIdentifier, TaxYear, UserAnswers, VersionInfo}
 import org.apache.pekko.actor.ActorSystem
 import pages.{EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
 import play.api.Logging
+import play.api.mvc.AnyContent
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.duration.DurationInt
@@ -42,7 +44,8 @@ class CompileService @Inject()(
                         pstr: String,
                         userAnswers: UserAnswers,
                         delete: Boolean,
-                        eventOrDelete: Either[EventType, (String, EventDataIdentifier, Int, String)])(implicit headerCarrier: HeaderCarrier): Future[Unit] = {
+                        eventOrDelete: Either[EventType, (String, EventDataIdentifier, Int, String)])
+                       (implicit headerCarrier: HeaderCarrier, req: RequiredSchemeDataRequest[AnyContent]): Future[Unit] = {
 
     val futureOptChangedOverviewSeq = if (newVersionInfo.version > currentVersionInfo.version) {
       updateUAVersionAndOverview(pstr, userAnswers, currentVersionInfo.version, newVersionInfo.version)
@@ -99,7 +102,7 @@ class CompileService @Inject()(
   private def updateUAVersionAndOverview(pstr: String,
                                          userAnswers: UserAnswers,
                                          version: Int,
-                                         newVersion: Int)(implicit headerCarrier: HeaderCarrier): Future[Option[Seq[EROverview]]] = {
+                                         newVersion: Int)(implicit headerCarrier: HeaderCarrier, req: RequiredSchemeDataRequest[AnyContent]): Future[Option[Seq[EROverview]]] = {
     userAnswersCacheConnector.changeVersion(pstr, version.toString, newVersion.toString).map { _ =>
       (userAnswers.get(EventReportingOverviewPage), userAnswers.get(TaxYearPage)) match {
         case (Some(overviewSeq), Some(taxYear)) => Some(updateOverviewSeq(overviewSeq, taxYear, newVersion))
@@ -116,7 +119,8 @@ class CompileService @Inject()(
     }
   }
 
-  def deleteMember(pstr: String, edi: EventDataIdentifier, currentVersion: Int, memberIdToDelete: String, userAnswers: UserAnswers)(implicit headerCarrier: HeaderCarrier): Future[Unit] = {
+  def deleteMember(pstr: String, edi: EventDataIdentifier, currentVersion: Int, memberIdToDelete: String,
+                   userAnswers: UserAnswers)(implicit headerCarrier: HeaderCarrier, req: RequiredSchemeDataRequest[AnyContent]): Future[Unit] = {
     userAnswers.get(VersionInfoPage) match {
       case Some(vi) =>
         if (vi.status == NotStarted) {
@@ -154,7 +158,7 @@ class CompileService @Inject()(
   }
 
   def compileEvent(eventType: EventType, pstr: String, userAnswers: UserAnswers, delete: Boolean = false)
-                  (implicit headerCarrier: HeaderCarrier): Future[Unit] = {
+                  (implicit headerCarrier: HeaderCarrier, req: RequiredSchemeDataRequest[AnyContent]): Future[Unit] = {
 
     userAnswers.get(VersionInfoPage) match {
       case Some(vi) =>
