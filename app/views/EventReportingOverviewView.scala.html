@@ -66,9 +66,9 @@ govukButton: GovukButton
         }
         <hr>
 
-        <h3 class="govuk-heading-l govuk-!-margin-top-6">
+        <h2 class="govuk-heading-l govuk-!-margin-top-6">
             @messages("eventReportingOverview.inProgress")
-        </h3>
+        </h2>
         @if(viewModel.yearsInProgress.nonEmpty && viewModel.isAnyCompiledReports) {
             <ul class="govuk-list">
                 @for(tuple <- viewModel.yearsInProgress) {
@@ -88,9 +88,9 @@ govukButton: GovukButton
             <hr>
         }
 
-        <h4 class="govuk-heading-l govuk-!-margin-top-6">
+        <h3 class="govuk-heading-l govuk-!-margin-top-6">
             @messages("eventReportingOverview.pastEventReportingReturns")
-        </h4>
+        </h3>
         @if(viewModel.pastYears.nonEmpty && viewModel.isAnySubmittedReports) {
             @for(tuple <- viewModel.pastYears) {
                 <ul class="govuk-list">
