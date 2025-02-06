@@ -20,15 +20,20 @@ import org.apache.pekko.actor.ActorSystem
 import base.SpecBase
 import config.FrontendAppConfig
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
+import models.enumeration.AdministratorOrPractitioner.Administrator
 import models.enumeration.EventType.Event1
 import models.enumeration.VersionStatus.{Compiled, NotStarted, Submitted}
-import models.{EROverview, EROverviewVersion, EventDataIdentifier, TaxYear, UserAnswers, VersionInfo}
+import models.requests.DataRequest
+import models.{EROverview, EROverviewVersion, EventDataIdentifier, LoggedInUser, TaxYear, UserAnswers, VersionInfo}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.{EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
+import play.api.mvc.AnyContent
+import play.api.test.FakeRequest
+import play.api.test.Helpers.GET
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.LocalDate
@@ -58,11 +63,14 @@ class CompileServiceSpec extends SpecBase with BeforeAndAfterEach {
 
   private val compileService = new CompileService(mockEventReportingConnector, mockUserAnswersCacheConnector, mockAppConfig, application.injector().instanceOf[ActorSystem])
 
+  private implicit val dataRequest: DataRequest[AnyContent] =
+    DataRequest("Pstr123", "SchemeABC", "returnUrl", FakeRequest(GET, "/"), LoggedInUser("user", Administrator, "psaId"), UserAnswers(), "S2400000041")
+
   override def beforeEach(): Unit = {
     reset(mockEventReportingConnector)
     reset(mockUserAnswersCacheConnector)
     reset(mockAppConfig)
-    when(mockUserAnswersCacheConnector.save(ArgumentMatchers.eq(pstr), any())(any(), any()))
+    when(mockUserAnswersCacheConnector.save(ArgumentMatchers.eq(pstr), any())(any(), any(), any()))
       .thenReturn(Future.successful((): Unit))
     when(mockAppConfig.compileDelayInSeconds).thenReturn(0)
   }
@@ -71,22 +79,23 @@ class CompileServiceSpec extends SpecBase with BeforeAndAfterEach {
     "must call connector with correct tax year and version when not started" in {
       val captor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       val edi = EventDataIdentifier(Event1, taxYear, "1")
-      when(mockEventReportingConnector.compileEvent(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi), any(), any())(any))
+      when(mockEventReportingConnector.compileEvent(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi), any(), any())(any(), any()))
         .thenReturn(Future.successful((): Unit))
 
-      when(mockUserAnswersCacheConnector.isDataModified(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi.eventType))(any(), any()))
+      when(mockUserAnswersCacheConnector.isDataModified(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi.eventType))(any(), any(), any()))
         .thenReturn(Future.successful(Some(true)))
 
-      when(mockUserAnswersCacheConnector.get(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi.eventType))(any(), any()))
+      when(mockUserAnswersCacheConnector.getByEventType(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi.eventType))(any(), any(), any()))
         .thenReturn(Future.successful(Some(newUserAnswers)))
 
-      when(mockUserAnswersCacheConnector.get(ArgumentMatchers.eq(pstr + "_original_cache"), ArgumentMatchers.eq(edi.eventType))(any(), any()))
+      when(mockUserAnswersCacheConnector.getByEventType(ArgumentMatchers.eq(pstr + "_original_cache"),
+        ArgumentMatchers.eq(edi.eventType))(any(), any(), any()))
         .thenReturn(Future.successful(Some(oldUserAnswers)))
 
       val ua = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, NotStarted), nonEventTypeData = true)
       whenReady(compileService.compileEvent(Event1, pstr, ua)) { _ =>
         verify(mockUserAnswersCacheConnector, times(1))
-          .save(ArgumentMatchers.eq(pstr), captor.capture())(any(), any())
+          .save(ArgumentMatchers.eq(pstr), captor.capture())(any(), any(), any())
         val actualUAAfterSave = captor.getValue
         actualUAAfterSave.get(VersionInfoPage) mustBe Some(VersionInfo(1, Compiled))
       }
@@ -95,19 +104,19 @@ class CompileServiceSpec extends SpecBase with BeforeAndAfterEach {
     "must call connector with correct tax year and version when in progress (being compiled)" in {
       val captor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       val edi = EventDataIdentifier(Event1, taxYear, "2")
-      when(mockEventReportingConnector.compileEvent(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi), any(), any())(any))
+      when(mockEventReportingConnector.compileEvent(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi), any(), any())(any(), any()))
         .thenReturn(Future.successful((): Unit))
-      when(mockUserAnswersCacheConnector.get(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi.eventType))(any(), any()))
+      when(mockUserAnswersCacheConnector.getByEventType(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi.eventType))(any(), any(), any()))
         .thenReturn(Future.successful(Some(newUserAnswers)))
-      when(mockUserAnswersCacheConnector.isDataModified(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi.eventType))(any(), any()))
+      when(mockUserAnswersCacheConnector.isDataModified(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi.eventType))(any(), any(), any()))
         .thenReturn(Future.successful(Some(true)))
-      when(mockUserAnswersCacheConnector.get(ArgumentMatchers.eq(pstr + "_original_cache"), ArgumentMatchers.eq(edi.eventType))(any(), any()))
+      when(mockUserAnswersCacheConnector.getByEventType(ArgumentMatchers.eq(pstr + "_original_cache"), ArgumentMatchers.eq(edi.eventType))(any(), any(), any()))
         .thenReturn(Future.successful(Some(oldUserAnswers)))
 
       val ua = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(2, Compiled), nonEventTypeData = true)
       whenReady(compileService.compileEvent(Event1, pstr, ua)) { _ =>
         verify(mockUserAnswersCacheConnector, times(1))
-          .save(ArgumentMatchers.eq(pstr), captor.capture())(any(), any())
+          .save(ArgumentMatchers.eq(pstr), captor.capture())(any(), any(), any())
         val actualUAAfterSave = captor.getValue
         actualUAAfterSave.get(VersionInfoPage) mustBe Some(VersionInfo(2, Compiled))
       }
@@ -116,16 +125,16 @@ class CompileServiceSpec extends SpecBase with BeforeAndAfterEach {
     "must call connector with correct tax year and version when submitted status + version 1: increase version to 2, amend status + update overview" in {
       val captor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       val edi = EventDataIdentifier(Event1, taxYear, "2")
-      when(mockEventReportingConnector.compileEvent(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi), any(), any())(any))
+      when(mockEventReportingConnector.compileEvent(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi), any(), any())(any(), any()))
         .thenReturn(Future.successful((): Unit))
       when(mockUserAnswersCacheConnector
-        .changeVersion(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq("1"), ArgumentMatchers.eq("2"))(any(), any()))
+        .changeVersion(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq("1"), ArgumentMatchers.eq("2"))(any(), any(), any()))
         .thenReturn(Future.successful((): Unit))
-      when(mockUserAnswersCacheConnector.get(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi.eventType))(any(), any()))
+      when(mockUserAnswersCacheConnector.getByEventType(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi.eventType))(any(), any(), any()))
         .thenReturn(Future.successful(Some(newUserAnswers)))
-      when(mockUserAnswersCacheConnector.isDataModified(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi.eventType))(any(), any()))
+      when(mockUserAnswersCacheConnector.isDataModified(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi.eventType))(any(), any(), any()))
         .thenReturn(Future.successful(Some(true)))
-      when(mockUserAnswersCacheConnector.get(ArgumentMatchers.eq(pstr + "_original_cache"), ArgumentMatchers.eq(edi.eventType))(any(), any()))
+      when(mockUserAnswersCacheConnector.getByEventType(ArgumentMatchers.eq(pstr + "_original_cache"), ArgumentMatchers.eq(edi.eventType))(any(), any(), any()))
         .thenReturn(Future.successful(Some(oldUserAnswers)))
 
       val ua = emptyUserAnswersWithTaxYear
@@ -134,9 +143,9 @@ class CompileServiceSpec extends SpecBase with BeforeAndAfterEach {
         .setOrException(VersionInfoPage, VersionInfo(1, Submitted), nonEventTypeData = true)
 
       whenReady(compileService.compileEvent(Event1, pstr, ua)) { _ =>
-        verify(mockUserAnswersCacheConnector, times(1)).save(ArgumentMatchers.eq(pstr), captor.capture())(any(), any())
+        verify(mockUserAnswersCacheConnector, times(1)).save(ArgumentMatchers.eq(pstr), captor.capture())(any(), any(), any())
         verify(mockUserAnswersCacheConnector, times(1))
-          .changeVersion(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq("1"), ArgumentMatchers.eq("2"))(any(), any())
+          .changeVersion(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq("1"), ArgumentMatchers.eq("2"))(any(), any(), any())
         val actualUAAfterSave = captor.getValue
         actualUAAfterSave.get(VersionInfoPage) mustBe Some(VersionInfo(2, Compiled))
         val actualOverviewValues = actualUAAfterSave.get(EventReportingOverviewPage)

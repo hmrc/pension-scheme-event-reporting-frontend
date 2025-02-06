@@ -109,7 +109,7 @@ class Event20APsaDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
       val minimalDetails = MinimalDetails(testEmail, isPsaSuspended = false, Some(organisationName), None, rlsFlag = false, deceasedFlag = false)
 
       when(mockMinimalConnector.getMinimalDetails(any())(any(), any())).thenReturn(Future.successful(minimalDetails))
-      when(mockERConnector.submitReportEvent20A(any(), any(), any())(any())).thenReturn(Future.successful(NoContent))
+      when(mockERConnector.submitReportEvent20A(any(), any(), any())(any(), any())).thenReturn(Future.successful(NoContent))
 
       val application = applicationBuilder(userAnswers = Some(sampleEvent20ABecameJourneyData), extraModules).build()
       running(application) {
@@ -134,7 +134,7 @@ class Event20APsaDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
     }
 
     "must redirect to the cannot resume page for method onClick when report has been submitted multiple times in quick succession" in {
-      when(mockERConnector.submitReportEvent20A(any(), any(), any())(any())).thenReturn(Future.successful(BadRequest))
+      when(mockERConnector.submitReportEvent20A(any(), any(), any())(any(), any())).thenReturn(Future.successful(BadRequest))
 
       val application =
         applicationBuilder(userAnswers = Some(sampleEvent20ABecameJourneyData), extraModules)
@@ -147,7 +147,7 @@ class Event20APsaDeclarationControllerSpec extends SpecBase with BeforeAndAfterE
 
         status(result) mustEqual SEE_OTHER
 
-        verify(mockERConnector, times(1)).submitReportEvent20A(any(), any(), any())(any())
+        verify(mockERConnector, times(1)).submitReportEvent20A(any(), any(), any())(any(), any())
         redirectLocation(result).value mustEqual routes.CannotResumeController.onPageLoad(EmptyWaypoints).url
       }
     }

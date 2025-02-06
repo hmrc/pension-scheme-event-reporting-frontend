@@ -74,11 +74,8 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
     }
   }
 
-  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData()).async {
+  def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async {
     implicit request =>
-
-      request.userAnswers.getOrElse(throw new NothingToSubmitException("User data not available"))
-      requireData.invokeBlock(request, { implicit request: DataRequest[_] =>
 
         def emailFuture: Future[EmailStatus] = minimalConnector.getMinimalDetails(
           request.loggedInUser.idName).flatMap { minimalDetails =>
@@ -88,7 +85,7 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
           sendEmail(minimalDetails.name, email, taxYear, schemeName)
         }
 
-        schemeDetailsConnector.getPspSchemeDetails(request.loggedInUser.psaIdOrPspId, request.pstr).map(_.pspDetails.map {_.authorisingPSAID}).flatMap { authorisingPsaId =>
+        schemeDetailsConnector.getPspSchemeDetails(request.loggedInUser.psaIdOrPspId, request.pstr, request.srn).map(_.pspDetails.map {_.authorisingPSAID}).flatMap { authorisingPsaId =>
           minimalConnector.getMinimalDetails(request.loggedInUser.idName).flatMap { minimalDetails =>
             form(authorisingPsaId = authorisingPsaId)
               .bindFromRequest().fold(
@@ -121,7 +118,6 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
             )
           }
         }
-      })
   }
 
   private def sendEmail(pspName: String, email: String, taxYear: String, schemeName: String)(

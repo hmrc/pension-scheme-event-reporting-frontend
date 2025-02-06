@@ -145,7 +145,7 @@ class AuthenticatedIdentifierAction @Inject()(
             } yield {
               for {
                 psaAuthorised <- schemeAuthorisedForPsa(psaId, eventReporting.srn)
-                pspAuthorised <- schemeAuthorisedForPsp(pspId, eventReporting.pstr)
+                pspAuthorised <- schemeAuthorisedForPsp(pspId, eventReporting.pstr, eventReporting.srn)
               } yield {
                 psaAuthorised || pspAuthorised
               }
@@ -183,7 +183,7 @@ class AuthenticatedIdentifierAction @Inject()(
                 logger.warn("Potentially prevented unauthorised access")
                 futureUnauthorisedPage
             }
-          case AdministratorOrPractitioner.Practitioner => schemeAuthorisedForPsp(loggedInUser.psaIdOrPspId, eventReporting.pstr).flatMap {
+          case AdministratorOrPractitioner.Practitioner => schemeAuthorisedForPsp(loggedInUser.psaIdOrPspId, eventReporting.pstr, eventReporting.srn).flatMap {
             case true => proceed
             case false =>
               logger.warn("Potentially prevented unauthorised access")
@@ -204,8 +204,8 @@ class AuthenticatedIdentifierAction @Inject()(
       false
     }
   }
-  private def schemeAuthorisedForPsp(pspId: String, pstr: String)(implicit headerCarrier: HeaderCarrier): Future[Boolean] = {
-    schemeConnector.getPspSchemeDetails(pspId, pstr).map { details =>
+  private def schemeAuthorisedForPsp(pspId: String, pstr: String, srn: String)(implicit headerCarrier: HeaderCarrier): Future[Boolean] = {
+    schemeConnector.getPspSchemeDetails(pspId, pstr, srn).map { details =>
       details.pspDetails.exists(_.id == pspId)
     } recover {
       case notFound: NotFoundException if notFound.message.contains("PSP_RELATIONSHIP_NOT_FOUND") =>

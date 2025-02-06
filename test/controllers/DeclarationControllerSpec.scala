@@ -115,11 +115,11 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
       val minimalDetails = MinimalDetails(testEmail, isPsaSuspended = false, Some(organisationName), None, rlsFlag = false, deceasedFlag = false)
 
 
-      when(mockERConnector.submitReport(any(), any(), any())(any())).thenReturn(Future.successful(NoContent))
-      when(mockUserAnswersConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(()))
+      when(mockERConnector.submitReport(any(), any(), any())(any(), any())).thenReturn(Future.successful(NoContent))
+      when(mockUserAnswersConnector.save(any(), any())(any(), any(), any())).thenReturn(Future.successful(()))
 
-      when(mockERConnector.submitReport(any(), any(), any())(any())).thenReturn(Future.successful(NoContent))
-      when(mockUserAnswersConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(()))
+      when(mockERConnector.submitReport(any(), any(), any())(any(), any())).thenReturn(Future.successful(NoContent))
+      when(mockUserAnswersConnector.save(any(), any())(any(), any(), any())).thenReturn(Future.successful(()))
       doNothing().when(mockAuditService).sendEvent(any())(any(), any())
       when(mockEmailConnector.sendEmail(
         schemeAdministratorType = ArgumentMatchers.eq(Administrator),
@@ -130,7 +130,7 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
         reportVersion = any())(any(), any()))
         .thenReturn(Future.successful(EmailSent))
       when(mockMinimalConnector.getMinimalDetails(any())(any(), any())).thenReturn(Future.successful(minimalDetails))
-      when(mockSubmitService.submitReport(any(), any())(any(), any())).thenReturn(Future.successful(Ok))
+      when(mockSubmitService.submitReport(any(), any())(any(), any(), any())).thenReturn(Future.successful(Ok))
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, Compiled))), extraModules)
@@ -150,15 +150,17 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
       val applicationNoUA = applicationBuilder(userAnswers = None, extraModules).build()
       val controller: DeclarationController = applicationNoUA.injector.instanceOf[DeclarationController]
 
-      val request = FakeRequest(GET, routes.DeclarationController.onClick(waypoints).url)
+      running(applicationNoUA) {
+        val request = FakeRequest(GET, routes.DeclarationController.onClick(waypoints).url)
 
-      val futureResult: Future[NothingToSubmitException] = recoverToExceptionIf[NothingToSubmitException] {
-        controller.onClick(waypoints)(request)
+        val result = controller.onClick(waypoints)(request)
+
+        status(result) mustEqual SEE_OTHER
+        verify(mockEmailConnector, times(0)).sendEmail(any(), any(), any(), any(), any(), any(), any(), any())(any(), any())
+        verify(mockAuditService, times(0)).sendEvent(any())(any(), any())
+        verify(mockSubmitService, times(0)).submitReport(any(), any())(any(), any(), any())
+        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
       }
-
-      val result: NothingToSubmitException = Await.result(futureResult, Duration(5, SECONDS))
-
-      result.responseCode mustBe EXPECTATION_FAILED
     }
 
     "must redirect to the cannot resume page for method onClick when report has been submitted multiple times in quick succession" in {
@@ -167,7 +169,7 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
       val organisationName = "Test company ltd"
       val minimalDetails = MinimalDetails(testEmail, isPsaSuspended = false, Some(organisationName), None, rlsFlag = false, deceasedFlag = false)
 
-      when(mockERConnector.submitReport(any(), any(), any())(any())).thenReturn(Future.successful(BadRequest))
+      when(mockERConnector.submitReport(any(), any(), any())(any(), any())).thenReturn(Future.successful(BadRequest))
       doNothing().when(mockAuditService).sendEvent(any())(any(), any())
       when(mockEmailConnector.sendEmail(
         schemeAdministratorType = ArgumentMatchers.eq(Administrator),
@@ -178,8 +180,8 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
         reportVersion = any())(any(), any()))
         .thenReturn(Future.successful(EmailSent))
       when(mockMinimalConnector.getMinimalDetails(any())(any(), any())).thenReturn(Future.successful(minimalDetails))
-      when(mockSubmitService.submitReport(any(), any())(any(), any())).thenReturn(Future.successful(BadRequest))
-      when(mockUserAnswersConnector.save(any(), any())(any(), any())).thenReturn(Future.successful(()))
+      when(mockSubmitService.submitReport(any(), any())(any(), any(), any())).thenReturn(Future.successful(BadRequest))
+      when(mockUserAnswersConnector.save(any(), any())(any(), any(), any())).thenReturn(Future.successful(()))
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, Compiled))), extraModules)
@@ -193,7 +195,7 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
         status(result) mustEqual SEE_OTHER
         verify(mockEmailConnector, times(0)).sendEmail(any(), any(), any(), any(), any(), any(), any(), any())(any(), any())
         verify(mockAuditService, times(0)).sendEvent(any())(any(), any())
-        verify(mockSubmitService, times(1)).submitReport(any(), any())(any(), any())
+        verify(mockSubmitService, times(1)).submitReport(any(), any())(any(), any(), any())
         redirectLocation(result).value mustEqual routes.CannotResumeController.onPageLoad(waypoints).url
       }
     }

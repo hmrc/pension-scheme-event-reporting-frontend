@@ -47,7 +47,7 @@ class AuthControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfterE
     reset(mockUserAnswersCacheConnector)
     when(mockSessionDataCacheConnector.removeAll()(any(), any()))
       .thenReturn(Future.successful(Ok("")))
-    when(mockUserAnswersCacheConnector.removeAll(any())(any(), any()))
+    when(mockUserAnswersCacheConnector.removeAll(any())(any(), any(), any()))
       .thenReturn(Future.successful(Ok("")))
   }
 
@@ -69,7 +69,7 @@ class AuthControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfterE
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expectedRedirectUrl
         verify(mockSessionDataCacheConnector, times(1)).removeAll()(any(), any())
-        verify(mockUserAnswersCacheConnector, times(1)).removeAll(any())(any(), any())
+        verify(mockUserAnswersCacheConnector, times(1)).removeAll(any())(any(), any(), any())
       }
     }
   }
@@ -93,7 +93,7 @@ class AuthControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfterE
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expectedRedirectUrl
         verify(mockSessionDataCacheConnector, times(1)).removeAll()(any(), any())
-        verify(mockUserAnswersCacheConnector, times(1)).removeAll(any())(any(), any())
+        verify(mockUserAnswersCacheConnector, times(1)).removeAll(any())(any(), any(), any())
       }
     }
   }

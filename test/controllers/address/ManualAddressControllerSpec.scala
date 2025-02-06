@@ -102,7 +102,7 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach with 
     }
 
     "must save the answer and redirect to the next page when valid data is submitted" in {
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(()))
 
       val ua = emptyUserAnswers.setOrException(CompanyDetailsPage(0), companyDetails)
@@ -124,7 +124,7 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach with 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual ChooseAddressPage(Event1EmployerAddressJourney, 0)
           .navigate(waypoints, emptyUserAnswers, emptyUserAnswers).url
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any(), any())
       }
     }
 
@@ -145,7 +145,7 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach with 
 
         val result = route(application, request).value
         status(result) mustEqual BAD_REQUEST
-        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any(), any())
       }
     }
 

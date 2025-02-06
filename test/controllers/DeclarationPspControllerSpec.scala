@@ -145,10 +145,10 @@ class DeclarationPspControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     "must save the answer and redirect to the next page when valid data is submitted" in {
       when(mockMinimalConnector.getMinimalDetails(any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
-      when(mockSchemeDetailsConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockSchemeDetails))
-      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
+      when(mockSchemeDetailsConnector.getPspSchemeDetails(any(), any(), any())(any(), any())).thenReturn(Future.successful(mockSchemeDetails))
+      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(()))
-      when(mockSubmitService.submitReport(any(), any())(any(), any())).thenReturn(Future.successful(Ok))
+      when(mockSubmitService.submitReport(any(), any())(any(), any(), any())).thenReturn(Future.successful(Ok))
 
       val application =
         applicationBuilder(userAnswers = Some(sampleEvent20JourneyData), extraModules)
@@ -162,16 +162,16 @@ class DeclarationPspControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routes.ReturnSubmittedController.onPageLoad(waypoints).url
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any(), any())
       }
     }
 
     "must return bad request when invalid data is submitted" in {
       when(mockMinimalConnector.getMinimalDetails(any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
-      when(mockSchemeDetailsConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockSchemeDetails))
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+      when(mockSchemeDetailsConnector.getPspSchemeDetails(any(), any(), any())(any(), any())).thenReturn(Future.successful(mockSchemeDetails))
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(()))
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(()))
 
       val application =
@@ -189,31 +189,32 @@ class DeclarationPspControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result).removeAllNonces() mustEqual view(practitionerName, boundForm, waypoints)(request, messages(application)).toString
-        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any(), any())
       }
     }
 
     "must redirect to the correct error screen when no data is able to be submitted" in {
       val applicationNoUA = applicationBuilder(userAnswers = None, extraModules).build()
-      val controller: DeclarationPspController = applicationNoUA.injector.instanceOf[DeclarationPspController]
 
-      val request = FakeRequest(GET, routes.DeclarationPspController.onSubmit(waypoints).url)
+      running(applicationNoUA) {
+        val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "A1234567"))
 
-      val futureResult: Future[NothingToSubmitException] = recoverToExceptionIf[NothingToSubmitException] {
-        controller.onSubmit(waypoints)(request)
+        val result = route(applicationNoUA, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        verify(mockUserAnswersCacheConnector, times(0)).save(any(), any())(any(), any(), any())
+        verify(mockSubmitService, times(0)).submitReport(any(), any())(any(), any(), any())
+        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
       }
-
-      val result: NothingToSubmitException = Await.result(futureResult, Duration(5, SECONDS))
-
-      result.responseCode mustBe EXPECTATION_FAILED
     }
 
     "must redirect to the cannot resume page for method onClick when report has been submitted multiple times in quick succession" in {
       when(mockMinimalConnector.getMinimalDetails(any())(any(), any())).thenReturn(Future.successful(mockMinimalDetails))
-      when(mockSchemeDetailsConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(mockSchemeDetails))
-      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
+      when(mockSchemeDetailsConnector.getPspSchemeDetails(any(), any(), any())(any(), any())).thenReturn(Future.successful(mockSchemeDetails))
+      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(()))
-      when(mockSubmitService.submitReport(any(), any())(any(), any())).thenReturn(Future.successful(BadRequest))
+      when(mockSubmitService.submitReport(any(), any())(any(), any(), any())).thenReturn(Future.successful(BadRequest))
 
       val application =
         applicationBuilder(userAnswers = Some(sampleEvent20JourneyData), extraModules)
@@ -227,8 +228,8 @@ class DeclarationPspControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         status(result) mustEqual SEE_OTHER
 
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any())
-        verify(mockSubmitService, times(1)).submitReport(any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any())(any(), any(), any())
+        verify(mockSubmitService, times(1)).submitReport(any(), any())(any(), any(), any())
         redirectLocation(result).value mustEqual routes.CannotResumeController.onPageLoad(waypoints).url
       }
     }

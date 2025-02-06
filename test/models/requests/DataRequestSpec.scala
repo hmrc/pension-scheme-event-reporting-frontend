@@ -62,7 +62,7 @@ class DataRequestSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
       val uA = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, Submitted))
       .setOrException(EventReportingOverviewPage, erOverviewSeq)
 
-      val dataReqObj = DataRequest("pstr", "schemeName", "url", FakeRequest(Call("GET", "/")), LoggedInUser("", Administrator, ""), uA)
+      val dataReqObj = DataRequest("pstr", "schemeName", "url", FakeRequest(Call("GET", "/")), LoggedInUser("", Administrator, ""), uA, "srn")
 
       dataReqObj.readOnly mustBe true
     }
@@ -72,7 +72,7 @@ class DataRequestSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
       val uA = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(3, Submitted))
       .setOrException(EventReportingOverviewPage, erOverviewSeq)
 
-      val dataReqObj = DataRequest("pstr", "schemeName", "url", FakeRequest(Call("GET", "/")), LoggedInUser("", Administrator, ""), uA)
+      val dataReqObj = DataRequest("pstr", "schemeName", "url", FakeRequest(Call("GET", "/")), LoggedInUser("", Administrator, ""), uA, "srn")
 
       dataReqObj.readOnly mustBe false
     }

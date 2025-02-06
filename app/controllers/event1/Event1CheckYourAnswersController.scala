@@ -59,7 +59,6 @@ class Event1CheckYourAnswersController @Inject()(
 
   def onPageLoad(index: Index): Action[AnyContent] =
     (identify andThen getData(Event1) andThen requireData) { implicit request =>
-
       val thisPage = Event1CheckYourAnswersPage(index)
       val waypoints = EmptyWaypoints
 

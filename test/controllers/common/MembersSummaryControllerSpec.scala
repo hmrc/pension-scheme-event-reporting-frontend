@@ -313,7 +313,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
 
   private def testSaveAnswerAndRedirectWhenValid(eventType: EventType): Unit = {
     s"must save the answer and redirect to the next page when valid data is submitted for Event $eventType" in {
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(()))
 
       val application =
@@ -339,7 +339,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
 
   private def testBadRequestForInvalidDataSubmission(eventType: EventType, form: Form[Boolean]): Unit = {
     s"must return bad request when invalid data is submitted for Event $eventType" in {
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(()))
       val emptyPageStats = PaginationStats(Seq(), 0, 1, (0,1),Seq())
       when(mockEventPaginationService.paginateMappedMembers(any(), any())).thenReturn(emptyPageStats)
@@ -365,7 +365,7 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
           selectedTaxYear = "2023",
           request = request,
           messages = messages(application), paginationStats = emptyPageStats, pageNumber = Index(0), searchValue = None, searchHref = s"/manage-pension-scheme-event-report/report/event-$eventType-summary").toString
-        verify(mockUserAnswersCacheConnector, never).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, never).save(any(), any(), any())(any(), any(), any())
       }
     }
   }
