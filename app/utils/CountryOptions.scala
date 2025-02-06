@@ -28,6 +28,7 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class CountryOptions(val options: Seq[InputOption]) {
 
+
   @Inject()
   def this(environment: Environment, config: FrontendAppConfig) = {
     this(

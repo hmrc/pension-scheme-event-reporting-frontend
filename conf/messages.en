@@ -528,7 +528,7 @@ whoWasTheTransferMade.change.hidden = Who was the transfer made to?
 
 schemeDetails.title = Scheme details
 schemeDetails.heading = Scheme details
-schemeDetails.schemeName = Scheme-name (optional)
+schemeDetails.schemeName = Scheme name (optional)
 schemeDetails.reference = Reference (optional)
 schemeDetails.checkYourAnswersLabel = Scheme details
 schemeDetails.error.required = Enter Scheme details
@@ -1712,7 +1712,7 @@ fileUpload.memberDetails.generic.error.firstName = member’s first name cannot 
 fileUpload.memberDetails.generic.error.lastName = member’s last name cannot be blank and must contain only letters, spaces, ampersands (&), grave accents (à), apostrophes, hyphens, full stops and carets (^)
 fileUpload.memberDetails.generic.error.nino = member’s National Insurance number cannot be blank and must be in the correct format, for example QQ 12 34 56 C
 
-fileUpload.taxYear.generic.error = tax year cannot be blank a must be in the correct format, for example 27/3/2024
+fileUpload.taxYear.generic.error = tax year cannot be blank and must be in the correct format, for example 27/3/2024
 fileUpload.totalAmounts.generic.error = the total of the member’s pension input amounts cannot be blank and must only contain numbers or decimal points
 
 fileUpload.typeOfProtection.generic.error = "Error for type of protection needs to be confirmed"
@@ -1804,6 +1804,11 @@ fileUpload.valueOfFund.generic.error = value of fund cannot be blank and must on
 fileUpload.loanAmount.generic.error = loan amount cannot be blank and must only contain numbers or decimal points
 fileUpload.memberOrEmployer.generic.error = entry of who received the unauthorised payment or deemed unauthorised payment cannot be blank and must contain only letters, spaces, ampersands (&), grave accents (à), apostrophes, hyphens, full stops and carets (^)
 fileUpload.natureOfPayment.generic.error = nature of payment cannot be blank and must contain only letters and numbers
+fileUpload.doYouHoldSignedMandate.generic.error = entry for whether you hold a signed mandate cannot be blank
+fileUpload.valueOfUnauthorisedPayment.generic.error = What is the total value or amount of the unauthorised payment?
+fileUpload.schemeUnAuthPaySurcharge.generic.error = entry for whether the scheme paying the unauthorised payment surcharge on behalf of the member cannot be blank
+fileUpload.transferMadeTo.generic.error = entry for who the transfer was made to cannot be left blank
+fileUpload.schemeDetails.generic.error = scheme details cannot be left blank
 
 fileUpload.bceDate.generic.error = benefit crystallisation date cannot be blank a must be in the correct format, for example 27/3/2024
 fileUpload.bceType.generic.error = type of benefit crystallisation cannot be blank and must contain only letters and numbers
