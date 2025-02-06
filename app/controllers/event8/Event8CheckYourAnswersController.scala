@@ -65,11 +65,9 @@ class Event8CheckYourAnswersController @Inject()(
 
   private def buildEvent8CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Index)
                                 (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
-    MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event8).toSeq ++
-      MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event8).toSeq ++
+    MembersDetailsSummary.rowMembersDetails(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event8).toSeq ++
       TypeOfProtectionSummary.row(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event8).toSeq ++
       TypeOfProtectionReferenceSummary.row(request.userAnswers, waypoints, sourcePage, request.readOnly(), Event8, index).toSeq ++
-      LumpSumAmountAndDateSummary.rowLumpSumValue(request.userAnswers, waypoints, sourcePage, request.readOnly(), Event8, index).toSeq ++
-      LumpSumAmountAndDateSummary.rowLumpSumDate(request.userAnswers, waypoints, sourcePage, request.readOnly(), Event8, index).toSeq
+      LumpSumAmountAndDateSummary.rowLumpSumDetails(request.userAnswers, waypoints, sourcePage, request.readOnly(), Event8, index).toSeq
   }
 }

@@ -30,7 +30,7 @@ object RequiredDataRequest {
     request,
     LoggedInUser("", Administrator, ""),
     None,
-    "S2400000041"
+    "srn"
   )
 
 }

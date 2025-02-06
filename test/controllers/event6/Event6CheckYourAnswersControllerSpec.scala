@@ -40,6 +40,7 @@ import play.api.test.Helpers._
 import services.CompileService
 import uk.gov.hmrc.govukfrontend.views.Aliases
 import uk.gov.hmrc.govukfrontend.views.Aliases._
+import viewmodels.event1.member.checkAnswers.SchemeDetailsSummary.schemeDetailsAnswer
 import viewmodels.govuk.SummaryListFluency
 import views.html.CheckYourAnswersView
 
@@ -294,18 +295,18 @@ object Event6CheckYourAnswersControllerSpec {
         ), ""),
       Value(Text(htmlContent), ""), "")
 
+  private val memberDetailsContent = s"""<p class="govuk-body">Joe Bloggs</p>
+       |<p class="govuk-body">AA234567D</p>""".stripMargin
+
+  private val crystalisationDetailsContent = s"""<p class="govuk-body">£10.00</p>
+                                        |<p class="govuk-body">08 November 2022</p>""".stripMargin
+
   private def expectedMemberSummaryListRowsEvent6(implicit messages: Messages): Seq[SummaryListRow] = Seq(
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "membersDetails.checkYourAnswersLabel",
-      "Joe Bloggs",
+      memberDetailsContent,
       "/manage-pension-scheme-event-report/report/1/event-6-member-details?waypoints=event-6-check-answers-1",
       "membersDetails.change.hidden"
-    ),
-    fakeSummaryListRowWithHtmlContentWithHiddenContent(
-      "membersDetails.checkYourAnswersLabel.nino",
-      "AA234567D",
-      "/manage-pension-scheme-event-report/report/1/event-6-member-details?waypoints=event-6-check-answers-1",
-      "membersDetails.change.nino.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "typeOfProtection.checkYourAnswersLabel",
@@ -322,26 +323,16 @@ object Event6CheckYourAnswersControllerSpec {
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "amountCrystallisedAndDate.value.checkYourAnswersLabel",
-      "£10.00",
+      crystalisationDetailsContent,
       "/manage-pension-scheme-event-report/report/1/event-6-payment-details?waypoints=event-6-check-answers-1",
       "amountCrystallisedAndDate.value.change.hidden"
-    ),
-    fakeSummaryListRowWithTextWithHiddenContent(
-      "amountCrystallisedAndDate.date.checkYourAnswersLabel",
-      "08 November 2022",
-      "/manage-pension-scheme-event-report/report/1/event-6-payment-details?waypoints=event-6-check-answers-1",
-      "amountCrystallisedAndDate.date.change.hidden"
     )
   )
 
   private def expectedMemberSummaryListRowsEvent6ViewOnly(implicit messages: Messages): Seq[SummaryListRow] = Seq(
     fakeSummaryListRowWithHtmlContentWithHiddenContentViewOnly(
       "membersDetails.checkYourAnswersLabel",
-      "Joe Bloggs"
-    ),
-    fakeSummaryListRowWithHtmlContentWithHiddenContentViewOnly(
-      "membersDetails.checkYourAnswersLabel.nino",
-      "AA234567D"
+      memberDetailsContent
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContentViewOnly(
       "typeOfProtection.checkYourAnswersLabel",
@@ -354,11 +345,7 @@ object Event6CheckYourAnswersControllerSpec {
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContentViewOnly(
       "amountCrystallisedAndDate.value.checkYourAnswersLabel",
-      "£10.00"
-    ),
-    fakeSummaryListRowWithTextWithHiddenContentViewOnly(
-      "amountCrystallisedAndDate.date.checkYourAnswersLabel",
-      "08 November 2022"
+      crystalisationDetailsContent
     )
   )
 }

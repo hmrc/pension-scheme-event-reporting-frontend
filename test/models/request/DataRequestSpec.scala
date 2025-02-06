@@ -35,7 +35,7 @@ class DataRequestSpec extends SpecBase {
       val request = FakeRequest.apply(Call("GET", "/"))
       val ua = UserAnswers().setOrException(VersionInfoPage, VersionInfo(1, Submitted), nonEventTypeData = true)
 
-      val dataRequest = DataRequest("", "", "", request, LoggedInUser("user", Administrator, "psaId"), ua, "S2400000041")
+      val dataRequest = DataRequest("", "", "", request, LoggedInUser("user", Administrator, "psaId"), ua, "srn")
 
       dataRequest.isReportSubmitted mustBe true
     }
@@ -45,7 +45,7 @@ class DataRequestSpec extends SpecBase {
       val request = FakeRequest.apply(Call("GET", "/"))
       val ua = UserAnswers().setOrException(VersionInfoPage, VersionInfo(1, Compiled), nonEventTypeData = true)
 
-      val dataRequest = DataRequest("", "", "", request, LoggedInUser("user", Administrator, "psaId"), ua, "S2400000041")
+      val dataRequest = DataRequest("", "", "", request, LoggedInUser("user", Administrator, "psaId"), ua, "srn")
 
       dataRequest.isReportSubmitted mustBe false
     }
@@ -55,7 +55,7 @@ class DataRequestSpec extends SpecBase {
       val request = FakeRequest.apply(Call("GET", "/"))
       val ua = UserAnswers()
 
-      val dataRequest = DataRequest("", "", "", request, LoggedInUser("user", Administrator, "psaId"), ua, "S2400000041")
+      val dataRequest = DataRequest("", "", "", request, LoggedInUser("user", Administrator, "psaId"), ua, "srn")
 
       dataRequest.isReportSubmitted mustBe false
     }

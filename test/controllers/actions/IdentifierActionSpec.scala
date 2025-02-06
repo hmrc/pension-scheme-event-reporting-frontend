@@ -103,7 +103,7 @@ class IdentifierActionSpec
         PsaDetails(psaId, None, None, None)
       ))))
     )
-    when(mockSchemeConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(
+    when(mockSchemeConnector.getPspSchemeDetails(any(), any(), any())(any(), any())).thenReturn(Future.successful(
       PspSchemeDetails("schemeName", "87219363YN", "Open",
                         Some(PspDetails(None, None, None, psaId,
                         AuthorisingPSA(None, None, None, None), LocalDate.now(), pspId)))
@@ -285,7 +285,7 @@ class IdentifierActionSpec
         PsaDetails(psaId, None, None, None)
       ))))
     )
-    when(mockSchemeConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(
+    when(mockSchemeConnector.getPspSchemeDetails(any(), any(), any())(any(), any())).thenReturn(Future.successful(
       PspSchemeDetails("schemeName", "87219363YN", "Open", Some(PspDetails(None, None, None, psaId, AuthorisingPSA(None, None, None, None), LocalDate.now(), pspId)))
     ))
     val controller = new Harness(authAction)
@@ -322,7 +322,7 @@ class IdentifierActionSpec
           PsaDetails(psaId, None, None, None)
         ))))
       )
-      when(mockSchemeConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(
+      when(mockSchemeConnector.getPspSchemeDetails(any(), any(), any())(any(), any())).thenReturn(Future.successful(
         PspSchemeDetails("schemeName", "87219363YN", "Open", None)
       ))
       when(mockSessionDataCacheConnector.fetch()(any(), any()))
@@ -355,7 +355,7 @@ class IdentifierActionSpec
       when(mockSchemeConnector.getSchemeDetails(any(), any(), any())(any(), any())).thenReturn(Future.successful(
         PsaSchemeDetails("test scheme", "test pstr", "test status", None))
       )
-      when(mockSchemeConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(
+      when(mockSchemeConnector.getPspSchemeDetails(any(), any(), any())(any(), any())).thenReturn(Future.successful(
         PspSchemeDetails("schemeName", "87219363YN", "Open", Some(PspDetails(None, None, None, psaId, AuthorisingPSA(None, None, None, None), LocalDate.now(), pspId)))
       ))
       when(mockSessionDataCacheConnector.fetch()(any(), any()))
@@ -390,7 +390,7 @@ class IdentifierActionSpec
           PsaDetails(psaId, None, None, None)
         ))))
       )
-      when(mockSchemeConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(
+      when(mockSchemeConnector.getPspSchemeDetails(any(), any(), any())(any(), any())).thenReturn(Future.successful(
         PspSchemeDetails("schemeName", "87219363YN", "Open", None)
       ))
       val controller = new Harness(authAction)
@@ -423,7 +423,7 @@ class IdentifierActionSpec
       when(mockSchemeConnector.getSchemeDetails(any(), any(), any())(any(), any())).thenReturn(Future.successful(
         PsaSchemeDetails("test scheme", "test pstr", "test status", None))
       )
-      when(mockSchemeConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(
+      when(mockSchemeConnector.getPspSchemeDetails(any(), any(), any())(any(), any())).thenReturn(Future.successful(
         PspSchemeDetails("schemeName", "87219363YN", "Open", Some(PspDetails(None, None, None, psaId, AuthorisingPSA(None, None, None, None), LocalDate.now(), pspId)))
       ))
       val controller = new Harness(authAction)
@@ -459,7 +459,7 @@ class IdentifierActionSpec
           PsaDetails(psaId, None, None, None)
         ))))
       )
-      when(mockSchemeConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.failed(
+      when(mockSchemeConnector.getPspSchemeDetails(any(), any(), any())(any(), any())).thenReturn(Future.failed(
         new NotFoundException("PSP_RELATIONSHIP_NOT_FOUND")
       ))
       val controller = new Harness(authAction)
@@ -531,7 +531,7 @@ class IdentifierActionSpec
       }
     }
     "PSP" in {
-      when(mockSchemeConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(
+      when(mockSchemeConnector.getPspSchemeDetails(any(), any(), any())(any(), any())).thenReturn(Future.successful(
         PspSchemeDetails("schemeName", "87219363YN", "Open", Some(PspDetails(None, None, None, psaId, AuthorisingPSA(None, None, None, None), LocalDate.now(), pspId + "A")))
       ))
       when(mockSessionDataCacheConnector.fetch()(any(), any()))
@@ -569,7 +569,7 @@ class IdentifierActionSpec
       when(mockSchemeConnector.getSchemeDetails(any(), any(), any())(any(), any())).thenReturn(Future.successful(
         PsaSchemeDetails("test scheme", "test pstr", "test status", None))
       )
-      when(mockSchemeConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(
+      when(mockSchemeConnector.getPspSchemeDetails(any(), any(), any())(any(), any())).thenReturn(Future.successful(
         PspSchemeDetails("schemeName", "87219363YN", "Open", None)
       ))
       val controller = new Harness(authAction)
@@ -608,7 +608,7 @@ class IdentifierActionSpec
   "must not allow access if schemeConnector throws an error" - {
     "with PSA enrolment" in {
       when(mockSchemeConnector.getSchemeDetails(any(), any(), any())(any(), any())).thenReturn(Future.failed(new RuntimeException("")))
-      when(mockSchemeConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.successful(
+      when(mockSchemeConnector.getPspSchemeDetails(any(), any(), any())(any(), any())).thenReturn(Future.successful(
         PspSchemeDetails("schemeName", "87219363YN", "Open", None)
       ))
       when(mockSessionDataCacheConnector.fetch()(any(), any()))
@@ -646,7 +646,7 @@ class IdentifierActionSpec
       when(mockSchemeConnector.getSchemeDetails(any(), any(), any())(any(), any())).thenReturn(Future.successful(
         PsaSchemeDetails("test scheme", "test pstr", "test status", None))
       )
-      when(mockSchemeConnector.getPspSchemeDetails(any(), any())(any(), any())).thenReturn(Future.failed(new RuntimeException("")))
+      when(mockSchemeConnector.getPspSchemeDetails(any(), any(), any())(any(), any())).thenReturn(Future.failed(new RuntimeException("")))
       when(mockSessionDataCacheConnector.fetch()(any(), any()))
         .thenReturn(Future.successful(Some(jsonAOP(Administrator))))
       val controller = new Harness(authAction)

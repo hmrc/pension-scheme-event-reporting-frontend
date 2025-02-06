@@ -59,7 +59,6 @@ class Event1CheckYourAnswersController @Inject()(
 
   def onPageLoad(index: Index): Action[AnyContent] =
     (identify andThen getData(Event1) andThen requireData) { implicit request =>
-
       val thisPage = Event1CheckYourAnswersPage(index)
       val waypoints = EmptyWaypoints
 
@@ -109,15 +108,15 @@ class Event1CheckYourAnswersController @Inject()(
       }
     }
 
-    val paymentValueAndDateRows = event1PaymentValueAndDateRows(waypoints, sourcePage, index)
+    val paymentValueAndDateRows = PaymentValueAndDateSummary
+      .rowPaymentDetails(request.userAnswers, waypoints, index, sourcePage, request.readOnly()).toSeq
 
     basicMemberOrEmployerRows ++ memberOrEmployerPaymentNatureRows ++ paymentValueAndDateRows
   }
 
   private def event1BasicMemberDetailsRows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Int)
                                           (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =
-    MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event1).toSeq ++
-      MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event1).toSeq ++
+    MembersDetailsSummary.rowMembersDetails(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event1).toSeq ++
       DoYouHoldSignedMandateSummary.row(request.userAnswers, waypoints, index, sourcePage, request.readOnly()).toSeq ++
       ValueOfUnauthorisedPaymentSummary.row(request.userAnswers, waypoints, index, sourcePage, request.readOnly()).toSeq ++
       schemeUnAuthPaySurchargeRow(waypoints, index, sourcePage) ++
@@ -125,8 +124,7 @@ class Event1CheckYourAnswersController @Inject()(
 
   private def event1BasicEmployerDetailsRows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Index)
                                             (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =
-    CompanyDetailsSummary.rowCompanyName(request.userAnswers, waypoints, index, sourcePage, request.readOnly()).toSeq ++
-      CompanyDetailsSummary.rowCompanyNumber(request.userAnswers, waypoints, index, sourcePage, request.readOnly()).toSeq ++
+    CompanyDetailsSummary.rowCompanyDetails(request.userAnswers, waypoints, index, sourcePage, request.readOnly()).toSeq ++
       ChooseAddressSummary.row(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), AddressJourneyType.Event1EmployerAddressJourney).toSeq ++
       EmployerPaymentNatureSummary.row(request.userAnswers, waypoints, index, sourcePage, request.readOnly()).toSeq
 
@@ -138,8 +136,7 @@ class Event1CheckYourAnswersController @Inject()(
         BenefitInKindBriefDescriptionSummary.row(request.userAnswers, waypoints, index, sourcePage, request.readOnly()).toSeq
       case Some(TransferToNonRegPensionScheme) =>
         WhoWasTheTransferMadeSummary.row(request.userAnswers, waypoints, index, sourcePage, request.readOnly()).toSeq ++
-          SchemeDetailsSummary.rowSchemeName(request.userAnswers, waypoints, index, sourcePage, request.readOnly()).toSeq ++
-          SchemeDetailsSummary.rowSchemeReference(request.userAnswers, waypoints, index, sourcePage, request.readOnly()).toSeq
+          SchemeDetailsSummary.rowSchemeDetails(request.userAnswers, waypoints, index, sourcePage, request.readOnly()).toSeq
       case Some(ErrorCalcTaxFreeLumpSums) =>
         ErrorDescriptionSummary.row(request.userAnswers, waypoints, index, sourcePage, request.readOnly()).toSeq
       case Some(BenefitsPaidEarly) =>
@@ -164,8 +161,7 @@ class Event1CheckYourAnswersController @Inject()(
                                              (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =
     request.userAnswers.get(EmployerPaymentNaturePage(index)) match {
       case Some(LoansExceeding50PercentOfFundValue) =>
-        LoanDetailsSummary.rowLoanAmount(request.userAnswers, waypoints, index, sourcePage, request.readOnly()).toSeq ++
-          LoanDetailsSummary.rowFundValue(request.userAnswers, waypoints, index, sourcePage, request.readOnly()).toSeq
+        LoanDetailsSummary.rowLoanDetails(request.userAnswers, waypoints, index, sourcePage, request.readOnly()).toSeq
       case Some(ResidentialProperty) =>
         ChooseAddressSummary.row(request.userAnswers, waypoints, index, sourcePage, request.readOnly(),
           AddressJourneyType.Event1EmployerPropertyAddressJourney).toSeq
@@ -177,9 +173,4 @@ class Event1CheckYourAnswersController @Inject()(
         EmployerPaymentNatureDescriptionSummary.row(request.userAnswers, waypoints, index, sourcePage, request.readOnly()).toSeq
       case _ => Nil
     }
-
-  private def event1PaymentValueAndDateRows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Int)
-                                           (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] =
-    PaymentValueAndDateSummary.rowPaymentValue(request.userAnswers, waypoints, index, sourcePage, request.readOnly()).toSeq ++
-      PaymentValueAndDateSummary.rowPaymentDate(request.userAnswers, waypoints, index, sourcePage, request.readOnly()).toSeq
 }

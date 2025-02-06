@@ -75,11 +75,9 @@ class Event3CheckYourAnswersController @Inject()(
 
   private def buildEvent3CYARows(waypoints: Waypoints, sourcePage: CheckAnswersPage, index: Index)
                                 (implicit request: DataRequest[AnyContent]): Seq[SummaryListRow] = {
-    MembersDetailsSummary.rowFullName(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event3).toSeq ++
-      MembersDetailsSummary.rowNino(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event3).toSeq ++
+    MembersDetailsSummary.rowMembersDetails(request.userAnswers, waypoints, index, sourcePage, request.readOnly(), Event3).toSeq ++
       ReasonForBenefitsSummary.row(request.userAnswers, waypoints, index, sourcePage, request.readOnly()).toSeq ++
       event3ReasonForBenefitsRows(waypoints, sourcePage, index) ++
-      PaymentDetailsSummary.rowAmountPaid(request.userAnswers, waypoints, sourcePage, request.readOnly(), Event3, index).toSeq ++
-      PaymentDetailsSummary.rowEventDate(request.userAnswers, waypoints, sourcePage, request.readOnly(), Event3, index).toSeq
+      PaymentDetailsSummary.rowPaymentDetails(request.userAnswers, waypoints, sourcePage, request.readOnly(), Event3, index).toSeq
   }
 }

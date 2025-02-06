@@ -275,32 +275,21 @@ object Event2CheckYourAnswersControllerSpec {
         ), ""),
       Value(Text(htmlContent), ""), "")
 
+  private val membersDetailsContent = s"""<p class="govuk-body">Joe Bloggs</p>
+                                         |<p class="govuk-body">AA234567D</p>""".stripMargin
+
   private def expectedMemberSummaryListRowsEvent2(implicit messages: Messages): Seq[SummaryListRow] = Seq(
     fakeSummaryListRowWithHtmlContentWithHiddenContentWithChange(
       "deceasedMembersDetails.checkYourAnswersLabel",
-      "Joe Bloggs",
+      membersDetailsContent,
       "/manage-pension-scheme-event-report/report/1/event-2-deceased-member-details?waypoints=event-2-check-answers-1",
       "deceasedMembersDetails.change.hidden"
-
-    ),
-    fakeSummaryListRowWithHtmlContentWithHiddenContentWithChange(
-      "deceasedMembersDetails.checkYourAnswersLabel.nino",
-      "AA234567D",
-      "/manage-pension-scheme-event-report/report/1/event-2-deceased-member-details?waypoints=event-2-check-answers-1",
-      "deceasedMembersDetails.change.nino.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContentWithChange(
       "beneficiaryDetails.checkYourAnswersLabel",
-      "Joe Bloggs",
+      membersDetailsContent,
       "/manage-pension-scheme-event-report/report/1/event-2-person-who-was-paid?waypoints=event-2-check-answers-1",
       "beneficiaryDetails.change.hidden"
-
-    ),
-    fakeSummaryListRowWithHtmlContentWithHiddenContentWithChange(
-      "beneficiaryDetails.checkYourAnswersLabel.nino",
-      "AA234567D",
-      "/manage-pension-scheme-event-report/report/1/event-2-person-who-was-paid?waypoints=event-2-check-answers-1",
-      "beneficiaryDetails.change.nino.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "amountPaid.event2.checkYourAnswersLabel",
@@ -322,19 +311,11 @@ object Event2CheckYourAnswersControllerSpec {
   private def expectedMemberSummaryListRowsEvent2ViewOnly(implicit messages: Messages): Seq[SummaryListRow] = Seq(
     fakeSummaryListRowWithHtmlContentWithHiddenContentWithChangeViewOnly(
       "deceasedMembersDetails.checkYourAnswersLabel",
-      "Joe Bloggs"
-    ),
-    fakeSummaryListRowWithHtmlContentWithHiddenContentWithChangeViewOnly(
-      "deceasedMembersDetails.checkYourAnswersLabel.nino",
-      "AA234567D"
+      membersDetailsContent
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContentWithChangeViewOnly(
       "beneficiaryDetails.checkYourAnswersLabel",
-      "Joe Bloggs"
-    ),
-    fakeSummaryListRowWithHtmlContentWithHiddenContentWithChangeViewOnly(
-      "beneficiaryDetails.checkYourAnswersLabel.nino",
-      "AA234567D"
+      membersDetailsContent
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContentViewOnly(
       "amountPaid.event2.checkYourAnswersLabel",

@@ -269,19 +269,16 @@ object Event22CheckYourAnswersControllerSpec {
         ), ""),
       Value(HtmlContent(htmlContent), ""), "")
 
+  private val memberDetailsContent = s"""<p class="govuk-body">Joe Bloggs</p>
+                                        |<p class="govuk-body">AA234567D</p>""".stripMargin
+
   private def expectedMemberSummaryListRowsEvent22(implicit messages: Messages): Seq[SummaryListRow] = Seq(
     fakeSummaryListRowWithHtmlContentWithHiddenContentWithChange(
       "membersDetails.checkYourAnswersLabel",
-      "Joe Bloggs",
+      memberDetailsContent,
       "/manage-pension-scheme-event-report/report/1/event-22-member-details?waypoints=event-22-check-answers-1",
       "membersDetails.change.hidden"
 
-    ),
-    fakeSummaryListRowWithHtmlContentWithHiddenContentWithChange(
-      "membersDetails.checkYourAnswersLabel.nino",
-      "AA234567D",
-      "/manage-pension-scheme-event-report/report/1/event-22-member-details?waypoints=event-22-check-answers-1",
-      "membersDetails.change.nino.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "chooseTaxYear.event22.checkYourAnswersLabel",
@@ -300,12 +297,7 @@ object Event22CheckYourAnswersControllerSpec {
   private def expectedMemberSummaryListRowsEvent22ViewOnly(implicit messages: Messages): Seq[SummaryListRow] = Seq(
     fakeSummaryListRowWithHtmlContentWithHiddenContentWithChangeViewOnly(
       "membersDetails.checkYourAnswersLabel",
-      "Joe Bloggs"
-
-    ),
-    fakeSummaryListRowWithHtmlContentWithHiddenContentWithChangeViewOnly(
-      "membersDetails.checkYourAnswersLabel.nino",
-      "AA234567D"
+      memberDetailsContent
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContentViewOnly(
       "chooseTaxYear.event22.checkYourAnswersLabel",

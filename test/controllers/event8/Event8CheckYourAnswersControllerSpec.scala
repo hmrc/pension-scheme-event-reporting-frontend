@@ -293,18 +293,18 @@ object Event8CheckYourAnswersControllerSpec {
         ), ""),
       Value(Text(htmlContent), ""), "")
 
+  private val membersDetailsContent = s"""<p class="govuk-body">Joe Bloggs</p>
+                                 |<p class="govuk-body">AA234567D</p>""".stripMargin
+
+  private val lumpSumDetails = s"""<p class="govuk-body">£10.00</p>
+                          |<p class="govuk-body">22 March 2022</p>""".stripMargin
+
   private def expectedMemberSummaryListRowsEvent8(implicit messages: Messages): Seq[SummaryListRow] = Seq(
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "membersDetails.checkYourAnswersLabel",
-      "Joe Bloggs",
+      membersDetailsContent,
       "/manage-pension-scheme-event-report/report/1/event-8-member-details?waypoints=event-8-check-answers-1",
       "membersDetails.change.hidden"
-    ),
-    fakeSummaryListRowWithHtmlContentWithHiddenContent(
-      "membersDetails.checkYourAnswersLabel.nino",
-      "AA234567D",
-      "/manage-pension-scheme-event-report/report/1/event-8-member-details?waypoints=event-8-check-answers-1",
-      "membersDetails.change.nino.hidden"
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "event8.typeOfProtection.checkYourAnswersLabel",
@@ -321,26 +321,16 @@ object Event8CheckYourAnswersControllerSpec {
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContent(
       "lumpSumAmountAndDate.value.checkYourAnswersLabel",
-      "£10.00",
+      lumpSumDetails,
       "/manage-pension-scheme-event-report/report/1/event-8-lump-sum-details?waypoints=event-8-check-answers-1",
       "lumpSumAmountAndDate.value.change.hidden"
-    ),
-    fakeSummaryListRowWithTextWithHiddenContent(
-      "lumpSumAmountAndDate.date.checkYourAnswersLabel",
-      "22 March 2022",
-      "/manage-pension-scheme-event-report/report/1/event-8-lump-sum-details?waypoints=event-8-check-answers-1",
-      "lumpSumAmountAndDate.date.change.hidden"
     )
   )
 
   private def expectedMemberSummaryListRowsEvent8ViewOnly(implicit messages: Messages): Seq[SummaryListRow] = Seq(
     fakeSummaryListRowWithHtmlContentWithHiddenContentViewOnly(
       "membersDetails.checkYourAnswersLabel",
-      "Joe Bloggs"
-    ),
-    fakeSummaryListRowWithHtmlContentWithHiddenContentViewOnly(
-      "membersDetails.checkYourAnswersLabel.nino",
-      "AA234567D"
+      membersDetailsContent
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContentViewOnly(
       "event8.typeOfProtection.checkYourAnswersLabel",
@@ -353,11 +343,7 @@ object Event8CheckYourAnswersControllerSpec {
     ),
     fakeSummaryListRowWithHtmlContentWithHiddenContentViewOnly(
       "lumpSumAmountAndDate.value.checkYourAnswersLabel",
-      "£10.00"
-    ),
-    fakeSummaryListRowWithTextWithHiddenContentViewOnly(
-      "lumpSumAmountAndDate.date.checkYourAnswersLabel",
-      "22 March 2022"
+      lumpSumDetails
     )
   )
 }

@@ -29,35 +29,22 @@ import viewmodels.implicits._
 
 object PaymentValueAndDateSummary extends Formatters {
 
-  def rowPaymentValue(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
-                     (implicit messages: Messages): Option[SummaryListRow] =
+  def rowPaymentDetails(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
+                       (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(PaymentValueAndDatePage(index)).map {
       answer =>
 
+        val htmlContent = HtmlContent(
+          s"""<p class="govuk-body">£${currencyFormatter.format(answer.paymentValue)}</p>
+             |<p class="govuk-body">${dateFormatter.format(answer.paymentDate)}</p>""".stripMargin)
+
         SummaryListRow(
           key = messages("paymentValueAndDate.value.checkYourAnswersLabel"),
-          value = ValueViewModel(HtmlContent(s"£${currencyFormatter.format(answer.paymentValue)}")),
+          value = ValueViewModel(htmlContent),
           actions = if (isReadOnly) None else {
             Some(Actions(items = Seq(
               ActionItemViewModel("site.change", PaymentValueAndDatePage(index).changeLink(waypoints, sourcePage).url)
                 .withVisuallyHiddenText(messages("paymentValueAndDate.value.change.hidden"))
-            )))
-          }
-        )
-    }
-
-  def rowPaymentDate(answers: UserAnswers, waypoints: Waypoints, index: Index, sourcePage: CheckAnswersPage, isReadOnly: Boolean)
-                    (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(PaymentValueAndDatePage(index)).map {
-      answer =>
-
-        SummaryListRow(
-          key = messages("paymentValueAndDate.date.checkYourAnswersLabel"),
-          value = ValueViewModel(dateFormatter.format(answer.paymentDate)),
-          actions = if (isReadOnly) None else {
-            Some(Actions(items = Seq(
-              ActionItemViewModel("site.change", PaymentValueAndDatePage(index).changeLink(waypoints, sourcePage).url)
-                .withVisuallyHiddenText(messages("paymentValueAndDate.date.change.hidden"))
             )))
           }
         )
