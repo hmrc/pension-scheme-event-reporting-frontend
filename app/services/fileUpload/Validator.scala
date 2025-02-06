@@ -159,7 +159,6 @@ trait Validator {
     }
   }
 
-  // TODO - check for missing error messages
 
   protected final def splitDayMonthYear(date: String): ParsedDate = {
     date.split("/").toSeq match {
