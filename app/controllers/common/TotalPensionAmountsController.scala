@@ -54,7 +54,7 @@ class TotalPensionAmountsController @Inject()(val controllerComponents: Messages
   private def getSelectedTaxYear(userAnswers: Option[UserAnswers], eventType: EventType, index: Index)(implicit messages: Messages): String = {
     val taxYearChosen = getTaxYearFromOption(userAnswers)
     userAnswers.flatMap(_.get(common.ChooseTaxYearPage(eventType, index))(ChooseTaxYear.reads(ChooseTaxYear.enumerable(taxYearChosen)))) match {
-      case Some(taxYear) => messages("chooseTaxYear.yearRangeRadio", taxYear.toString, (taxYear.toString.toInt + 1).toString)
+      case Some(taxYear) => " " + messages("chooseTaxYear.yearRangeRadio", taxYear.toString, (taxYear.toString.toInt + 1).toString)
       case _ => StringUtils.EMPTY
     }
   }
