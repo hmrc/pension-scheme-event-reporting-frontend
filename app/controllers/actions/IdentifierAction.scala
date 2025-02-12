@@ -139,16 +139,11 @@ class AuthenticatedIdentifierAction @Inject()(
       case Some(role) =>
         getLoggedInUser(externalId, role, enrolments) match {
           case Some(loggedInUser) =>
-            val userAuthorised = for {
-              psaId <- getPsaId(enrolments)
-              pspId <- getPspId(enrolments)
-            } yield {
-              for {
-                psaAuthorised <- schemeAuthorisedForPsa(psaId, eventReporting.srn)
-                pspAuthorised <- schemeAuthorisedForPsp(pspId, eventReporting.pstr, eventReporting.srn)
-              } yield {
-                psaAuthorised || pspAuthorised
-              }
+            val userAuthorised = loggedInUser.administratorOrPractitioner match {
+              case AdministratorOrPractitioner.Administrator =>
+                getPsaId(enrolments).map(psaId => schemeAuthorisedForPsa(psaId, eventReporting.srn))
+              case AdministratorOrPractitioner.Practitioner =>
+                getPspId(enrolments).map(pspId => schemeAuthorisedForPsp(pspId, eventReporting.pstr, eventReporting.srn))
             }
 
             userAuthorised.map { authFtr =>
