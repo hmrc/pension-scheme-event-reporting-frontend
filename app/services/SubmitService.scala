@@ -22,6 +22,7 @@ import models.enumeration.VersionStatus.{Compiled, Submitted}
 import models.requests.{DataRequest, RequiredSchemeDataRequest}
 import models.{UserAnswers, VersionInfo}
 import pages.VersionInfoPage
+import play.api.Logger
 import play.api.http.Status.NO_CONTENT
 import play.api.mvc.{AnyContent, Result}
 import play.api.mvc.Results.{BadRequest, NotFound, Ok}
@@ -34,6 +35,8 @@ class SubmitService @Inject()(
                                userAnswersCacheConnector: UserAnswersCacheConnector
                              ) {
 
+  private val logger = Logger(classOf[SubmitService])
+
   def submitReport(pstr: String, ua: UserAnswers)
                   (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier, req: RequiredSchemeDataRequest[AnyContent]): Future[Result] = {
     ua.get(VersionInfoPage) match {
@@ -43,12 +46,15 @@ class SubmitService @Inject()(
             val updatedUA = ua.setOrException(VersionInfoPage, VersionInfo(version, Submitted), nonEventTypeData = true)
             userAnswersCacheConnector.save(pstr, updatedUA).map { _ => Ok }
           } else {
+            logger.warn(s"The event report has already been submitted with status: ${Compiled.toString}")
             Future.successful(BadRequest("The event report has already been submitted"))
           }
         }
       case Some(VersionInfo(_, Submitted)) =>
+        logger.warn(s"The event report has already been submitted with status: ${Submitted.toString}")
         Future.successful(BadRequest("The event report has already been submitted"))
       case Some(vi) =>
+        logger.warn(s"No compiled version to submit! Version info is $vi")
         Future.successful(NotFound(s"No compiled version to submit! Version info is $vi"))
       case _ =>
         Future.successful(NotFound("No version info found"))
