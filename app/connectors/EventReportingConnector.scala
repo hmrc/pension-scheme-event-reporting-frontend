@@ -169,6 +169,7 @@ class EventReportingConnector @Inject()(
   def getFileUploadOutcome(reference: String)(implicit hc: HeaderCarrier, req: RequiredSchemeDataRequest[AnyContent]): Future[FileUploadOutcomeResponse] = {
     val headers = Seq(("reference", reference))
     httpClientV2.get(getFileUploadResponseUrl(req.srn)).setHeader(headers: _*)
+      .transform(_.withRequestTimeout(config.ifsTimeout))
       .execute[HttpResponse]
       .map { response =>
       response.status match {
@@ -201,7 +202,11 @@ class EventReportingConnector @Inject()(
       "endDate" -> endDate
     )
 
-    httpClientV2.get(eventOverviewUrl(req.srn)).setHeader(headers: _*).execute[HttpResponse]
+    httpClientV2
+      .get(eventOverviewUrl(req.srn))
+      .setHeader(headers: _*)
+      .transform(_.withRequestTimeout(config.ifsTimeout))
+      .execute[HttpResponse]
       .map { response =>
         response.status match {
           case OK =>
@@ -245,6 +250,7 @@ class EventReportingConnector @Inject()(
     val headers = Seq(("pstr", pstr), ("startDate", startDate))
     httpClientV2.get(erListOfVersionsUrl(req.srn))
       .setHeader(headers: _*)
+      .transform(_.withRequestTimeout(config.ifsTimeout))
       .execute[HttpResponse]
       .map { response =>
       response.status match {
