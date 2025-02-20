@@ -19,11 +19,12 @@ package connectors
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import models.amend.VersionsWithSubmitter
+import models.requests.{DataRequest, RequiredSchemeDataRequest}
 import models.{EROverview, EventDataIdentifier, EventSummary, FileUploadOutcomeResponse, FileUploadOutcomeStatus, UserAnswers}
 import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json._
-import play.api.mvc.Result
+import play.api.mvc.{AnyContent, Result}
 import play.api.mvc.Results.{BadRequest, NoContent}
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http._
@@ -39,25 +40,25 @@ class EventReportingConnector @Inject()(
                                        )(implicit ec: ExecutionContext) extends HttpResponseHelper {
   private val logger = Logger(classOf[EventReportingConnector])
 
-  private def eventRepSummaryUrl = url"${config.eventReportingUrl}/pension-scheme-event-reporting/event-summary"
+  private def eventRepSummaryUrl(srn: String) = url"${config.eventReportingUrl}/pension-scheme-event-reporting/event-summary/$srn"
 
-  private def eventCompileUrl = url"${config.eventReportingUrl}/pension-scheme-event-reporting/compile"
+  private def eventCompileUrl(srn: String) = url"${config.eventReportingUrl}/pension-scheme-event-reporting/compile/$srn"
 
-  private def eventSubmitUrl = url"${config.eventReportingUrl}/pension-scheme-event-reporting/submit-event-declaration-report"
+  private def eventSubmitUrl(srn: String) = url"${config.eventReportingUrl}/pension-scheme-event-reporting/submit-event-declaration-report/$srn"
 
-  private def event20ASubmitUrl = url"${config.eventReportingUrl}/pension-scheme-event-reporting/submit-event20a-declaration-report"
+  private def event20ASubmitUrl(srn: String) = url"${config.eventReportingUrl}/pension-scheme-event-reporting/submit-event20a-declaration-report/$srn"
 
-  private def getFileUploadResponseUrl = url"${config.eventReportingUrl}/pension-scheme-event-reporting/file-upload-response/get"
+  private def getFileUploadResponseUrl(srn: String) = url"${config.eventReportingUrl}/pension-scheme-event-reporting/file-upload-response/get/$srn"
 
-  private def eventOverviewUrl = url"${config.eventReportingUrl}/pension-scheme-event-reporting/overview"
+  private def eventOverviewUrl(srn: String) = url"${config.eventReportingUrl}/pension-scheme-event-reporting/overview/$srn"
 
-  private def erListOfVersionsUrl = url"${config.eventReportingUrl}/pension-scheme-event-reporting/versions"
+  private def erListOfVersionsUrl(srn: String) = url"${config.eventReportingUrl}/pension-scheme-event-reporting/versions/$srn"
 
-  private def deleteMemberUrl = url"${config.eventReportingUrl}/pension-scheme-event-reporting/delete-member"
+  private def deleteMemberUrl(srn: String) = url"${config.eventReportingUrl}/pension-scheme-event-reporting/delete-member/$srn"
 
 
   def getEventReportSummary(pstr: String, reportStartDate: String, version: Int)
-                           (implicit headerCarrier: HeaderCarrier): Future[Seq[EventSummary]] = {
+                           (implicit headerCarrier: HeaderCarrier, req: RequiredSchemeDataRequest[AnyContent]): Future[Seq[EventSummary]] = {
 
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
@@ -66,7 +67,7 @@ class EventReportingConnector @Inject()(
       "reportStartDate" -> reportStartDate
     )
 
-    httpClientV2.get(eventRepSummaryUrl)
+    httpClientV2.get(eventRepSummaryUrl(req.srn))
       .setHeader(headers: _*)
       .transform(_.withRequestTimeout(config.ifsTimeout))
       .execute[HttpResponse]
@@ -88,7 +89,7 @@ class EventReportingConnector @Inject()(
   }
 
   def compileEvent(pstr: String, edi: EventDataIdentifier, currentVersion: Int, delete: Boolean = false)
-                  (implicit headerCarrier: HeaderCarrier): Future[Unit] = {
+                  (implicit headerCarrier: HeaderCarrier, req: RequiredSchemeDataRequest[AnyContent]): Future[Unit] = {
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
       "pstr" -> pstr,
@@ -98,7 +99,7 @@ class EventReportingConnector @Inject()(
       "version" -> edi.version
     ) ++ (if (delete) Seq(("delete", "true")) else Seq())
 
-    httpClientV2.post(eventCompileUrl)
+    httpClientV2.post(eventCompileUrl(req.srn))
       .withBody(Json.obj())
       .setHeader(headers: _*)
       .transform(_.withRequestTimeout(config.ifsTimeout))
@@ -117,7 +118,7 @@ class EventReportingConnector @Inject()(
   }
 
   def submitReport(pstr: String, ua: UserAnswers, version: String)
-                  (implicit headerCarrier: HeaderCarrier): Future[Result] = {
+                  (implicit headerCarrier: HeaderCarrier, req: RequiredSchemeDataRequest[AnyContent]): Future[Result] = {
 
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
@@ -125,7 +126,7 @@ class EventReportingConnector @Inject()(
       "version" -> version
     )
 
-    httpClientV2.post(eventSubmitUrl)
+    httpClientV2.post(eventSubmitUrl(req.srn))
                 .withBody(ua.data)
                 .transform(_.withRequestTimeout(config.ifsTimeout))
                 .setHeader(headers: _*).execute[HttpResponse]
@@ -141,7 +142,7 @@ class EventReportingConnector @Inject()(
   }
 
   def submitReportEvent20A(pstr: String, ua: UserAnswers, version: String)
-                          (implicit headerCarrier: HeaderCarrier): Future[Result] = {
+                          (implicit headerCarrier: HeaderCarrier, req: RequiredSchemeDataRequest[AnyContent]): Future[Result] = {
 
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
@@ -149,7 +150,7 @@ class EventReportingConnector @Inject()(
       "version" -> version
     )
 
-    httpClientV2.post(event20ASubmitUrl)
+    httpClientV2.post(event20ASubmitUrl(req.srn))
       .withBody(ua.data)
       .setHeader(headers: _*)
       .transform(_.withRequestTimeout(config.ifsTimeout))
@@ -165,9 +166,10 @@ class EventReportingConnector @Inject()(
       }
   }
 
-  def getFileUploadOutcome(reference: String)(implicit hc: HeaderCarrier): Future[FileUploadOutcomeResponse] = {
+  def getFileUploadOutcome(reference: String)(implicit hc: HeaderCarrier, req: RequiredSchemeDataRequest[AnyContent]): Future[FileUploadOutcomeResponse] = {
     val headers = Seq(("reference", reference))
-    httpClientV2.get(getFileUploadResponseUrl).setHeader(headers: _*)
+    httpClientV2.get(getFileUploadResponseUrl(req.srn)).setHeader(headers: _*)
+      .transform(_.withRequestTimeout(config.ifsTimeout))
       .execute[HttpResponse]
       .map { response =>
       response.status match {
@@ -190,7 +192,7 @@ class EventReportingConnector @Inject()(
   }
 
   def getOverview(pstr: String, reportType: String, startDate: String, endDate: String)
-                 (implicit headerCarrier: HeaderCarrier): Future[Seq[EROverview]] = {
+                 (implicit headerCarrier: HeaderCarrier, req: RequiredSchemeDataRequest[AnyContent]): Future[Seq[EROverview]] = {
 
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
@@ -200,7 +202,11 @@ class EventReportingConnector @Inject()(
       "endDate" -> endDate
     )
 
-    httpClientV2.get(eventOverviewUrl).setHeader(headers: _*).execute[HttpResponse]
+    httpClientV2
+      .get(eventOverviewUrl(req.srn))
+      .setHeader(headers: _*)
+      .transform(_.withRequestTimeout(config.ifsTimeout))
+      .execute[HttpResponse]
       .map { response =>
         response.status match {
           case OK =>
@@ -214,7 +220,7 @@ class EventReportingConnector @Inject()(
   }
 
   def deleteMember(pstr: String, edi: EventDataIdentifier, currentVersion: Int, memberIdToDelete: String)
-                  (implicit headerCarrier: HeaderCarrier): Future[Unit] = {
+                  (implicit headerCarrier: HeaderCarrier, req: RequiredSchemeDataRequest[AnyContent]): Future[Unit] = {
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
       "pstr" -> pstr,
@@ -225,7 +231,7 @@ class EventReportingConnector @Inject()(
       "memberIdToDelete" -> memberIdToDelete
     )
 
-    httpClientV2.post(deleteMemberUrl)
+    httpClientV2.post(deleteMemberUrl(req.srn))
       .withBody(Json.obj())
       .setHeader(headers: _*)
       .transform(_.withRequestTimeout(config.ifsTimeout))
@@ -239,10 +245,12 @@ class EventReportingConnector @Inject()(
       }
   }
 
-  def getListOfVersions(pstr: String, startDate: String)(implicit headerCarrier: HeaderCarrier): Future[Seq[VersionsWithSubmitter]] = {
+  def getListOfVersions(pstr: String, startDate: String)(implicit headerCarrier: HeaderCarrier,
+                                                         req: RequiredSchemeDataRequest[AnyContent]): Future[Seq[VersionsWithSubmitter]] = {
     val headers = Seq(("pstr", pstr), ("startDate", startDate))
-    httpClientV2.get(erListOfVersionsUrl)
+    httpClientV2.get(erListOfVersionsUrl(req.srn))
       .setHeader(headers: _*)
+      .transform(_.withRequestTimeout(config.ifsTimeout))
       .execute[HttpResponse]
       .map { response =>
       response.status match {
@@ -252,7 +260,7 @@ class EventReportingConnector @Inject()(
             case JsError(errors) => throw JsResultException(errors)
           }
         case NOT_FOUND => Seq.empty
-        case _ => handleErrorResponse("GET", erListOfVersionsUrl.toString)(response)
+        case _ => handleErrorResponse("GET", erListOfVersionsUrl(req.srn).toString)(response)
       }
     } andThen {
       case Failure(t: Throwable) => logger.warn("Unable to get list of versions", t)

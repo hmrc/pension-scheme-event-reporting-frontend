@@ -97,7 +97,7 @@ class InvestmentsInAssetsRuleChangeDateControllerSpec extends SpecBase with Befo
     }
 
     "must save the answer and redirect to the next page when valid data is submitted" in {
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(()))
 
       val application =
@@ -112,7 +112,7 @@ class InvestmentsInAssetsRuleChangeDateControllerSpec extends SpecBase with Befo
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual Event11CheckYourAnswersPage().route(waypoints).url
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any(), any())
       }
     }
 
@@ -132,7 +132,7 @@ class InvestmentsInAssetsRuleChangeDateControllerSpec extends SpecBase with Befo
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result).removeAllNonces()mustEqual view(boundForm, waypoints)(request, messages(application)).toString
-        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any(), any())
       }
     }
   }

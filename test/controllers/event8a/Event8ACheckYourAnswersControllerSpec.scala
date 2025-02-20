@@ -188,7 +188,7 @@ class Event8ACheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
     }
 
     "must redirect to the correct page onClick if all answers are present" in {
-      when(mockCompileService.compileEvent(any(), any(), any(), any())(any()))
+      when(mockCompileService.compileEvent(any(), any(), any(), any())(any(), any()))
         .thenReturn(Future.successful())
 
       val event8aAnswers = emptyUserAnswers.set(MembersDetailsPage(Event8A, 0), MembersDetails("Jane", "Doe", "AB123456B")).get
@@ -206,12 +206,12 @@ class Event8ACheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, MemberSummaryPath(Event8A)).url
-        verify(mockCompileService, times(1)).compileEvent(any(), any(), any(), any())(any())
+        verify(mockCompileService, times(1)).compileEvent(any(), any(), any(), any())(any(), any())
       }
     }
 
     "must redirect to the correct page onClick if an answer is missing" in {
-      when(mockCompileService.compileEvent(any(), any(), any(), any())(any()))
+      when(mockCompileService.compileEvent(any(), any(), any(), any())(any(), any()))
         .thenReturn(Future.successful())
 
       val event8aAnswers = emptyUserAnswers.set(MembersDetailsPage(Event8A, 0), MembersDetails("Jane", "Doe", "AB123456B")).get

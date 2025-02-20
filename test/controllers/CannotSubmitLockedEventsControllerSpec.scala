@@ -75,7 +75,7 @@ class CannotSubmitLockedEventsControllerSpec extends SpecBase with SummaryListFl
         EventSummary(EventType.Event18, 1, None))
       val expectedSeqOfEvent = Seq(EventSummary(EventType.Event8, 1, Some("TestUser")))
 
-      when(mockEventReportSummaryConnector.getEventReportSummary(any(), ArgumentMatchers.eq("2022-04-06"), ArgumentMatchers.eq(1))(any())).thenReturn(
+      when(mockEventReportSummaryConnector.getEventReportSummary(any(), ArgumentMatchers.eq("2022-04-06"), ArgumentMatchers.eq(1))(any(), any())).thenReturn(
         Future.successful(seqOfEvents)
       )
 
@@ -107,7 +107,7 @@ class CannotSubmitLockedEventsControllerSpec extends SpecBase with SummaryListFl
         EventSummary(EventType.Event18, 1, None))
       val expectedSeqOfEvents = Seq(EventSummary(EventType.Event1, 1, Some("TestUser8")), EventSummary(EventType.Event8, 1, Some("TestUser")))
 
-      when(mockEventReportSummaryConnector.getEventReportSummary(any(), ArgumentMatchers.eq("2022-04-06"), ArgumentMatchers.eq(1))(any())).thenReturn(
+      when(mockEventReportSummaryConnector.getEventReportSummary(any(), ArgumentMatchers.eq("2022-04-06"), ArgumentMatchers.eq(1))(any(), any())).thenReturn(
         Future.successful(seqOfEvents)
       )
 
@@ -137,7 +137,7 @@ class CannotSubmitLockedEventsControllerSpec extends SpecBase with SummaryListFl
       val seqOfEvents = Seq(EventSummary(EventType.Event1, 1, None), EventSummary(EventType.Event8, 1, None),
         EventSummary(EventType.Event18, 1, None))
 
-      when(mockEventReportSummaryConnector.getEventReportSummary(any(), ArgumentMatchers.eq("2022-04-06"), ArgumentMatchers.eq(1))(any())).thenReturn(
+      when(mockEventReportSummaryConnector.getEventReportSummary(any(), ArgumentMatchers.eq("2022-04-06"), ArgumentMatchers.eq(1))(any(), any())).thenReturn(
         Future.successful(seqOfEvents)
       )
 

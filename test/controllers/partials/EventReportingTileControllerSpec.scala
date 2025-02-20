@@ -57,13 +57,13 @@ class EventReportingTileControllerSpec extends SpecBase with BeforeAndAfterEach 
 
     "must return OK and the correct view for a GET" in {
 
-      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any()))
+      when(mockUserAnswersCacheConnector.save(any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(()))
 
-      when(mockUserAnswersCacheConnector.removeAll(any())(any(), any()))
+      when(mockUserAnswersCacheConnector.removeAll(any())(any(), any(), any()))
         .thenReturn(Future.successful((): Unit))
 
-      when(mockConnector.getOverview(any(), any(), any(), any())(any())).thenReturn(
+      when(mockConnector.getOverview(any(), any(), any(), any())(any(), any())).thenReturn(
         Future.successful(Seq(EROverview(
           LocalDate.now(),
           LocalDate.now().plusYears(1),
@@ -93,7 +93,7 @@ class EventReportingTileControllerSpec extends SpecBase with BeforeAndAfterEach 
           )
         )
         status(result) mustEqual OK
-        verify(mockUserAnswersCacheConnector, times(1)).removeAll(any())(any(), any())
+        verify(mockUserAnswersCacheConnector, times(1)).removeAll(any())(any(), any(), any())
 
         contentAsString(result).filterNot(_.isWhitespace).removeAllNonces() mustEqual view(card)(request, messages(application)).toString.filterNot(_.isWhitespace)
       }

@@ -133,7 +133,7 @@ class UnauthPaymentSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
     }
 
     "must save the answer and redirect to the next page when valid data is submitted" in {
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(()))
 
       val application =
@@ -155,7 +155,7 @@ class UnauthPaymentSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
     }
 
     "must return bad request when invalid data is submitted" in {
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(()))
 
       val application =
@@ -177,7 +177,7 @@ class UnauthPaymentSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
         status(result) mustEqual BAD_REQUEST
         contentAsString(result).removeAllNonces() mustEqual view(boundForm, waypoints, Nil, paginationStats(application, Seq[SummaryListRow]()), Index(0), "0.00", taxYear,
           None, "/manage-pension-scheme-event-report/report/event-1-summary/1")(request, messages(application)).toString
-        verify(mockUserAnswersCacheConnector, never).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, never).save(any(), any(), any())(any(), any(), any())
       }
 
       Await.result(application.stop(), 10.seconds)

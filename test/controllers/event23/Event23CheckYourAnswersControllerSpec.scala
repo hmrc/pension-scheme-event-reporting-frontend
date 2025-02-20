@@ -179,7 +179,7 @@ class Event23CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
     }
 
     "must redirect to the correct page onClick if all answers are present" in {
-      when(mockCompileService.compileEvent(any(), any(), any(), any())(any()))
+      when(mockCompileService.compileEvent(any(), any(), any(), any())(any(), any()))
         .thenReturn(Future.successful())
 
       val application = applicationBuilder(
@@ -196,12 +196,12 @@ class Event23CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.common.routes.MembersSummaryController.onPageLoad(EmptyWaypoints, MemberSummaryPath(Event23)).url
-        verify(mockCompileService, times(1)).compileEvent(any(), any(), any(), any())(any())
+        verify(mockCompileService, times(1)).compileEvent(any(), any(), any(), any())(any(), any())
       }
     }
 
     "must redirect to the correct page onClick if an answer is missing" in {
-      when(mockCompileService.compileEvent(any(), any(), any(), any())(any()))
+      when(mockCompileService.compileEvent(any(), any(), any(), any())(any(), any()))
         .thenReturn(Future.successful())
 
       val application = applicationBuilder(

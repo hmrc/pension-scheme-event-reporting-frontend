@@ -128,7 +128,7 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
 
   private def testSaveAnswerAndRedirectWhenValid(eventType: EventType): Unit = {
     s"must save the answer and redirect to the next page when valid data is submitted for Event $eventType" in {
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any())).thenReturn(Future.successful(()))
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(()))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
 
@@ -141,7 +141,7 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual common.ChooseTaxYearPage(eventType, 0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any(), any())
       }
 
       Await.result(application.stop(), 10.seconds)
@@ -163,7 +163,7 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result).removeAllNonces()mustEqual view.render(boundForm, waypoints, eventType, 0, maxTaxYear, request, messages(application)).toString
-        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any(), any())
       }
 
       Await.result(application.stop(), 10.seconds)

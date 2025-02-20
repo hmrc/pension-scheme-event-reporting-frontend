@@ -25,6 +25,8 @@ import play.api.mvc.{Request, WrappedRequest}
 abstract class RequiredSchemeDataRequest[A](request: Request[A]) extends WrappedRequest[A](request) {
   def pstr: String
 
+  def srn: String
+
   def schemeName: String
 
   def returnUrl: String
@@ -39,7 +41,7 @@ case class OptionalDataRequest[A](
                                    request: Request[A],
                                    loggedInUser: LoggedInUser,
                                    userAnswers: Option[UserAnswers],
-                                   srn : String
+                                   srn: String
                                  ) extends RequiredSchemeDataRequest[A](request) {
   def isReportSubmitted: Boolean = {
     userAnswers match {

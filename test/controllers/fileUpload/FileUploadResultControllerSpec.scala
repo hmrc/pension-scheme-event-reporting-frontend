@@ -83,7 +83,7 @@ class FileUploadResultControllerSpec extends SpecBase with BeforeAndAfterEach {
     s"must return OK and the correct view for a GET when a file name is successfully retrieved from mongo cache (Event $eventType)" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
-      when(mockERConnector.getFileUploadOutcome(ArgumentMatchers.eq("123"))(any()))
+      when(mockERConnector.getFileUploadOutcome(ArgumentMatchers.eq("123"))(any(), any()))
         .thenReturn(Future.successful(FileUploadOutcomeResponse(Some("testFile"), SUCCESS, Some("downloadUrl"), "reference", None)))
       running(application) {
         val request = FakeRequest.apply(method = GET, path = getRoute(eventType) + "?key=123")
@@ -102,7 +102,7 @@ class FileUploadResultControllerSpec extends SpecBase with BeforeAndAfterEach {
     s"must return OK and the correct view for a GET when a file name retrieval from mongo cache is in progress (Event $eventType)" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
-      when(mockERConnector.getFileUploadOutcome(ArgumentMatchers.eq("123"))(any()))
+      when(mockERConnector.getFileUploadOutcome(ArgumentMatchers.eq("123"))(any(), any()))
         .thenReturn(Future.successful(FileUploadOutcomeResponse(None, IN_PROGRESS, None, "123", None)))
       running(application) {
         val request = FakeRequest.apply(method = GET, path = getRoute(eventType) + "?key=123")
@@ -121,7 +121,7 @@ class FileUploadResultControllerSpec extends SpecBase with BeforeAndAfterEach {
     s"must return OK and redirect to the file rejected controller if file name is not retrieved from mongo cache (Event $eventType)" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
-      when(mockERConnector.getFileUploadOutcome(ArgumentMatchers.eq("123"))(any()))
+      when(mockERConnector.getFileUploadOutcome(ArgumentMatchers.eq("123"))(any(), any()))
         .thenReturn(Future.successful(FileUploadOutcomeResponse(None, FAILURE, None, "123", None)))
       running(application) {
         val request = FakeRequest.apply(method = GET, path = getRoute(eventType) + "?key=123")
@@ -148,7 +148,7 @@ class FileUploadResultControllerSpec extends SpecBase with BeforeAndAfterEach {
   private def testSaveAnswerAndRedirectWhenValid(eventType: EventType): Unit = {
     s"must save the answer and redirect to the next page when valid data is submitted (Event $eventType)" in {
 
-      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any()))
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(()))
 
       val application =
@@ -164,7 +164,7 @@ class FileUploadResultControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual FileUploadResultPage(eventType).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
-        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any(), any())
       }
     }
   }
@@ -182,7 +182,7 @@ class FileUploadResultControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         val result = route(application, request).value
         status(result) mustEqual BAD_REQUEST
-        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any(), any())
       }
     }
   }

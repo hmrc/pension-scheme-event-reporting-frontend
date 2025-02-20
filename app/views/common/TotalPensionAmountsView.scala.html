@@ -39,7 +39,7 @@
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages(s"totalPensionAmounts.event${eventType.toString}.heading") + " " + selectTaxYear + "?").asPageHeading()
+                label = LabelViewModel(messages(s"totalPensionAmounts.event${eventType.toString}.heading") + selectTaxYear + ", in pounds?").asPageHeading()
             )
                     .withWidth(OneQuarter)
                     .withPrefix(PrefixOrSuffix(content = Text("£")))

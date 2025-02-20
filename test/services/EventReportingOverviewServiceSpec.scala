@@ -19,14 +19,19 @@ package services
 import base.SpecBase
 import config.FrontendAppConfig
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
+import models.enumeration.AdministratorOrPractitioner.Administrator
 import models.enumeration.VersionStatus.Compiled
-import models.{EROverview, EROverviewVersion, TaxYear, UserAnswers, VersionInfo}
+import models.requests.DataRequest
+import models.{EROverview, EROverviewVersion, LoggedInUser, TaxYear, UserAnswers, VersionInfo}
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.VersionInfoPage
+import play.api.mvc.AnyContent
+import play.api.test.FakeRequest
+import play.api.test.Helpers.GET
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.LocalDate
@@ -54,6 +59,8 @@ class EventReportingOverviewServiceSpec extends SpecBase with BeforeAndAfterEach
   val application = applicationBuilder()
 
   private val eventReportingService = new EventReportingOverviewService( mockUserAnswersCacheConnector, mockAppConfig)
+  private implicit val dataRequest: DataRequest[AnyContent] =
+    DataRequest("Pstr123", "SchemeABC", "returnUrl", FakeRequest(GET, "/"), LoggedInUser("user", Administrator, "psaId"), UserAnswers(), "S2400000041")
 
   override def beforeEach(): Unit = {
     reset(mockEventReportingConnector)
@@ -61,20 +68,20 @@ class EventReportingOverviewServiceSpec extends SpecBase with BeforeAndAfterEach
     reset(mockAppConfig)
 
     when(mockAppConfig.compileDelayInSeconds).thenReturn(0)
-    when(mockUserAnswersCacheConnector.get(any()) (any(), any()))
+    when(mockUserAnswersCacheConnector.getBySrn(any(), any()) (any(), any()))
       .thenReturn(Future.successful((Some(ua))))
 
-    when(mockUserAnswersCacheConnector.get(any()) (any(), any()) )
+    when(mockUserAnswersCacheConnector.getBySrn(any(), any()) (any(), any()) )
       .thenReturn(Future.successful(None))
 
-    when(mockUserAnswersCacheConnector.get(any(), any()) (any(), any()))
+    when(mockUserAnswersCacheConnector.getByEventType(any(), any()) (any(), any(), any()))
       .thenReturn(Future.successful((Some(ua))))
 
-    when(mockUserAnswersCacheConnector.save(any(), any()) (any(), any()))
+    when(mockUserAnswersCacheConnector.save(any(), any()) (any(), any(), any()))
       .thenReturn(Future.successful(()))
-    when(mockUserAnswersCacheConnector.removeAll(any())(any(), any()))
+    when(mockUserAnswersCacheConnector.removeAll(any())(any(), any(), any()))
       .thenReturn(Future.successful(()))
-    when(mockEventReportingConnector.getOverview(any(), any(), any(), any())(any()))
+    when(mockEventReportingConnector.getOverview(any(), any(), any(), any())(any(), any()))
       .thenReturn(Future.successful((Seq.empty)))
   }
 
@@ -82,12 +89,12 @@ class EventReportingOverviewServiceSpec extends SpecBase with BeforeAndAfterEach
 
       "return the correct in progress years and URLs" in {
         val captor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-        when(mockUserAnswersCacheConnector.get(any())(any(), any()))
+        when(mockUserAnswersCacheConnector.getBySrn(any(), any())(any(), any()))
           .thenReturn(Future.successful(Some((ua))))
 
         whenReady(eventReportingService.getInProgressYearAndUrl(ua, pstr)) { _ =>
           verify(mockUserAnswersCacheConnector, times(1))
-            .save(ArgumentMatchers.eq(pstr), captor.capture())(any(), any())
+            .save(ArgumentMatchers.eq(pstr), captor.capture())(any(), any(), any())
           val actualUAAfterSave = captor.getValue
           actualUAAfterSave.get(VersionInfoPage) mustBe Some(VersionInfo(2, Compiled))
         }
@@ -97,7 +104,7 @@ class EventReportingOverviewServiceSpec extends SpecBase with BeforeAndAfterEach
   "getPastYearsAndUrl" - {
 
     "return the correct past years and URLs" in {
-      when(mockUserAnswersCacheConnector.get(any())(any(), any()))
+      when(mockUserAnswersCacheConnector.getBySrn(any(), any())(any(), any()))
         .thenReturn(Future.successful(Some((ua))))
 
       eventReportingService.getPastYearsAndUrl(ua, pstr).futureValue.size mustBe 7

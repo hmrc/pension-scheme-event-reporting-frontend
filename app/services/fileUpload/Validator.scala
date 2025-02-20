@@ -159,9 +159,17 @@ trait Validator {
     }
   }
 
+
   protected final def splitDayMonthYear(date: String): ParsedDate = {
     date.split("/").toSeq match {
-      case Seq(d, m, y) => ParsedDate(d, m, y)
+      case Seq(d, m, y) => {
+        val parsedY = if (y.length == 2) {
+          "20" + y
+        } else {
+          y
+        }
+        ParsedDate(d, m, parsedY)
+      }
       case Seq(d, m) => ParsedDate(d, m, EMPTY)
       case Seq(d) => ParsedDate(d, EMPTY, EMPTY)
       case _ => ParsedDate(EMPTY, EMPTY, EMPTY)
@@ -179,9 +187,9 @@ trait Validator {
   protected final def splitAddress(address: String): ParsedAddress = {
     address.split(",").toSeq match {
       case Seq(add1, add2, add3, add4, postCode, country) => ParsedAddress(add1, add2, add3, add4, postCode, country)
-      case Seq(add1, add2, add3, add4, postCode) => ParsedAddress(add1, add2, add3, add4, postCode, EMPTY)
-      case Seq(add1, add2, add3, add4) => ParsedAddress(add1, add2, add3, add4, EMPTY, EMPTY)
-      case Seq(add1, add2, add3) => ParsedAddress(add1, add2, add3, EMPTY, EMPTY, EMPTY)
+      case Seq(add1, add2, add3, postCode, country) => ParsedAddress(add1, add2, add3, EMPTY, postCode, country)
+      case Seq(add1, add2, postCode, country) => ParsedAddress(add1, add2, EMPTY, EMPTY, postCode, country)
+      case Seq(add1, add2, postCode) => ParsedAddress(add1, add2, EMPTY, EMPTY, postCode, EMPTY)
       case Seq(add1, add2) => ParsedAddress(add1, add2, EMPTY, EMPTY, EMPTY, EMPTY)
       case Seq(add1) => ParsedAddress(add1, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY)
       case _ => ParsedAddress(EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY)

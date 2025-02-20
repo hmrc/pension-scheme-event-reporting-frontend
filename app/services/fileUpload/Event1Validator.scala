@@ -47,6 +47,7 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.libs.json.JsString
 import services.fileUpload.Validator.Result
+import utils.CountryOptions
 
 class Event1Validator @Inject()(
                                  whoReceivedUnauthPaymentFormProvider: WhoReceivedUnauthPaymentFormProvider,
@@ -73,7 +74,8 @@ class Event1Validator @Inject()(
                                  employerTangibleMoveablePropertyFormProvider: EmployerTangibleMoveablePropertyFormProvider,
                                  employerUnauthorisedPaymentRecipientNameFormProvider: EmployerUnauthorisedPaymentRecipientNameFormProvider,
                                  employerPaymentNatureDescriptionFormProvider: EmployerPaymentNatureDescriptionFormProvider,
-                                 config: FrontendAppConfig
+                                 config: FrontendAppConfig,
+                                 val countryOptions: CountryOptions
                                ) extends Validator {
 
   override val eventType: EventType = EventType.Event1
@@ -160,7 +162,7 @@ class Event1Validator @Inject()(
   private case class FieldInfoForValidation[A](fieldNum: Int, description: String, form: Form[A])
 
   private def genericBooleanFieldValidation(index: Int, chargeFields: Seq[String], fieldInfoForValidation: FieldInfoForValidation[Boolean]): Validated[Seq[ValidationError], Boolean] = {
-    val mappedBoolean = toBoolean(chargeFields(fieldInfoForValidation.fieldNum))
+    val mappedBoolean = toBoolean(chargeFields(fieldInfoForValidation.fieldNum).toUpperCase)
     val fields = Seq(Field(valueFormField, mappedBoolean, fieldInfoForValidation.description, fieldInfoForValidation.fieldNum))
     fieldInfoForValidation.form.bind(
       Field.seqToMap(fields)
@@ -183,7 +185,13 @@ class Event1Validator @Inject()(
   }
 
   private def genericFieldValidation[A](index: Int, chargeFields: Seq[String], fieldInfoForValidation: FieldInfoForValidation[A]): Validated[Seq[ValidationError], A] = {
-    val fields = Seq(Field(valueFormField, chargeFields(fieldInfoForValidation.fieldNum), fieldInfoForValidation.description, fieldInfoForValidation.fieldNum))
+    val fieldNumber = fieldInfoForValidation.fieldNum
+    val inputValue = if (fieldNumber == fieldNoMemberOrEmployer) {
+      chargeFields(fieldNumber).toLowerCase
+    } else {
+      chargeFields(fieldNumber)
+    }
+    val fields = Seq(Field(valueFormField, inputValue, fieldInfoForValidation.description, fieldNumber))
     fieldInfoForValidation.form.bind(
       Field.seqToMap(fields)
     ).fold(
@@ -194,7 +202,7 @@ class Event1Validator @Inject()(
 
   private def whoWasTheTransferMadeValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], WhoWasTheTransferMade] = {
 
-    val mappedTransferMadeTo = mapTransferMadeTo(chargeFields(fieldNoTransferMadeTo))
+    val mappedTransferMadeTo = mapTransferMadeTo(chargeFields(fieldNoTransferMadeTo).toUpperCase)
     val fields = Seq(
       Field(valueFormField, mappedTransferMadeTo, transferMadeTo, fieldNoTransferMadeTo)
     )
@@ -209,7 +217,7 @@ class Event1Validator @Inject()(
 
   private def refundOfContributionsValidation(index: Int, chargeFields: Seq[String]): Validated[Seq[ValidationError], RefundOfContributions] = {
 
-    val mappedRefundReason = mapRefund(chargeFields(fieldNoWhoReceivedRefund))
+    val mappedRefundReason = mapRefund(chargeFields(fieldNoWhoReceivedRefund).toUpperCase)
 
     val fields = Seq(
       Field(valueFormField, mappedRefundReason, whoReceivedRefund, fieldNoWhoReceivedRefund)
@@ -226,7 +234,7 @@ class Event1Validator @Inject()(
   private def reasonForTheOverpaymentOrWriteOffValidation(index: Int,
                                                           chargeFields: Seq[String]): Validated[Seq[ValidationError], ReasonForTheOverpaymentOrWriteOff] = {
 
-    val mappedOverpayment = mapOverpayment(chargeFields(fieldNoOverpaymentReason))
+    val mappedOverpayment = mapOverpayment(chargeFields(fieldNoOverpaymentReason).toUpperCase)
 
     val fields = Seq(
       Field(valueFormField, mappedOverpayment, overpaymentReason, fieldNoOverpaymentReason)
@@ -254,16 +262,28 @@ class Event1Validator @Inject()(
     )
   }
 
+  private def getCountryCode(countryInput: String) ={
+    val country = countryOptions.options.filter(inputOption => {
+      inputOption.label == countryInput.trim()
+    })
+    if (country.isEmpty) {
+      ""
+    } else {
+      country.head.value
+    }
+  }
+
   private def addressValidation(index: Int, chargeFields: Seq[String], fieldNumber: Int, isMemberJourney: Boolean = false, columns: Seq[String] = Seq.empty)
                                (implicit messages: Messages): Validated[Seq[ValidationError], Address] = {
     val parsedAddress = splitAddress(chargeFields(fieldNumber))
+    val countryInput = if (parsedAddress.country == "UK") {"United Kingdom"} else {parsedAddress.country}
     val fields = Seq(
       Field(addressLine1, parsedAddress.addressLine1, addressLine1, fieldNumber, Some(Event1FieldNames.addressLine1)),
       Field(addressLine2, parsedAddress.addressLine2, addressLine2, fieldNumber, Some(Event1FieldNames.addressLine2)),
       Field(addressLine3, parsedAddress.addressLine3, addressLine3, fieldNumber, Some(Event1FieldNames.addressLine3)),
       Field(addressLine4, parsedAddress.addressLine4, addressLine4, fieldNumber, Some(Event1FieldNames.addressLine4)),
       Field(postCode, parsedAddress.postCode, postCode, fieldNumber, Some(Event1FieldNames.postCode)),
-      Field(country, parsedAddress.country, country, fieldNumber, Some(Event1FieldNames.country))
+      Field(country, getCountryCode(countryInput), country, fieldNumber, Some(Event1FieldNames.country))
     )
 
     val retrieveNameUpload: Boolean => String = (isMemberJourney: Boolean) => {
@@ -320,7 +340,6 @@ class Event1Validator @Inject()(
                                             chargeFields: Seq[String],
                                             taxYear: Int)
                                            (implicit messages: Messages): Validated[Seq[ValidationError], PaymentDetails] = {
-
     val parsedDate = splitDayMonthYear(chargeFields(fieldNoPaymentDate))
 
     val fields = Seq(
@@ -364,10 +383,9 @@ class Event1Validator @Inject()(
   }
 
   private def validatePaymentNatureMemberJourney(index: Int, columns: Seq[String])(implicit messages: Messages): Result = {
-
     val k = resultFromFormValidationResult[MemberPaymentNature](
       genericPaymentNatureFieldValidation(index, FieldInfoForValidation(fieldNoNatureOfPayment, natureOfPayment, memberPaymentNatureFormProvider()),
-        mapPaymentNatureMember(columns(10))),
+        mapPaymentNatureMember(columns(10).toUpperCase)),
       createCommitItem(index, MemberPaymentNaturePage.apply)
     )
 

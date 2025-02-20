@@ -21,10 +21,12 @@ import config.FrontendAppConfig
 import handlers.TaxYearNotAvailableException
 import models.UserAnswers
 import models.enumeration.EventType
+import models.requests.RequiredSchemeDataRequest
 import pages.{TaxYearPage, VersionInfoPage}
 import play.api.Logging
 import play.api.http.Status._
 import play.api.libs.json._
+import play.api.mvc.AnyContent
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.http.client.HttpClientV2
@@ -36,8 +38,8 @@ class UserAnswersCacheConnector @Inject()(
                                            http: HttpClientV2
                                          ) extends Logging {
 
-  private def url = url"${config.eventReportingUrl}/pension-scheme-event-reporting/user-answers"
-  private def isDataModifiedUrl = url"${config.eventReportingUrl}/pension-scheme-event-reporting/compare"
+  private def url(srn: String) = url"${config.eventReportingUrl}/pension-scheme-event-reporting/user-answers/$srn"
+  private def isDataModifiedUrl(srn: String) = url"${config.eventReportingUrl}/pension-scheme-event-reporting/compare/$srn"
 
   private def noEventHeaders(pstr: String) = Seq(
     ("Content-Type", "application/json"),
@@ -71,11 +73,11 @@ class UserAnswersCacheConnector @Inject()(
     }
   }
 
-  def get(pstr: String, eventType: EventType)
+  def getBySrn(pstr: String, eventType: EventType, srn: String)
          (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[UserAnswers]] = {
     for {
-      noEventData <- getJson(noEventHeaders(pstr))
-      eventData <- getJson(eventHeaders(pstr, eventType, noEventData))
+      noEventData <- getJson(noEventHeaders(pstr), srn)
+      eventData <- getJson(eventHeaders(pstr, eventType, noEventData), srn)
     } yield {
       (eventData, noEventData) match {
         case (Some(a), Some(b)) => Some(UserAnswers(data = a, noEventTypeData = b))
@@ -86,12 +88,17 @@ class UserAnswersCacheConnector @Inject()(
     }
   }
 
+  def getByEventType(pstr: String, eventType: EventType)
+         (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier, req: RequiredSchemeDataRequest[AnyContent]): Future[Option[UserAnswers]] = {
+    getBySrn(pstr, eventType, req.srn)
+  }
+
   def isDataModified(pstr: String, eventType: EventType)
-         (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[Boolean]] = {
-    getJson(noEventHeaders(pstr)).flatMap {
+         (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier, req: RequiredSchemeDataRequest[AnyContent]): Future[Option[Boolean]] = {
+    getJson(noEventHeaders(pstr), req.srn).flatMap {
       case Some(noEventData) =>
         val headers = eventHeaders(pstr, eventType, Some(noEventData))
-        http.get(isDataModifiedUrl).setHeader(headers: _*).execute[HttpResponse]
+        http.get(isDataModifiedUrl(req.srn)).setHeader(headers: _*).execute[HttpResponse]
           .map { response =>
             response.status match {
               case NOT_FOUND => None
@@ -110,9 +117,9 @@ class UserAnswersCacheConnector @Inject()(
     }
   }
 
-  private def getJson(headers: Seq[(String, String)])(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier) = {
+  private def getJson(headers: Seq[(String, String)], srn: String)(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier) = {
 
-    http.get(url).setHeader(headers: _*).transform(_.withRequestTimeout(config.ifsTimeout)).execute[HttpResponse]
+    http.get(url(srn)).setHeader(headers: _*).transform(_.withRequestTimeout(config.ifsTimeout)).execute[HttpResponse]
       .recoverWith(mapExceptionsToStatus)
       .map { response =>
         response.status match {
@@ -124,11 +131,11 @@ class UserAnswersCacheConnector @Inject()(
       }
   }
 
-  def get(pstr: String)(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[UserAnswers]] = {
-    getJson(noEventHeaders(pstr)).map(_.map(d => UserAnswers(noEventTypeData = d)))
+  def getBySrn(pstr: String, srn: String)(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[UserAnswers]] = {
+    getJson(noEventHeaders(pstr), srn).map(_.map(d => UserAnswers(noEventTypeData = d)))
   }
 
-  def save(pstr: String, eventType: EventType, userAnswers: JsValue, startYear: String, version: String)
+  def save(pstr: String, eventType: EventType, userAnswers: JsValue, startYear: String, version: String, srn: String)
           (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
 
     val headers: Seq[(String, String)] = Seq(
@@ -139,7 +146,7 @@ class UserAnswersCacheConnector @Inject()(
       "version" -> version
     )
 
-    http.post(url).withBody(userAnswers).setHeader(headers: _*).transform(_.withRequestTimeout(config.ifsTimeout)).execute[HttpResponse]
+    http.post(url(srn)).withBody(userAnswers).setHeader(headers: _*).transform(_.withRequestTimeout(config.ifsTimeout)).execute[HttpResponse]
       .map { response =>
         response.status match {
           case OK => ()
@@ -150,18 +157,28 @@ class UserAnswersCacheConnector @Inject()(
   }
 
   def save(pstr: String, eventType: EventType, userAnswers: UserAnswers)
-          (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
+          (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier, req: RequiredSchemeDataRequest[AnyContent]): Future[Unit] = {
 
     (userAnswers.get(TaxYearPage), userAnswers.get(VersionInfoPage)) match {
       case (Some(year), Some(version)) =>
-        save(pstr, eventType, userAnswers.data, year.startYear, version.version.toString)
+        save(pstr, eventType, userAnswers.data, year.startYear, version.version.toString, req.srn)
       case (y, v) =>
         Future.failed(new RuntimeException(s"No tax year or version available: $y / $v"))
     }
   }
 
+  def save(pstr: String, eventType: EventType, userAnswers: UserAnswers, srn: String)
+          (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
+
+    (userAnswers.get(TaxYearPage), userAnswers.get(VersionInfoPage)) match {
+      case (Some(year), Some(version)) =>
+        save(pstr, eventType, userAnswers.data, year.startYear, version.version.toString, srn)
+      case (y, v) =>
+        Future.failed(new RuntimeException(s"No tax year or version available: $y / $v"))
+    }
+  }
   def changeVersion(pstr: String, version: String, newVersion: String)
-                   (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
+                   (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier, req: RequiredSchemeDataRequest[AnyContent]): Future[Unit] = {
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
       "pstr" -> pstr,
@@ -169,7 +186,7 @@ class UserAnswersCacheConnector @Inject()(
       "newVersion" -> newVersion
     )
 
-    http.put(url).withBody(Json.obj()).setHeader(headers: _*).transform(_.withRequestTimeout(config.ifsTimeout)).execute[HttpResponse]
+    http.put(url(req.srn)).withBody(Json.obj()).setHeader(headers: _*).transform(_.withRequestTimeout(config.ifsTimeout)).execute[HttpResponse]
       .map { response =>
         response.status match {
           case NOT_FOUND | NO_CONTENT => ()
@@ -179,7 +196,7 @@ class UserAnswersCacheConnector @Inject()(
       }
   }
 
-  def save(pstr: String, userAnswers: UserAnswers)
+  def saveBySrn(pstr: String, userAnswers: UserAnswers, srn: String)
           (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
 
     val headers: Seq[(String, String)] = Seq(
@@ -187,7 +204,7 @@ class UserAnswersCacheConnector @Inject()(
       "pstr" -> pstr
     )
 
-    http.post(url).withBody(userAnswers.noEventTypeData).setHeader(headers: _*).transform(_.withRequestTimeout(config.ifsTimeout)).execute[HttpResponse]
+    http.post(url(srn)).withBody(userAnswers.noEventTypeData).setHeader(headers: _*).transform(_.withRequestTimeout(config.ifsTimeout)).execute[HttpResponse]
       .map { response =>
         response.status match {
           case OK => ()
@@ -197,20 +214,25 @@ class UserAnswersCacheConnector @Inject()(
       }
   }
 
+  def save(pstr: String, userAnswers: UserAnswers)
+          (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier, req: RequiredSchemeDataRequest[AnyContent]): Future[Unit] = {
+    saveBySrn(pstr, userAnswers, req.srn)
+  }
+
   private def mapExceptionsToStatus: PartialFunction[Throwable, Future[HttpResponse]] = {
     case _: NotFoundException =>
       Future.successful(HttpResponse(NOT_FOUND, "Not found"))
   }
 
   def removeAll(pstr: String)
-               (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
+               (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier, req: RequiredSchemeDataRequest[AnyContent]): Future[Unit] = {
 
     val headers: Seq[(String, String)] = Seq(
       "Content-Type" -> "application/json",
       "pstr" -> pstr
     )
 
-    http.delete(url).setHeader(headers: _*).transform(_.withRequestTimeout(config.ifsTimeout)).execute[HttpResponse]
+    http.delete(url(req.srn)).setHeader(headers: _*).transform(_.withRequestTimeout(config.ifsTimeout)).execute[HttpResponse]
       .map { response =>
         response.status match {
           case OK => ()

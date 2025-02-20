@@ -20,12 +20,12 @@ import base.SpecBase
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.{SchemeConnector, SessionDataCacheConnector}
-import models.{AuthorisingPSA, LoggedInUser, PsaDetails, PsaSchemeDetails, PspDetails, PspSchemeDetails}
 import models.enumeration.AdministratorOrPractitioner
 import models.enumeration.AdministratorOrPractitioner.{Administrator, Practitioner}
+import models.{AuthorisingPSA, LoggedInUser, PsaDetails, PsaSchemeDetails, PspDetails, PspSchemeDetails}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito
 import org.mockito.Mockito._
-import org.mockito.{ArgumentMatchers, Mockito}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
@@ -36,7 +36,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
-import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException, SessionKeys}
+import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
 
 import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -390,9 +390,6 @@ class IdentifierActionSpec
           PsaDetails(psaId, None, None, None)
         ))))
       )
-      when(mockSchemeConnector.getPspSchemeDetails(any(), any(), any())(any(), any())).thenReturn(Future.successful(
-        PspSchemeDetails("schemeName", "87219363YN", "Open", None)
-      ))
       val controller = new Harness(authAction)
       val enrolments = Enrolments(Set(
         Enrolment(psaEnrolmentKey, Seq(EnrolmentIdentifier("PSAID", psaId)), "Activated", None),
@@ -420,9 +417,6 @@ class IdentifierActionSpec
       status(result) mustBe OK
     }
     "with PSP when both enrolments are available" in {
-      when(mockSchemeConnector.getSchemeDetails(any(), any(), any())(any(), any())).thenReturn(Future.successful(
-        PsaSchemeDetails("test scheme", "test pstr", "test status", None))
-      )
       when(mockSchemeConnector.getPspSchemeDetails(any(), any(), any())(any(), any())).thenReturn(Future.successful(
         PspSchemeDetails("schemeName", "87219363YN", "Open", Some(PspDetails(None, None, None, psaId, AuthorisingPSA(None, None, None, None), LocalDate.now(), pspId)))
       ))
@@ -434,7 +428,7 @@ class IdentifierActionSpec
 
       val pstrInDB = "456"
       val pstrJson = Json.obj(
-        "administratorOrPractitioner" -> Administrator.toString,
+        "administratorOrPractitioner" -> Practitioner.toString,
         "eventReporting" -> Json.obj(
           "pstr" -> pstrInDB,
           "schemeName" -> "schemeName",
