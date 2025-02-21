@@ -58,7 +58,12 @@ class Event7MembersSummaryController @Inject()(
       val mappedMembers = getMappedMembers(request.userAnswers, request.readOnly(), search.map(_.toLowerCase))
       val selectedTaxYear = getSelectedTaxYearAsString(request.userAnswers)
       val paginationStats = eventPaginationService.paginateMappedMembers(mappedMembers, pageNumber)
-      Ok(view(form, waypoints, eventType, mappedMembers, sumValue(request.userAnswers), selectedTaxYear, paginationStats, pageNumber, search, routes.Event7MembersSummaryController.onPageLoad(waypoints, None).url))
+      val pageTitle = if(search.isDefined && search != Some("")) {
+        Messages(s"membersSummary.event${eventType.toString}.title.search", search.getOrElse(""), selectedTaxYear)
+      } else {
+        Messages(s"membersSummary.event${eventType.toString}.title", selectedTaxYear)
+      }
+      Ok(view(form, pageTitle, waypoints, eventType, mappedMembers, sumValue(request.userAnswers), selectedTaxYear, paginationStats, pageNumber, search, routes.Event7MembersSummaryController.onPageLoad(waypoints, None).url))
     }
 
   private def sumValue(userAnswers: UserAnswers) =
@@ -72,7 +77,8 @@ class Event7MembersSummaryController @Inject()(
       form.bindFromRequest().fold(
         formWithErrors => {
           val paginationStats = eventPaginationService.paginateMappedMembers(mappedMembers, 0)
-          BadRequest(view(formWithErrors, waypoints, eventType, mappedMembers, sumValue(request.userAnswers), selectedTaxYear, paginationStats, Index(0), None, routes.Event7MembersSummaryController.onPageLoad(waypoints, None).url))
+          val title = Messages(s"membersSummary.event${eventType.toString}.title", selectedTaxYear)
+          BadRequest(view(formWithErrors, title, waypoints, eventType, mappedMembers, sumValue(request.userAnswers), selectedTaxYear, paginationStats, Index(0), None, routes.Event7MembersSummaryController.onPageLoad(waypoints, None).url))
         },
         value => {
           val userAnswerUpdated = request.userAnswers.setOrException(MembersSummaryPage(eventType, 0), value)

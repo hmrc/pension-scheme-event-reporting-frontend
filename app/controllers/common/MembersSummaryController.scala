@@ -59,7 +59,12 @@ class MembersSummaryController @Inject()(
       val selectedTaxYear = getSelectedTaxYearAsString(request.userAnswers)
       val paginationStats = eventPaginationService.paginateMappedMembers(mappedMembers, pageNumber)
       val searchHref = routes.MembersSummaryController.onPageLoad(waypoints, eventSummaryPath, None).url
-      Ok(view(form, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType), selectedTaxYear, paginationStats, pageNumber, search, searchHref))
+      val pageTitle = if(search.isDefined && search != Some("")) {
+        Messages(s"membersSummary.event${eventType.toString}.title.search", search.getOrElse(""), selectedTaxYear)
+      } else {
+        Messages(s"membersSummary.event${eventType.toString}.title", selectedTaxYear)
+      }
+      Ok(view(form, pageTitle, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType), selectedTaxYear, paginationStats, pageNumber, search, searchHref))
     }
   }
 
@@ -77,7 +82,8 @@ class MembersSummaryController @Inject()(
           formWithErrors => {
             val paginationStats = eventPaginationService.paginateMappedMembers(mappedMembers, 0)
             val searchHref = routes.MembersSummaryController.onPageLoad(waypoints, eventSummaryPath, None).url
-            BadRequest(view(formWithErrors, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType), selectedTaxYear, paginationStats, Index(0), None, searchHref))
+            val title = Messages(s"membersSummary.event${eventType.toString}.title", selectedTaxYear)
+            BadRequest(view(formWithErrors, title, waypoints, eventType, mappedMembers, sumValue(request.userAnswers, eventType), selectedTaxYear, paginationStats, Index(0), None, searchHref))
           },
           value => {
             val userAnswerUpdated = request.userAnswers.setOrException(MembersSummaryPage(eventType, 0), value)

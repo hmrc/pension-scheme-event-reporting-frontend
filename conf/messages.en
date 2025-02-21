@@ -372,6 +372,7 @@ datePaid.event2.error.outside.taxYear = The date must be between {0} to {1}
 datePaid.event2.change.hidden = When the payment was made
 
 membersSummary.event2.title = Event 2: Lump sum death benefit payment events reported in the tax year ending 5 April {0}
+membersSummary.event2.title.search = Search results for "{0}" in Event 2: Lump sum death benefit payment events reported in the tax year ending 5 April {1}
 membersSummary.event2.heading = Event 2: Lump sum death benefit payment events reported in the tax year ending 5 April {0}
 membersSummary.event2.error.required = Select yes to add another entry
 membersSummary.event2.yesno.legend = Do you want to add another lump sum death benefit entry?
@@ -940,6 +941,8 @@ unauthPaymentAndSanctionCharges.p5 = You will also receive paper notice(s) for a
 
 unauthPaymentSummary.title = Event 1: Unauthorised payments events for tax year ending 5 April {0}
 unauthPaymentSummary.heading =  Event 1: Unauthorised payments events for tax year ending 5 April {0}
+unauthPaymentSummary.title.search = Search results for "{0}" in Event 1: Unauthorised payments events for tax year ending 5 April {1}
+summary.search.noResults = No results found for "{0}". Please check your spelling or try a different name.
 unauthPaymentSummary.yesno.legend = Do you want to add another entry for this event?
 unauthPaymentSummary.checkYourAnswersLabel = Check your answers
 unauthPaymentSummary.error.required = Select yes to add another entry
@@ -959,6 +962,7 @@ membersSummary.table.header3 = Pension input amounts
 membersSummary.table.totalTitle = Total
 
 membersSummary.event3.title = Event 3: Benefits provided before normal minimum pension age
+membersSummary.event3.title.search = Search results for "{0}" in Event 3: Benefits provided before normal minimum pension age
 membersSummary.event3.heading = Event 3: Benefits provided before normal minimum pension age
 membersSummary.event3.error.required = Select yes to add another entry
 membersSummary.event3.yesno.legend = Do you want to add another entry for this event?
@@ -968,6 +972,7 @@ membersSummary.event3.table.header3 = Amount paid
 membersSummary.event3.table.totalTitle = Total not required
 
 membersSummary.event4.title = Event 4: Payment of serious ill-health lump sum in the tax year ending 5 April {0}
+membersSummary.event4.title.search = Search results for "{0}" in Event 4: Payment of serious ill-health lump sum in the tax year ending 5 April {1}
 membersSummary.event4.heading = Event 4: Payment of serious ill-health lump sum in the tax year ending 5 April {0}
 membersSummary.event4.error.required = Select yes to add another entry
 membersSummary.event4.yesno.legend = Do you want to add another entry for this payment of serious ill-health lump sum?
@@ -977,6 +982,7 @@ membersSummary.event4.table.header3 = Amount paid
 membersSummary.event4.table.totalTitle = Total not required
 
 membersSummary.event5.title = Event 5: Cessation of ill-health pension in the tax year ending 5 April {0}
+membersSummary.event5.title.search = Search results for "{0}" in Event 5: Cessation of ill-health pension in the tax year ending 5 April {1}
 membersSummary.event5.heading = Event 5: Cessation of ill-health pension in the tax year ending 5 April {0}
 membersSummary.event5.error.required = Select yes to add another entry
 membersSummary.event5.yesno.legend = Do you want to add another entry for this cessation of ill-health pension?
@@ -986,6 +992,7 @@ membersSummary.event5.table.header3 = Amount paid
 membersSummary.event5.table.totalTitle = Total not required
 
 membersSummary.event7.title = Event 7: Pension commencement lump sum (more than 25% of the fund where the member does not have primary/enhanced protection) in the tax year ending 5 April {0}
+membersSummary.event7.title.search = Search results for "{0}" in Event 7: Pension commencement lump sum (more than 25% of the fund where the member does not have primary/enhanced protection) in the tax year ending 5 April {1}
 membersSummary.event7.heading = Event 7: Pension commencement lump sum (more than 25% of the fund where the member does not have primary/enhanced protection) in the tax year ending 5 April {0}
 membersSummary.event7.error.required = Select yes to add another entry
 membersSummary.event7.yesno.legend = Do you want to add another pension commencement lump sum entry?
@@ -996,6 +1003,7 @@ membersSummary.event7.table.header4 = Amount crystallised
 membersSummary.event7.table.totalTitle = Total not required
 
 membersSummary.event6.title = Event 6: Benefit crystallisation events reported in the tax year ending 5 April {0}
+membersSummary.event6.title.search = Search results for "{0}" in Event 6: Benefit crystallisation events reported in the tax year ending 5 April {1}
 membersSummary.event6.heading = Event 6: Benefit crystallisation events reported in the tax year ending 5 April {0}
 membersSummary.event6.error.required = Select yes to add another entry
 membersSummary.event6.yesno.legend = Do you want to add another entry for this benefit crystallisation event?
@@ -1005,6 +1013,7 @@ membersSummary.event6.table.header3 = Amount crystallised
 membersSummary.event6.table.totalTitle = Total not required
 
 membersSummary.event8.title = Event 8: Pension commencement lump sum (with primary/enhanced protection) events reported in the tax year ending 5 April {0}
+membersSummary.event8.title.search = Search results for "{0}" in Event 8: Pension commencement lump sum (with primary/enhanced protection) events reported in the tax year ending 5 April {1}
 membersSummary.event8.heading = Event 8: Pension commencement lump sum (with primary/enhanced protection) events reported in the tax year ending 5 April {0}
 membersSummary.event8.error.required = Select yes to add another entry
 membersSummary.event8.yesno.legend = Do you want to add another pension commencement lump sum entry?
@@ -1014,6 +1023,7 @@ membersSummary.event8.table.header3 = Lump sum
 membersSummary.event8.table.totalTitle = Total not required
 
 membersSummary.event8A.title = Event 8A: Stand-alone lump sum events reported in the tax year ending 5 April {0}
+membersSummary.event8A.title.search = Search results for "{0}" in Event 8A: Stand-alone lump sum events reported in the tax year ending 5 April {1}
 membersSummary.event8A.heading = Event 8A: Stand-alone lump sum events reported in the tax year ending 5 April {0}
 membersSummary.event8A.error.required = Select yes to add another entry
 membersSummary.event8A.yesno.legend = Do you want to add another entry for stand-alone lump sums?
@@ -1023,6 +1033,7 @@ membersSummary.event8A.table.header3 = Lump sum
 membersSummary.event8A.table.totalTitle = Total not required
 
 membersSummary.event22.title = Event 22: Annual allowance events reported in the tax year ending 5 April {0}
+membersSummary.event22.title.search = Search results for "{0}" in Event 22: Annual allowance events reported in the tax year ending 5 April {1}
 membersSummary.event22.heading = Event 22: Annual allowance events reported in the tax year ending 5 April {0}
 membersSummary.event22.error.required = Select yes if you want to add another annual allowance event
 membersSummary.event22.yesno.legend = Do you want to add another entry for this event?
@@ -1032,6 +1043,7 @@ membersSummary.event22.table.header3 = Pension input amount
 membersSummary.event22.table.totalTitle = Total amount for this event report
 
 membersSummary.event23.title = Event 23: Dual annual allowances events reported in the tax year ending 5 April {0}
+membersSummary.event23.title.search = Search results for "{0}" in Event 23: Dual annual allowances events reported in the tax year ending 5 April {1}
 membersSummary.event23.heading = Event 23: Dual annual allowances events reported in the tax year ending 5 April {0}
 membersSummary.event23.error.required = Select yes if you want to add another dual annual allowances event
 membersSummary.event23.yesno.legend = Do you want to add another entry for this event?
@@ -1041,6 +1053,7 @@ membersSummary.event23.table.header3 = Pension input amount
 membersSummary.event23.table.totalTitle = Total amount for this event report
 
 membersSummary.event24.title = Event 24: Higher lump sum allowance in the tax year ending 5 April {0}
+membersSummary.event24.title.search = Search results for "{0}" in Event 24: Higher lump sum allowance in the tax year ending 5 April {1}
 membersSummary.event24.heading = Event 24: Higher lump sum allowance in the tax year ending 5 April {0}
 membersSummary.event24.error.required = Select yes if you want to add another higher lump sum allowance event
 membersSummary.event24.yesno.legend = Do you want to add another entry for this event?

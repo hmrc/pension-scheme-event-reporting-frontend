@@ -28,6 +28,7 @@
 )
 
 @(form: Form[_],
+title: String,
 waypoints: Waypoints,
 eventType: EventType,
 memberSeq: Seq[SummaryListRowWithThreeValues],
@@ -40,7 +41,7 @@ searchHref: String)(implicit request: RequiredSchemeDataRequest[_], messages: Me
 
 @pageLink(pageNumber:Index) = @{controllers.event7.routes.Event7MembersSummaryController.onPageLoadWithPageNumber(waypoints, Index(pageNumber))}
 
-@layout(pageTitle = title(form, messages(s"membersSummary.event${eventType.toString}.title", selectedTaxYear))) {
+@layout(pageTitle = title) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
@@ -59,19 +60,22 @@ searchHref: String)(implicit request: RequiredSchemeDataRequest[_], messages: Me
             }
         }
 
+        @if(paginationStats.slicedMembers.nonEmpty) {
+            @components.entity_summaryFour_table_list(
+                paginationStats.slicedMembers,
+                colOne = "membersSummary.event7.table.header1",
+                colTwo = "membersSummary.event7.table.header2",
+                colThree = "membersSummary.event7.table.header3",
+                colFour = "membersSummary.event7.table.header4",
+                total,
+                "membersSummary.event7.table.totalTitle",
+                caption = messages(s"membersSummary.event${eventType.toString}.heading", selectedTaxYear)
+            )
 
-        @components.entity_summaryFour_table_list(
-            paginationStats.slicedMembers,
-            colOne = "membersSummary.event7.table.header1",
-            colTwo = "membersSummary.event7.table.header2",
-            colThree = "membersSummary.event7.table.header3",
-            colFour = "membersSummary.event7.table.header4",
-            total,
-            "membersSummary.event7.table.totalTitle",
-            caption = messages(s"membersSummary.event${eventType.toString}.heading", selectedTaxYear)
-        )
-
-        @pagination(pageNumber, paginationStats, pageLink)
+            @pagination(pageNumber, paginationStats, pageLink)
+        } else if (paginationStats.slicedMembers.isEmpty && searchValue.isDefined && searchValue != Some("")) {
+            <p class="govuk-body">@messages("summary.search.noResults", searchValue.getOrElse(""))</p>
+        }
 
         @govukRadios(
             RadiosViewModel.yesNo(

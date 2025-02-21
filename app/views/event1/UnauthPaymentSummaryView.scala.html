@@ -27,6 +27,7 @@
 
 
 @(form: Form[_],
+        pageTitle: String,
         waypoints: Waypoints,
         memberOrEmployerSeq: Seq[SummaryListRow],
         paginationStats: PaginationStats[SummaryListRow],
@@ -36,10 +37,10 @@
         searchValue: Option[String],
         searchHref: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("unauthPaymentSummary.title", taxYear))) {
+@layout(pageTitle = pageTitle) {
 
         @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummaryViewModel(form))
+            @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
 <h1 class="govuk-heading-l">@messages("unauthPaymentSummary.heading", taxYear)</h1>
@@ -48,15 +49,19 @@
 
     @formHelper(action = controllers.event1.routes.UnauthPaymentSummaryController.onSubmitPaginated(waypoints, pageNumber), Symbol("autoComplete") -> "off") {
 
-        @components.entity_table_list(
-            paginationStats.slicedMembers,
-            colOne = "unauthPaymentSummary.table.header1",
-            colTwo = "unauthPaymentSummary.table.header2",
-            total,
-            caption = messages("unauthPaymentSummary.heading", taxYear)
-        )
+        @if(paginationStats.slicedMembers.nonEmpty) {
+            @components.entity_table_list(
+                paginationStats.slicedMembers,
+                colOne = "unauthPaymentSummary.table.header1",
+                colTwo = "unauthPaymentSummary.table.header2",
+                total,
+                caption = messages("unauthPaymentSummary.heading", taxYear)
+            )
 
-        @pagination(pageNumber, paginationStats, controllers.event1.routes.UnauthPaymentSummaryController.onPageLoadPaginated(waypoints, searchValue, _))
+            @pagination(pageNumber, paginationStats, controllers.event1.routes.UnauthPaymentSummaryController.onPageLoadPaginated(waypoints, searchValue, _))
+        } else if (paginationStats.slicedMembers.isEmpty && searchValue.isDefined && searchValue != Some("")) {
+            <p class="govuk-body">@messages("summary.search.noResults", searchValue.getOrElse(""))</p>
+        }
 
         @govukRadios(
             RadiosViewModel.yesNo(
