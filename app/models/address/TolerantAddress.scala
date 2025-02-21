@@ -42,6 +42,18 @@ case class TolerantAddress(addressLine1: Option[String],
       this.postcode
     ).flatten(s => s)
 
+  private def prepopAddress: Address =
+    Address(
+      addressLine1.getOrElse(""),
+      addressLine2.getOrElse(""),
+      addressLine3,
+      addressLine4,
+      postcode,
+      countryOpt.getOrElse("")
+    )
+
+  def toPrepopAddress: Address = toAddress.getOrElse(prepopAddress)
+
   def toAddress: Option[Address] = (addressLine1, addressLine2, countryOpt) match {
     case (Some(line1), Some(line2), Some(country)) => Some(Address(line1, line2, addressLine3, addressLine4, postcode, country))
     case (_, _, None) => None
