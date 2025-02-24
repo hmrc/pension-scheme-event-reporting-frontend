@@ -595,7 +595,7 @@ paymentValueAndDate.title = Payment value and date
 paymentValueAndDate.heading = Payment value and date
 
 paymentValueAndDate.value.heading = Total value or amount of the unauthorised payment, in pounds
-paymentValueAndDate.value.hint = For example, £600 or £193.54
+currency.hint = For example, £600 or £193.54
 paymentValueAndDate.value.error.nothingEntered = Enter the payment value
 paymentValueAndDate.value.error.notANumber = The payment value must be an amount of money, like £123.45 or £156.00
 paymentValueAndDate.value.error.tooManyDecimals = The payment value can only include pounds and pence, like £123.45 or £156.00
