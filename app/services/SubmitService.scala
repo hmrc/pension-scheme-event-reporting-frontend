@@ -23,9 +23,9 @@ import models.requests.{DataRequest, RequiredSchemeDataRequest}
 import models.{UserAnswers, VersionInfo}
 import pages.VersionInfoPage
 import play.api.Logger
-import play.api.http.Status.NO_CONTENT
+import play.api.http.Status.{NO_CONTENT, SERVICE_UNAVAILABLE}
 import play.api.mvc.{AnyContent, Result}
-import play.api.mvc.Results.{BadRequest, NotFound, Ok}
+import play.api.mvc.Results.{BadRequest, NotFound, Ok, ServiceUnavailable}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -42,13 +42,14 @@ class SubmitService @Inject()(
     ua.get(VersionInfoPage) match {
       case Some(VersionInfo(version, Compiled)) =>
         eventReportingConnector.submitReport(pstr, ua, version.toString).flatMap { response =>
-          if (response.header.status == NO_CONTENT) {
-            val updatedUA = ua.setOrException(VersionInfoPage, VersionInfo(version, Submitted), nonEventTypeData = true)
-            userAnswersCacheConnector.save(pstr, updatedUA).map { _ => Ok }
-          } else {
-            logger.warn(s"The event report has already been submitted with status: ${Compiled.toString}")
-            Future.successful(BadRequest("The event report has already been submitted"))
+          response.header.status match {
+            case NO_CONTENT => val updatedUA = ua.setOrException(VersionInfoPage, VersionInfo(version, Submitted), nonEventTypeData = true)
+              userAnswersCacheConnector.save(pstr, updatedUA).map { _ => Ok }
+            case SERVICE_UNAVAILABLE             => Future.successful(ServiceUnavailable("IFS Service returned service unavailable"))
+            case _ => logger.warn(s"The event report has already been submitted with status: ${Compiled.toString}, ${response.header.status}")
+              Future.successful(BadRequest("The event report has already been submitted"))
           }
+
         }
       case Some(VersionInfo(_, Submitted)) =>
         logger.warn(s"The event report has already been submitted with status: ${Submitted.toString}")
