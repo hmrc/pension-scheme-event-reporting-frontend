@@ -200,7 +200,7 @@ class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
       }
     }
 
-    "must redirect to the journey recovery page for method onClick when report has been submitted multiple times in quick succession" in {
+    "must redirect to the journey recovery page for method onClick when service unavailable response is returned from submitReport" in {
       val testEmail = "test@test.com"
       val templateId = "pods_event_report_submitted"
       val organisationName = "Test company ltd"
