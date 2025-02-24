@@ -468,7 +468,7 @@ address.addressLine1 = Address Line 1
 address.addressLine2 = Address Line 2
 address.addressLine3 = Town or City
 address.addressLine4 = Address Line 4 (optional)
-address.postCode = Postcode (if UK)
+address.postCode = Postcode (UK only)
 address.country = Country
 
 entityType.theCompany = the company
