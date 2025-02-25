@@ -41,9 +41,9 @@
                 field = form("value"),
                 label = LabelViewModel(messages("totalAmountBenefitCrystallisation.event24.heading")).asPageHeading()
             )
-            .asNumeric()
             .withPrefix(PrefixOrSuffix(content = Text("£")))
             .withWidth(Fixed5)
+            .withHint(Hint(content = Text(messages("currency.hint"))))
         )
 
         @govukButton(

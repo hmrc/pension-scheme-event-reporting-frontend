@@ -42,7 +42,7 @@
                 )
                         .withWidth(OneQuarter)
                         .withPrefix(PrefixOrSuffix(content = Text("£")))
-                        .asNumeric()
+                        .withHint(Hint(content = Text(messages("currency.hint"))))
             )
 
             @govukButton(
