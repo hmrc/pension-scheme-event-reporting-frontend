@@ -30,7 +30,7 @@ import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.VersionInfoPage
 import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, OK}
 import play.api.mvc.AnyContent
-import play.api.mvc.Results.{BadRequest, Forbidden, InternalServerError, NoContent}
+import play.api.mvc.Results.{BadRequest, Forbidden, InternalServerError, NoContent, ServiceUnavailable}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.GET
 import uk.gov.hmrc.http.HeaderCarrier
@@ -148,6 +148,17 @@ class SubmitServiceSpec extends SpecBase with BeforeAndAfterEach {
       val ua = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(2, Compiled), nonEventTypeData = true)
       submitService.submitReport(pstr, ua).map { status =>
         status mustBe Forbidden
+      }
+    }
+
+    "must return ServiceUnavailable if the connector returns a SERVICE_UNAVAILABLE status" in {
+      when(mockEventReportingConnector.submitReport(ArgumentMatchers.eq(pstr), any(), any())(any(), any()))
+        .thenReturn(Future.successful(ServiceUnavailable))
+      when(mockUserAnswersCacheConnector.save(ArgumentMatchers.eq(pstr), any())(any(), any(), any()))
+        .thenReturn(Future.successful((): Unit))
+      val ua = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(2, Compiled), nonEventTypeData = true)
+      submitService.submitReport(pstr, ua).map { status =>
+        status mustBe ServiceUnavailable
       }
     }
 
