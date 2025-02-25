@@ -434,7 +434,6 @@ enterPostcode.error.length = Enter a full UK postcode
 enterPostcode.error.length = The postcode cannot be more than 8 characters
 enterPostcode.error.nonUKLength = The postcode cannot be more than 10 characters
 enterPostcode.error.invalid = Enter a full UK postcode
-enterPostcode.error.noResults = Postcode cannot be found
 enterPostcode.change.hidden = The address of the residential property
 enterPostcode.hint = You can
 enterPostcode.link = enter the address manually
