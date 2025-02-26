@@ -40,7 +40,6 @@ import play.api.test.Helpers._
 import services.CompileService
 import uk.gov.hmrc.govukfrontend.views.Aliases
 import uk.gov.hmrc.govukfrontend.views.Aliases._
-import viewmodels.event1.member.checkAnswers.SchemeDetailsSummary.schemeDetailsAnswer
 import viewmodels.govuk.SummaryListFluency
 import views.html.CheckYourAnswersView
 
