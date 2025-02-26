@@ -35,6 +35,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.common.MembersSummaryPage
 import pages.{EmptyWaypoints, EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
 import play.api.data.Form
+import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
@@ -67,6 +68,14 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
     bind[EventPaginationService].toInstance(mockEventPaginationService),
     bind[DateHelper].toInstance(mockTaxYear)
   )
+
+  private val searchValue = "xjshaiak"
+
+  private def pageTitle(eventType: EventType, selectedTaxYear: String, searching: Boolean = false) = if (searching) {
+    Messages(s"membersSummary.event${eventType.toString}.title.search", searchValue, selectedTaxYear)
+  } else {
+    Messages(s"membersSummary.event${eventType.toString}.title", selectedTaxYear)
+  }
 
   private def getRoute(eventType: EventType): String = routes.MembersSummaryController.onPageLoad(waypoints, MemberSummaryPath(eventType)).url
   private def getRouteWithPagination(eventType: EventType): String = routes.MembersSummaryController.onPageLoadPaginated(waypoints, MemberSummaryPath(eventType), 0).url
@@ -236,14 +245,69 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
               ))
             ))
 
+        val title = pageTitle(eventType, "2023")
+
         status(result) mustEqual OK
-        contentAsString(result).removeAllNonces()mustEqual view.render(form, waypoints, eventType, expectedSeq, totalAmount,
+        contentAsString(result).removeAllNonces()mustEqual view.render(form, title, waypoints, eventType, expectedSeq, totalAmount,
           selectedTaxYear = "2023",
           request = request,
           messages = messages(application),
           paginationStats = eventPaginationService.paginateMappedMembers(expectedSeq, 1),
           pageNumber = Index(0),
           searchValue = None,
+          searchHref = s"/manage-pension-scheme-event-report/report/event-$eventType-summary").toString
+      }
+    }
+  }
+
+  private def testReturnOkAndCorrectViewOnSearch(eventType: EventType,
+                                         form: Form[Boolean],
+                                         sampleData: UserAnswers,
+                                         secondValue: String,
+                                         href: String,
+                                         totalAmount: String): Unit = {
+    s"must return OK and the correct view for a GET for Event $eventType" in {
+      val application = applicationBuilder(userAnswers = Some(sampleData
+        .setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
+        .setOrException(EventReportingOverviewPage, erOverviewSeq)
+        .setOrException(VersionInfoPage, VersionInfo(3, Submitted)))).build()
+
+      running(application) {
+        val request = FakeRequest(GET, getRoute(eventType))
+        val result = route(application, request).value
+        val eventPaginationService = application.injector.instanceOf[EventPaginationService]
+        val view = application.injector.instanceOf[MembersSummaryView]
+
+        val expectedSeq =
+          Seq(
+            SummaryListRowWithTwoValues(
+              key = SampleData.memberDetails.fullName,
+              firstValue = SampleData.memberDetails.nino,
+              secondValue = secondValue,
+              actions = Some(Actions(
+                items = Seq(
+                  ActionItem(
+                    content = Text(Message("site.view")),
+                    href = href
+                  ),
+                  ActionItem(
+                    content = Text(Message("site.remove")),
+                    href = fakeRemoveUrl(eventType, 0)
+                  )
+                )
+              ))
+            ))
+
+        val title = pageTitle(eventType, "2023", true)
+
+        status(result) mustEqual OK
+        contentAsString(result).removeAllNonces()mustEqual view.render(form, title, waypoints, eventType, expectedSeq, totalAmount,
+          selectedTaxYear = "2023",
+          request = request,
+          messages = messages(application),
+          paginationStats = eventPaginationService.paginateMappedMembers(expectedSeq, 1),
+          pageNumber = Index(0),
+          searchValue = Some(searchValue),
           searchHref = s"/manage-pension-scheme-event-report/report/event-$eventType-summary").toString
       }
     }
@@ -291,9 +355,12 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
           pageStartAndEnd = (1, 25),
           pagerSeq = Seq(1, 2))
 
+        val title = pageTitle(eventType, "2023")
+
         status(result) mustEqual OK
         val expectedView = view.render(
           form,
+          title,
           waypoints,
           eventType,
           fakeMembers,
@@ -355,9 +422,12 @@ class MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEach with
         val boundForm = form.bind(Map("value" -> "invalid"))
         val result = route(application, request).value
 
+        val title = pageTitle(eventType, "2023")
+
         status(result) mustEqual BAD_REQUEST
         contentAsString(result).removeAllNonces()mustEqual view.render(
           boundForm,
+          title,
           waypoints,
           eventType,
           Nil,
