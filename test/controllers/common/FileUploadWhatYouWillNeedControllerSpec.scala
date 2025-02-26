@@ -18,7 +18,7 @@ package controllers.common
 
 import base.SpecBase
 import models.enumeration.EventType
-import models.enumeration.EventType.{Event22, Event23, Event24, Event6}
+import models.enumeration.EventType.{Event22, Event23, Event6}
 import pages.EmptyWaypoints
 import play.api.mvc.Call
 import play.api.test.FakeRequest

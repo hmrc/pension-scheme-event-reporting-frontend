@@ -19,7 +19,6 @@ package services.fileUpload
 import base.BulkUploadSpec
 import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.Json
-import utils.DateConstraintHandlers.regexEvent1Description
 
 import scala.collection.immutable.ArraySeq
 

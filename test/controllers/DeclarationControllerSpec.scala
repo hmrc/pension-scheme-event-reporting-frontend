@@ -20,7 +20,6 @@ import audit.AuditService
 import base.SpecBase
 import connectors.MinimalConnector.MinimalDetails
 import connectors.{EmailConnector, EmailSent, EventReportingConnector, MinimalConnector, UserAnswersCacheConnector}
-import handlers.NothingToSubmitException
 import models.VersionInfo
 import models.enumeration.AdministratorOrPractitioner.Administrator
 import models.enumeration.VersionStatus.{Compiled, Submitted}
@@ -28,7 +27,6 @@ import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
-import org.scalatest.RecoverMethods._
 import org.scalatestplus.mockito.MockitoSugar
 import pages.{EmptyWaypoints, VersionInfoPage}
 import play.api.http.Status.OK
@@ -40,9 +38,7 @@ import play.api.test.Helpers.{GET, _}
 import services.SubmitService
 import views.html.DeclarationView
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration._
-import scala.concurrent.{Await, Future}
+import scala.concurrent.Future
 
 class DeclarationControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 

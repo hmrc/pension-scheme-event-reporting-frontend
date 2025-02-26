@@ -244,16 +244,6 @@ object Event6CheckYourAnswersControllerSpec {
       Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages(hiddenContentChangeLink)), "", Map()))))
     )
 
-  private def fakeSummaryListRowWithTextWithHiddenContent(messageKey: String, text: String, changeLink: String, hiddenContentChangeLink: String)
-                                                         (implicit messages: Messages): SummaryListRow =
-    SummaryListRow(
-      Key(
-        Text(
-          messages(messageKey)
-        ), ""),
-      Value(Text(text), ""), "",
-      Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages(hiddenContentChangeLink)), "", Map()))))
-    )
 
   private def fakeSummaryListRowWithHtmlContentWithHiddenContentWithTwoMsgKeys(messageKeyOne: String, messageKeyTwo: String, htmlContent: String,
                                                                                changeLink: String, hiddenContentChangeLink: String)
@@ -277,14 +267,6 @@ object Event6CheckYourAnswersControllerSpec {
         ), ""),
       Value(HtmlContent(htmlContent), ""), "")
 
-  private def fakeSummaryListRowWithTextWithHiddenContentViewOnly(messageKey: String, text: String)
-                                                                 (implicit messages: Messages): SummaryListRow =
-    SummaryListRow(
-      Key(
-        Text(
-          messages(messageKey)
-        ), ""),
-      Value(Text(text), ""), "")
 
   private def fakeSummaryListRowWithHtmlContentWithHiddenContentWithTwoMsgKeysViewOnly(messageKeyOne: String, messageKeyTwo: String, htmlContent: String)
                                                                                       (implicit messages: Messages): SummaryListRow =
