@@ -87,6 +87,9 @@ class DeclarationController @Inject()(
             case BAD_REQUEST =>
               logger.warn(s"Unable to submit declaration because it has already been submitted)")
               Future.successful(Redirect(controllers.routes.CannotResumeController.onPageLoad(waypoints).url))
+            case SERVICE_UNAVAILABLE =>
+              logger.warn(s"Unable to submit because ifs returned service unavailable")
+              Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad(None).url))
             case NOT_FOUND =>
               logger.warn(s"Unable to submit declaration because there is nothing to submit (nothing in compile state)")
               Future.successful(Redirect(controllers.routes.EventSummaryController.onPageLoad(waypoints).url))
