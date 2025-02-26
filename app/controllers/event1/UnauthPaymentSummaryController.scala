@@ -56,11 +56,26 @@ class UnauthPaymentSummaryController @Inject()(
   def onPageLoad(waypoints: Waypoints, search: Option[String]): Action[AnyContent] = onPageLoadPaginated(waypoints, search, Index(0))
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = onSubmitPaginated(waypoints, Index(0))
 
-  def onPageLoadPaginated(waypoints: Waypoints, search: Option[String] = None, page: Index): Action[AnyContent] = (identify andThen getData(EventType.Event1) andThen requireData) { implicit request =>
-    val taxYear = TaxYear.getSelectedTaxYearAsString(request.userAnswers)
-    val mappedMemberOrEmployer = getMappedMemberOrEmployer(request.userAnswers, request.readOnly(), search.map(_.toLowerCase))
-    Ok(view(form, waypoints, mappedMemberOrEmployer, eventPaginationService.paginateMappedMembers(mappedMemberOrEmployer, page), page, sumValue(request.userAnswers), taxYear, search,
-      routes.UnauthPaymentSummaryController.onPageLoadPaginated(waypoints, None, page).url))
+  def onPageLoadPaginated(waypoints: Waypoints, search: Option[String] = None, page: Index): Action[AnyContent] =
+    (identify andThen getData(EventType.Event1) andThen requireData) { implicit request =>
+      val taxYear = TaxYear.getSelectedTaxYearAsString(request.userAnswers)
+      val mappedMemberOrEmployer = getMappedMemberOrEmployer(request.userAnswers, request.readOnly(), search.map(_.toLowerCase))
+      val pageTitle = if(search.isDefined && search != Some("")) {
+        Messages("unauthPaymentSummary.title.search", search.getOrElse(""), taxYear)
+      } else {
+        Messages("unauthPaymentSummary.title", taxYear)
+      }
+
+      Ok(view(form,
+        pageTitle,
+        waypoints,
+        mappedMemberOrEmployer,
+        eventPaginationService.paginateMappedMembers(mappedMemberOrEmployer, page),
+        page,
+        sumValue(request.userAnswers),
+        taxYear,
+        search,
+        routes.UnauthPaymentSummaryController.onPageLoadPaginated(waypoints, None, page).url))
   }
 
   private def sumValue(userAnswers: UserAnswers): String =
@@ -72,7 +87,7 @@ class UnauthPaymentSummaryController @Inject()(
       form.bindFromRequest().fold(
         formWithErrors => {
           val mappedMemberOrEmployer = getMappedMemberOrEmployer(request.userAnswers, request.readOnly(), None)
-          BadRequest(view(formWithErrors, waypoints, mappedMemberOrEmployer, eventPaginationService.paginateMappedMembers(mappedMemberOrEmployer,page), page, sumValue(request.userAnswers), taxYear, None,
+          BadRequest(view(formWithErrors, Messages("unauthPaymentSummary.title", taxYear), waypoints, mappedMemberOrEmployer, eventPaginationService.paginateMappedMembers(mappedMemberOrEmployer,page), page, sumValue(request.userAnswers), taxYear, None,
             routes.UnauthPaymentSummaryController.onPageLoadPaginated(waypoints, None, page).url))
         },
         value => {

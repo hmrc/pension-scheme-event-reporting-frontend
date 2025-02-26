@@ -32,6 +32,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import pages.common.MembersSummaryPage
 import pages.{EmptyWaypoints, EventReportingOverviewPage, VersionInfoPage}
+import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
@@ -64,6 +65,14 @@ class Event7MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector),
     bind[DateHelper].toInstance(mockTaxYear)
   )
+
+  private val searchValue = "xjshaiak"
+
+  private def pageTitle(searching: Boolean = false) = if(searching) {
+    Messages("membersSummary.event7.title.search", searchValue, "2023")
+  } else {
+    Messages("membersSummary.event7.title", "2023")
+  }
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -111,7 +120,32 @@ class Event7MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
 
 
           status(result) mustEqual OK
-          contentAsString(result).removeAllNonces() mustEqual view(formEvent7, waypoints, Event7, expectedSeq, "150.00", "2023", eventPaginationService.paginateMappedMembers(expectedSeq, 1), Index(0), searchValue = None,
+          contentAsString(result).removeAllNonces() mustEqual view(
+            formEvent7, pageTitle(), waypoints, Event7, expectedSeq, "150.00", "2023", eventPaginationService.paginateMappedMembers(expectedSeq, 1), Index(0), searchValue = None,
+            searchHref = "/manage-pension-scheme-event-report/report/event-7-summary")(request, messages(application)).toString
+        }
+      }
+
+      "must return OK and the correct view for a GET when searching" in {
+
+        val application = applicationBuilder(userAnswers = Some(sampleMemberJourneyDataEvent7
+          .setOrException(VersionInfoPage, VersionInfo(3, Submitted))
+          .setOrException(EventReportingOverviewPage, erOverviewSeq))).build()
+
+        val eventPaginationService = application.injector.instanceOf[EventPaginationService]
+
+        running(application) {
+          def getRouteEvent7Searching: String = routes.Event7MembersSummaryController.onPageLoad(waypoints, Some(searchValue)).url
+
+          val request = FakeRequest(GET, getRouteEvent7Searching)
+
+          val result = route(application, request).value
+
+          val view = application.injector.instanceOf[Event7MembersSummaryView]
+
+          status(result) mustEqual OK
+          contentAsString(result).removeAllNonces() mustEqual view(
+            formEvent7, pageTitle(true), waypoints, Event7, Seq(), "150.00", "2023", eventPaginationService.paginateMappedMembers(Seq(), 1), Index(0), searchValue = Some(searchValue),
             searchHref = "/manage-pension-scheme-event-report/report/event-7-summary")(request, messages(application)).toString
         }
       }
@@ -185,7 +219,8 @@ class Event7MembersSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result).removeAllNonces()mustEqual view(boundForm, waypoints, Event7, Nil, "0.00", "2023", emptyPageStats, Index(0), None, "/manage-pension-scheme-event-report/report/event-7-summary")(request, messages(application)).toString
+          contentAsString(result).removeAllNonces()mustEqual view(
+            boundForm, pageTitle(), waypoints, Event7, Nil, "0.00", "2023", emptyPageStats, Index(0), None, "/manage-pension-scheme-event-report/report/event-7-summary")(request, messages(application)).toString
           verify(mockUserAnswersCacheConnector, never).save(any(), any(), any())(any(), any(), any())
         }
       }
