@@ -108,9 +108,8 @@ class UnauthPaymentSummaryController @Inject()(
     }
 
     userAnswers.getAll(MembersOrEmployersPage(EventType.Event1))(MembersOrEmployersSummary.readsMemberOrEmployer)
-      .filter(memberOrEmployerSummary => !memberOrEmployerSummary.memberStatus.contains("Deleted") && searchTermFilter(memberOrEmployerSummary))
       .zipWithIndex.collect {
-      case (memberOrEmployerSummary, index) =>
+      case (memberOrEmployerSummary, index) if !(memberOrEmployerSummary.memberStatus.contains("Deleted") && searchTermFilter(memberOrEmployerSummary)) =>
         //TODO PODS-8617: Remove front-end filter. Values should be filtered via MongoDB with an index or by refactor
         val value = ValueViewModel(HtmlFormat.escape(currencyFormatter.format(memberOrEmployerSummary.unauthorisedPaymentValue)).toString)
         SummaryListRow(
