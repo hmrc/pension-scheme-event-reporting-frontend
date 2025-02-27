@@ -186,11 +186,11 @@ trait Validator {
 
   protected final def splitAddress(address: String): ParsedAddress = {
     address.split(",").toSeq match {
-      case Seq(add1, add2, add3, add4, postCode, country) => ParsedAddress(add1, add2, add3, add4, postCode, country)
-      case Seq(add1, add2, add3, postCode, country) => ParsedAddress(add1, add2, add3, EMPTY, postCode, country)
-      case Seq(add1, add2, postCode, country) => ParsedAddress(add1, add2, EMPTY, EMPTY, postCode, country)
-      case Seq(add1, add2, postCode) => ParsedAddress(add1, add2, EMPTY, EMPTY, postCode, EMPTY)
-      case Seq(add1, add2) => ParsedAddress(add1, add2, EMPTY, EMPTY, EMPTY, EMPTY)
+      case Seq(add1, add2, townOrCity, county, postCode, country) => ParsedAddress(add1, add2, townOrCity, county, postCode, country)
+      case Seq(add1, add2, townOrCity, postCode, country) => ParsedAddress(add1, add2, townOrCity, EMPTY, postCode, country)
+      case Seq(add1, townOrCity, postCode, country) => ParsedAddress(add1, EMPTY, townOrCity, EMPTY, postCode, country)
+      case Seq(add1, townOrCity, postCode) => ParsedAddress(add1, EMPTY, townOrCity, EMPTY, postCode, EMPTY)
+      case Seq(add1, townOrCity) => ParsedAddress(add1, EMPTY, townOrCity, EMPTY, EMPTY, EMPTY)
       case Seq(add1) => ParsedAddress(add1, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY)
       case _ => ParsedAddress(EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY)
     }
