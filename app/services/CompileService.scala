@@ -142,8 +142,8 @@ class CompileService @Inject()(
                   (implicit headerCarrier: HeaderCarrier, req: RequiredSchemeDataRequest[AnyContent]): Future[Unit] = {
 
     userAnswers.get(VersionInfoPage) match {
-      case Some(vi) if vi.status == NotStarted =>
-
+      case Some(vi) =>
+        if (vi.status == NotStarted) {
           val newVersionInfo = changeVersionInfo(vi)
           doCompile(
             vi,
@@ -153,7 +153,7 @@ class CompileService @Inject()(
             delete,
             eventOrDelete = Left(eventType)
           )
-      case Some(vi) =>
+        } else {
           userAnswersCacheConnector.isDataModified(pstr, eventType).flatMap {
             case Some(true) =>
               val newVersionInfo = changeVersionInfo(vi)
@@ -166,11 +166,11 @@ class CompileService @Inject()(
                 eventOrDelete = Left(eventType)
               )
             case Some(false) =>
-              logger.warn(s"Data not modified for pstr: $pstr, event: ${eventType}, version: ${vi}")
+              logger.warn(s"Data not modified for pstr: $pstr, event: ${eventType}, version: $vi")
               Future.successful()
             case _ => throw new RuntimeException(s"Data Changed Checks failed for $pstr and $eventType")
           }
-
+        }
 
 
       case None => Future.failed(new RuntimeException("No version available"))
