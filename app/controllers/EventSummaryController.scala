@@ -114,20 +114,31 @@ class EventSummaryController @Inject()(
                           }).flatten
                     }
                   } else {
-                    Seq(
-                      changeLinkForEvent(eventSummary.eventType, eventSummary.lockedBy.isDefined).map { link =>
-                        ActionItem(
-                          content = Text(Message("site.change")),
-                          href = link
-                        )
-                      },
-                      removeLinkForEvent(eventSummary.eventType, eventSummary.lockedBy.isDefined).map { link =>
-                        ActionItem(
-                          content = Text(Message("site.remove")),
-                          href = link
-                        )
-                      }
-                    ).flatten
+                    if (eventSummary.eventType == Event20A) {
+                      Seq(
+                        viewOnlyLinkForEvent(eventSummary.eventType).map { link =>
+                          ActionItem(
+                            content = Text(Message("site.view")),
+                            href = link
+                          )
+                        }
+                      ).flatten
+                    } else {
+                      Seq(
+                        changeLinkForEvent(eventSummary.eventType, eventSummary.lockedBy.isDefined).map { link =>
+                          ActionItem(
+                            content = Text(Message("site.change")),
+                            href = link
+                          )
+                        },
+                        removeLinkForEvent(eventSummary.eventType, eventSummary.lockedBy.isDefined).map { link =>
+                          ActionItem(
+                            content = Text(Message("site.remove")),
+                            href = link
+                          )
+                        }
+                      ).flatten
+                    }
                   }
                 ))
               )
@@ -270,7 +281,7 @@ class EventSummaryController @Inject()(
       case EventType.Event18 => Some(controllers.routes.EventSummaryController.onPageLoadForEvent18ViewOnlyLink(EmptyWaypoints).url)
       case EventType.Event19 => Some(controllers.event19.routes.Event19CheckYourAnswersController.onPageLoad.url)
       case EventType.Event20 => Some(controllers.event20.routes.Event20CheckYourAnswersController.onPageLoad.url)
-      case EventType.Event20A => Some(controllers.event20A.routes.Event20ACheckYourAnswersController.onPageLoad.url)
+      case EventType.Event20A => Some(controllers.event20A.routes.Event20ACheckYourAnswersController.onPageLoad(fromViewOnlyLink = true).url)
       case EventType.WindUp => Some(controllers.eventWindUp.routes.EventWindUpCheckYourAnswersController.onPageLoad().url)
       case _ =>
         logger.error(s"Missing event type $eventType")

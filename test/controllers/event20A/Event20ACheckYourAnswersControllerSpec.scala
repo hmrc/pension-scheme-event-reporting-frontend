@@ -17,13 +17,16 @@
 package controllers.event20A
 
 import base.SpecBase
-import data.SampleData.{sampleEvent20ABecameJourneyData, sampleEvent20ACeasedJourneyData}
+import data.SampleData.{erOverviewSeq, sampleEvent20ABecameJourneyData, sampleEvent20ACeasedJourneyData}
+import models.VersionInfo
 import models.enumeration.AdministratorOrPractitioner.{Administrator, Practitioner}
+import models.enumeration.VersionStatus.Submitted
 import models.event20A.WhatChange
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar.mock
+import pages.{EventReportingOverviewPage, VersionInfoPage}
 import pages.event20A.{BecameDatePage, WhatChangePage}
 import play.api.i18n.Messages
 import play.api.inject
@@ -45,12 +48,14 @@ class Event20ACheckYourAnswersControllerSpec extends SpecBase with SummaryListFl
 
     "must return OK and the correct view for a GET" in {
       val event20AUserAnswers = emptyUserAnswersWithTaxYear.set(WhatChangePage, WhatChange.BecameMasterTrust).get
+        .set(VersionInfoPage, VersionInfo(3, Submitted)).get
+        .set(EventReportingOverviewPage, erOverviewSeq).get
         .set(BecameDatePage, LocalDate.of(2023, 1, 12)).get
 
       val application = applicationBuilder(userAnswers = Some(event20AUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, controllers.event20A.routes.Event20ACheckYourAnswersController.onPageLoad.url)
+        val request = FakeRequest(GET, controllers.event20A.routes.Event20ACheckYourAnswersController.onPageLoad(false).url)
 
         val result = route(application, request).value
 
@@ -76,8 +81,12 @@ class Event20ACheckYourAnswersControllerSpec extends SpecBase with SummaryListFl
         inject.bind[CheckYourAnswersView].toInstance(mockView)
       )
 
+      val event20AUserAnswers = sampleEvent20ABecameJourneyData
+        .set(VersionInfoPage, VersionInfo(3, Submitted)).get
+        .set(EventReportingOverviewPage, erOverviewSeq).get
+
       val application = applicationBuilder(
-        userAnswers = Some(sampleEvent20ABecameJourneyData),
+        userAnswers = Some(event20AUserAnswers),
         extraModules = extraModules
       ).build()
 
@@ -86,7 +95,7 @@ class Event20ACheckYourAnswersControllerSpec extends SpecBase with SummaryListFl
 
       running(application) {
         when(mockView.apply(captor.capture(), any(), any())(any(), any())).thenReturn(play.twirl.api.Html(""))
-        val request = FakeRequest(GET, controllers.event20A.routes.Event20ACheckYourAnswersController.onPageLoad.url)
+        val request = FakeRequest(GET, controllers.event20A.routes.Event20ACheckYourAnswersController.onPageLoad(false).url)
         val result = route(application, request).value
         status(result) mustEqual OK
 
@@ -108,8 +117,12 @@ class Event20ACheckYourAnswersControllerSpec extends SpecBase with SummaryListFl
         inject.bind[CheckYourAnswersView].toInstance(mockView)
       )
 
+      val event20AUserAnswers = sampleEvent20ACeasedJourneyData
+        .set(VersionInfoPage, VersionInfo(3, Submitted)).get
+        .set(EventReportingOverviewPage, erOverviewSeq).get
+
       val application = applicationBuilder(
-        userAnswers = Some(sampleEvent20ACeasedJourneyData),
+        userAnswers = Some(event20AUserAnswers),
         extraModules = extraModules
       ).build()
 
@@ -118,7 +131,7 @@ class Event20ACheckYourAnswersControllerSpec extends SpecBase with SummaryListFl
 
       running(application) {
         when(mockView.apply(captor.capture(), any(), any())(any(), any())).thenReturn(play.twirl.api.Html(""))
-        val request = FakeRequest(GET, controllers.event20A.routes.Event20ACheckYourAnswersController.onPageLoad.url)
+        val request = FakeRequest(GET, controllers.event20A.routes.Event20ACheckYourAnswersController.onPageLoad(false).url)
         val result = route(application, request).value
         status(result) mustEqual OK
 
@@ -139,7 +152,7 @@ class Event20ACheckYourAnswersControllerSpec extends SpecBase with SummaryListFl
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, controllers.event20A.routes.Event20ACheckYourAnswersController.onPageLoad.url)
+        val request = FakeRequest(GET, controllers.event20A.routes.Event20ACheckYourAnswersController.onPageLoad(false).url)
 
         val result = route(application, request).value
 

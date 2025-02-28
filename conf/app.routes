@@ -585,7 +585,7 @@ POST        /report/event-20A-when-scheme-became-Master-Trust              contr
 GET         /report/event-20A-when-scheme-ceased-to-be-Master-Trust        controllers.event20A.CeasedDateController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 POST        /report/event-20A-when-scheme-ceased-to-be-Master-Trust        controllers.event20A.CeasedDateController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints)
 
-GET         /report/event-20A-check-your-answers                           controllers.event20A.Event20ACheckYourAnswersController.onPageLoad
+GET         /report/event-20A-check-your-answers                           controllers.event20A.Event20ACheckYourAnswersController.onPageLoad(fromViewOnlyLink: Boolean)
 
 GET         /report/event-20a-declaration-PSA                               controllers.event20A.Event20APsaDeclarationController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints)
 GET         /report/event-20a-declaration-PSA-click                      controllers.event20A.Event20APsaDeclarationController.onClick(waypoints: Waypoints ?= EmptyWaypoints)

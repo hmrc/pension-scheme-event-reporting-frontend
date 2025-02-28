@@ -25,7 +25,7 @@ case class Event20ACheckYourAnswersPage() extends CheckAnswersPage {
     s"event-${Event20A.toString}-check-answers"
 
   override def route(waypoints: Waypoints): Call = {
-    controllers.event20A.routes.Event20ACheckYourAnswersController.onPageLoad
+    controllers.event20A.routes.Event20ACheckYourAnswersController.onPageLoad(fromViewOnlyLink = false)
   }
 
   override def toString: String = "CheckYourAnswersPage"
