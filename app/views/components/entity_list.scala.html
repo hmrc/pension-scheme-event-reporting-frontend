@@ -24,8 +24,9 @@
                     @event.key.content.asHtml
                 </dt>
                 @event.actions.map { actions =>
-                    <dd class="govuk-summary-list__actions hmrc-summary-list__actions govuk-!-width-one-half">
-                        <ul class="govuk-summary-list__actions-list">
+                    @if(actions.items.nonEmpty) {
+                        <dd class="govuk-summary-list__actions hmrc-summary-list__actions govuk-!-width-one-half">
+                            <ul class="govuk-summary-list__actions-list">
                             @actions.items.map { item =>
                                 <li class="govuk-summary-list__actions-list-item">
                                     <a class="govuk-link" href="@item.href">
@@ -33,8 +34,12 @@
                                     </a>
                                 </li>
                             }
-                        </ul>
-                    </dd>
+                            </ul>
+                        </dd>
+                    }
+                    @if(actions.items.isEmpty) {
+                        <dd hidden>Can't edit this event</dd>
+                    }
                 }
             </div>
        }
