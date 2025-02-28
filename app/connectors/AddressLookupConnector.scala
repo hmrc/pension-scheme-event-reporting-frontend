@@ -44,8 +44,8 @@ class AddressLookupConnector @Inject()(httpClientV2: HttpClientV2, config: Front
       .setHeader(headers: _*).execute[HttpResponse] flatMap   {
       case response if response.status equals OK => Future.successful {
         response.json.as[Seq[TolerantAddress]]
-          .filterNot(a => a.addressLine1.isEmpty && a.addressLine2.isEmpty && a.addressLine3.isEmpty &&
-            a.addressLine4.isEmpty)
+          .filterNot(a => a.addressLine1.isEmpty && a.addressLine2.isEmpty && a.townOrCity.isEmpty &&
+            a.county.isEmpty)
       }
       case response =>
         val message = s"Address Lookup failed with status ${response.status} Response body :${response.body}"

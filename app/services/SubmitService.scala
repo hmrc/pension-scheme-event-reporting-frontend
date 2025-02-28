@@ -19,7 +19,7 @@ package services
 import com.google.inject.Inject
 import connectors.{EventReportingConnector, UserAnswersCacheConnector}
 import models.enumeration.VersionStatus.{Compiled, Submitted}
-import models.requests.{DataRequest, RequiredSchemeDataRequest}
+import models.requests.RequiredSchemeDataRequest
 import models.{UserAnswers, VersionInfo}
 import pages.VersionInfoPage
 import play.api.Logger

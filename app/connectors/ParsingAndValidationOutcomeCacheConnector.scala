@@ -63,7 +63,6 @@ class ParsingAndValidationOutcomeCacheConnector @Inject()(config: FrontendAppCon
 
   def deleteOutcome(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
     val headers: Seq[(String, String)] = Seq(("Content-Type", "application/json"))
-    val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers: _*)
 
     http.delete(url).setHeader(headers: _*).execute[HttpResponse] andThen {
       case Failure(t: Throwable) => logger.warn("Unable to delete parsing and validation outcome", t)

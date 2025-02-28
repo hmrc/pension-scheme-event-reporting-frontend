@@ -280,8 +280,8 @@ class Event1Validator @Inject()(
     val fields = Seq(
       Field(addressLine1, parsedAddress.addressLine1, addressLine1, fieldNumber, Some(Event1FieldNames.addressLine1)),
       Field(addressLine2, parsedAddress.addressLine2, addressLine2, fieldNumber, Some(Event1FieldNames.addressLine2)),
-      Field(addressLine3, parsedAddress.addressLine3, addressLine3, fieldNumber, Some(Event1FieldNames.addressLine3)),
-      Field(addressLine4, parsedAddress.addressLine4, addressLine4, fieldNumber, Some(Event1FieldNames.addressLine4)),
+      Field(townOrCity, parsedAddress.addressLine3, townOrCity, fieldNumber, Some(Event1FieldNames.townOrCity)),
+      Field(county, parsedAddress.addressLine4, county, fieldNumber, Some(Event1FieldNames.county)),
       Field(postCode, parsedAddress.postCode, postCode, fieldNumber, Some(Event1FieldNames.postCode)),
       Field(country, getCountryCode(countryInput), country, fieldNumber, Some(Event1FieldNames.country))
     )

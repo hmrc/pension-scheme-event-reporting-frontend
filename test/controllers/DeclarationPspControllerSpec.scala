@@ -21,13 +21,11 @@ import connectors.MinimalConnector.{IndividualDetails, MinimalDetails}
 import connectors.{EventReportingConnector, MinimalConnector, SchemeConnector, UserAnswersCacheConnector}
 import data.SampleData.sampleEvent20JourneyData
 import forms.DeclarationPspFormProvider
-import handlers.NothingToSubmitException
 import models.enumeration.VersionStatus.{Compiled, Submitted}
 import models.{AuthorisingPSA, PspDetails, PspSchemeDetails, UserAnswers, VersionInfo}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
-import org.scalatest.RecoverMethods.recoverToExceptionIf
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.{DeclarationPspPage, EmptyWaypoints, VersionInfoPage}
 import play.api.http.Status.OK
@@ -40,9 +38,7 @@ import services.SubmitService
 import views.html.DeclarationPspView
 
 import java.time.LocalDate
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration.{Duration, SECONDS}
-import scala.concurrent.{Await, Future}
+import scala.concurrent.Future
 
 class DeclarationPspControllerSpec extends SpecBase with BeforeAndAfterEach {
 

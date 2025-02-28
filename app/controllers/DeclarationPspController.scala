@@ -21,7 +21,6 @@ import config.FrontendAppConfig
 import connectors._
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.DeclarationPspFormProvider
-import handlers.NothingToSubmitException
 import models.enumeration.AdministratorOrPractitioner
 import models.requests.DataRequest
 import models.{LoggedInUser, TaxYear, UserAnswers}

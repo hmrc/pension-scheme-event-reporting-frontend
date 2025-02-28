@@ -248,16 +248,6 @@ object Event8ACheckYourAnswersControllerSpec {
       Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages(hiddenContentChangeLink)), "", Map()))))
     )
 
-  private def fakeSummaryListRowWithTextWithHiddenContent(messageKey: String, text: String, changeLink: String, hiddenContentChangeLink: String)
-                                                         (implicit messages: Messages): SummaryListRow =
-    SummaryListRow(
-      Key(
-        Text(
-          messages(messageKey)
-        ), ""),
-      Value(Text(text), ""), "",
-      Some(Actions("", List(ActionItem(changeLink, Text("Change"), Some(messages(hiddenContentChangeLink)), "", Map()))))
-    )
 
   private def fakeSummaryListRowWithHtmlContentWithHiddenContentWithTwoMsgKeys(messageKeyOne: String, messageKeyTwo: String, htmlContent: String,
                                                                                changeLink: String, hiddenContentChangeLink: String)
@@ -290,14 +280,6 @@ object Event8ACheckYourAnswersControllerSpec {
         ), ""),
       Value(HtmlContent(htmlContent), ""), "")
 
-  private def fakeSummaryListRowWithTextWithHiddenContentViewOnly(messageKey: String, text: String)
-                                                                 (implicit messages: Messages): SummaryListRow =
-    SummaryListRow(
-      Key(
-        Text(
-          messages(messageKey)
-        ), ""),
-      Value(Text(text), ""), "")
 
   private val membersDetailsContent = s"""<p class="govuk-body">Joe Bloggs</p>
        |<p class="govuk-body">AA234567D</p>""".stripMargin

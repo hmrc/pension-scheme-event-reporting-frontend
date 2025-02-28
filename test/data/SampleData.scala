@@ -77,17 +77,17 @@ object SampleData extends SpecBase {
   val seqAddresses: Seq[Address] = Seq[Address](
     Address(
       addressLine1 = "addr11",
-      addressLine2 = "addr12",
-      addressLine3 = Some("addr13"),
-      addressLine4 = Some("addr14"),
+      addressLine2 = Some("addr12"),
+      townOrCity = "addr13",
+      county = Some("addr14"),
       postcode = Some("zz11zz"),
       country = "GB"
     ),
     Address(
       addressLine1 = "addr21",
-      addressLine2 = "addr22",
-      addressLine3 = Some("addr23"),
-      addressLine4 = Some("addr24"),
+      addressLine2 = Some("addr22"),
+      townOrCity = "addr23",
+      county = Some("addr24"),
       postcode = Some("zz11zz"),
       country = "GB"
     )
@@ -95,27 +95,27 @@ object SampleData extends SpecBase {
 
   val employerAddress: Address = Address(
     addressLine1 = "addr11",
-    addressLine2 = "addr12",
-    addressLine3 = Some("addr13"),
-    addressLine4 = Some("addr14"),
+    addressLine2 = Some("addr12"),
+    townOrCity = "addr13",
+    county = Some("addr14"),
     postcode = Some("zz11zz"),
     country = "GB"
   )
 
   val event1EmployerAddress: Address = Address(
     addressLine1 = "10 Other Place",
-    addressLine2 = "Some District",
-    addressLine3 = Some("Anytown"),
-    addressLine4 = Some("Anyplace"),
+    addressLine2 = Some("Some District"),
+    townOrCity = "Anytown",
+    county = Some("Anyplace"),
     postcode = Some("ZZ1 1ZZ"),
     country = "GB"
   )
 
   val memberAddress: Address = Address(
     addressLine1 = "10 Other Place",
-    addressLine2 = "Some District",
-    addressLine3 = Some("Anytown"),
-    addressLine4 = Some("Anyplace"),
+    addressLine2 = Some("Some District"),
+    townOrCity = "Anytown",
+    county = Some("Anyplace"),
     postcode = Some("ZZ1 1ZZ"),
     country = "GB"
   )
@@ -124,16 +124,16 @@ object SampleData extends SpecBase {
     TolerantAddress(
       addressLine1 = Some("addr11"),
       addressLine2 = Some("addr12"),
-      addressLine3 = Some("addr13"),
-      addressLine4 = Some("addr14"),
+      townOrCity = Some("addr13"),
+      county = Some("addr14"),
       postcode = Some("zz11zz"),
       countryOpt = Some("GB")
     ),
     TolerantAddress(
       addressLine1 = Some("addr21"),
       addressLine2 = Some("addr22"),
-      addressLine3 = Some("addr23"),
-      addressLine4 = Some("addr24"),
+      townOrCity = Some("addr23"),
+      county = Some("addr24"),
       postcode = Some("zz11zz"),
       countryOpt = Some("GB")
     )

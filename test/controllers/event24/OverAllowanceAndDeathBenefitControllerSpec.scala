@@ -25,7 +25,7 @@ import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.EmptyWaypoints
-import pages.event24.{Event24CheckYourAnswersPage, MarginalRatePage, OverAllowanceAndDeathBenefitPage}
+import pages.event24.OverAllowanceAndDeathBenefitPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest

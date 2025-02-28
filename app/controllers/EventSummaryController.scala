@@ -22,7 +22,7 @@ import forms.EventSummaryFormProvider
 import models.TaxYear.getSelectedTaxYearAsString
 import models.enumeration.EventType
 import models.enumeration.EventType.{Event18, Event20A, Event8A, WindUp}
-import models.enumeration.VersionStatus.{Compiled, Submitted}
+import models.enumeration.VersionStatus.Submitted
 import models.requests.DataRequest
 import models.{EventSummary, MemberSummaryPath, UserAnswers}
 import pages.{EmptyWaypoints, EventSummaryPage, TaxYearPage, VersionInfoPage, Waypoints}

@@ -20,6 +20,7 @@ import connectors.{AddressLookupConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.address.EnterPostcodeFormProvider
 import models.Index
+import models.address.TolerantAddress
 import models.enumeration.AddressJourneyType
 import models.requests.DataRequest
 import pages.Waypoints
@@ -86,8 +87,16 @@ class EnterPostcodeController @Inject()(val controllerComponents: MessagesContro
           formWithErrors => renderView(formWithErrors),
           postCode => {
             addressLookupConnector.addressLookupByPostCode(postCode).flatMap {
-              case Nil =>
+              case Nil => {
+                val emptyAddress = TolerantAddress(None, None, None, None, None, None)
+                val updatedAnswers = request.userAnswers.setOrException(page, Seq(emptyAddress.copy(postcode = Some(postCode))))
+                userAnswersCacheConnector.save(
+                  request.pstr,
+                  addressJourneyType.eventType,
+                  updatedAnswers
+                )
                 renderView(formWithError(Message("enterPostcode.error.invalid", postCode), retrieveNameManual(request, index)))
+              }
               case addresses =>
                 val originalUserAnswers = request.userAnswers
                 val updatedAnswers = originalUserAnswers.setOrException(page, addresses)

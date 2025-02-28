@@ -45,12 +45,13 @@ class ChooseAddressController @Inject()(val controllerComponents: MessagesContro
     (identify andThen getData(addressJourneyType.eventType) andThen requireData) { implicit request =>
       request.userAnswers.get(EnterPostcodePage(addressJourneyType, index)) match {
         case Some(addresses) =>
-          val form = formProvider(addresses)
+          val sortedAddresses = addresses.distinct.sortBy(_.addressLine1)
+          val form = formProvider(sortedAddresses)
           val page = ChooseAddressPage(addressJourneyType, index)
           Ok(view(form, waypoints, addressJourneyType,
             addressJourneyType.title(page),
             addressJourneyType.heading(page, index),
-            addresses,
+            sortedAddresses,
             index
           ))
         case _ => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad(None).url)
@@ -63,7 +64,8 @@ class ChooseAddressController @Inject()(val controllerComponents: MessagesContro
         val page = ChooseAddressPage(addressJourneyType, index)
         request.userAnswers.get(EnterPostcodePage(addressJourneyType, index)) match {
           case Some(addresses) =>
-            val form = formProvider(addresses)
+            val sortedAddresses = addresses.distinct.sortBy(_.addressLine1)
+            val form = formProvider(sortedAddresses)
             form.bindFromRequest().fold(
               formWithErrors => {
                 Future.successful(
@@ -74,7 +76,7 @@ class ChooseAddressController @Inject()(val controllerComponents: MessagesContro
                       addressJourneyType,
                       addressJourneyType.title(page),
                       addressJourneyType.heading(page, index),
-                      addresses,
+                      sortedAddresses,
                       index
                     )
                   )

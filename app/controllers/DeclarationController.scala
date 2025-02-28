@@ -20,7 +20,6 @@ import audit.{AuditService, EventReportingSubmissionEmailAuditEvent}
 import config.FrontendAppConfig
 import connectors.{EmailConnector, EmailStatus, MinimalConnector}
 import controllers.actions._
-import handlers.NothingToSubmitException
 import models.enumeration.AdministratorOrPractitioner
 import models.requests.DataRequest
 import models.{LoggedInUser, TaxYear, UserAnswers}
