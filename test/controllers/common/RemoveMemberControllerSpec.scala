@@ -20,12 +20,15 @@ import base.SpecBase
 import connectors.EventReportingConnector
 import data.SampleData.{memberDetails, sampleMemberJourneyDataEvent1, sampleMemberJourneyDataEvent3and4and5}
 import forms.common.RemoveMemberFormProvider
+import models.{EventDataIdentifier, UserAnswers, VersionInfo}
 import models.enumeration.EventType.{Event1, Event5}
+import models.enumeration.JourneyStartType.InProgress
+import models.enumeration.VersionStatus.{Compiled, NotStarted}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.EmptyWaypoints
+import pages.{EmptyWaypoints, VersionInfoPage}
 import pages.common.RemoveMemberPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule

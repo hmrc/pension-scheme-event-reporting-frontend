@@ -122,8 +122,8 @@ class CompileService @Inject()(
   def deleteMember(pstr: String, edi: EventDataIdentifier, currentVersion: Int, memberIdToDelete: String,
                    userAnswers: UserAnswers)(implicit headerCarrier: HeaderCarrier, req: RequiredSchemeDataRequest[AnyContent]): Future[Unit] = {
     userAnswers.get(VersionInfoPage) match {
-      case Some(vi) =>
-        if (vi.status == NotStarted) {
+
+      case Some(vi)  =>
           val newVersionInfo = changeVersionInfo(vi)
           doCompile(
             vi,
@@ -133,27 +133,8 @@ class CompileService @Inject()(
             delete = true,
             eventOrDelete = Right((pstr, edi, currentVersion, memberIdToDelete))
           )
-        } else {
-          userAnswersCacheConnector.isDataModified(pstr, edi.eventType).flatMap {
-            case Some(x) if x =>
-              val newVersionInfo = changeVersionInfo(vi)
-              doCompile(
-                vi,
-                newVersionInfo,
-                pstr,
-                userAnswers,
-                delete = false,
-                eventOrDelete = Right((pstr, edi, currentVersion, memberIdToDelete))
-              )
 
-            case Some(x) if !x =>
-              logger.warn(s"Data not modified for pstr: $pstr, event: ${edi.eventType}, version: $currentVersion")
-              Future.successful(())
-            case _ => throw new RuntimeException(s"Data Changed Checks failed for $pstr")
-          }
-        }
       case _ => throw new RuntimeException(s"No version available")
-
     }
   }
 
@@ -185,6 +166,7 @@ class CompileService @Inject()(
                 eventOrDelete = Left(eventType)
               )
             case Some(false) =>
+              logger.warn(s"Data not modified for pstr: $pstr, event: ${eventType}, version: $vi")
               Future.successful()
             case _ => throw new RuntimeException(s"Data Changed Checks failed for $pstr and $eventType")
           }
