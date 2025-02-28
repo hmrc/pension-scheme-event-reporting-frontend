@@ -20,18 +20,21 @@ import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import data.SampleData.{erOverviewSeq, userAnswersWithOneMemberAndEmployerEvent1}
 import forms.event1.UnauthPaymentSummaryFormProvider
+import models.enumeration.EventType
 import models.enumeration.VersionStatus.Submitted
 import models.{Index, TaxYear, VersionInfo}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
+import pages.common.{MembersPage, RemoveMemberPage}
 import pages.event1.UnauthPaymentSummaryPage
 import pages.{EmptyWaypoints, EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
 import play.api.Application
 import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
+import play.api.libs.json.{JsPath, JsString}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.EventPaginationService
@@ -218,5 +221,56 @@ class UnauthPaymentSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
 
       Await.result(application.stop(), 10.seconds)
     }
+
+    "must return OK and the correct view for a GET and ignore deleted members" in {
+
+      val userAnswers = userAnswersWithOneMemberAndEmployerEvent1
+        .setOrException(JsPath \ "event1" \ "membersOrEmployers" \ 0 \ "memberStatus", JsString("Deleted"))
+        .setOrException(TaxYearPage, TaxYear("2022"), nonEventTypeData = true)
+        .setOrException(EventReportingOverviewPage, erOverviewSeq)
+        .setOrException(VersionInfoPage, VersionInfo(3, Submitted))
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+      running(application) {
+        val request = FakeRequest(GET, getRoute)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[UnauthPaymentSummaryView]
+
+        val expectedSeq = Seq(
+          SummaryListRow(
+            key = Key(Text(value = "Company Name")),
+            value = Value(Text(value = "7,687.00")),
+            actions = Some(Actions(
+              items = List(
+                ActionItem(
+                  href = "/manage-pension-scheme-event-report/report/2/event-1-check-your-answers",
+                  content = Text(Messages("site.view")),
+                  visuallyHiddenText = None,
+                  attributes = Map()
+                ),
+                ActionItem(
+                  href = "/manage-pension-scheme-event-report/report/2/remove-event-1",
+                  content = Text(Messages("site.remove")),
+                  visuallyHiddenText = None,
+                  attributes = Map()
+                )
+              )
+            ))
+          )
+        )
+
+        status(result) mustEqual OK
+        contentAsString(result).removeAllNonces() mustEqual view(
+          form, pageTitle(), waypoints, expectedSeq, paginationStats(application, expectedSeq), Index(0), "7,687.00", taxYear,
+          None, "/manage-pension-scheme-event-report/report/event-1-summary/1"
+        )(request, messages(application)).toString
+      }
+
+      Await.result(application.stop(), 10.seconds)
+    }
+
   }
 }
