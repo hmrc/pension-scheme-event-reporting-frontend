@@ -73,6 +73,7 @@ eventSummary.yesno.legend = Do you want to add another event?
 eventSummary.checkYourAnswersLabel = Check your answers
 eventSummary.error.required = Select yes if you want to add another event
 eventSummary.change.hidden = EventSummary
+eventSummary.cannotBeEditedOrDeleted = This cannot be edited or deleted
 
 wantToSubmit.title = Do you want to submit this event report to HMRC?
 wantToSubmit.heading = Do you want to submit this event report to HMRC?

@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@(events: Seq[SummaryListRow])
+@(events: Seq[SummaryListRow])(implicit messages: Messages)
 
 <div class="govuk-form-group">
     <dl class="govuk-summary-list hmrc-list-with-actions hmrc-list-with-actions--short">
@@ -38,7 +38,9 @@
                         </dd>
                     }
                     @if(actions.items.isEmpty) {
-                        <dd hidden>Can't edit this event</dd>
+                        <dd class="govuk-summary-list__actions hmrc-summary-list__actions govuk-!-width-one-half">
+                            @messages("eventSummary.cannotBeEditedOrDeleted")
+                        </dd>
                     }
                 }
             </div>
