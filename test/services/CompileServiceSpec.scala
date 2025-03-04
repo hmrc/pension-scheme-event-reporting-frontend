@@ -102,6 +102,42 @@ class CompileServiceSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
+    "must call connector with correct tax year and version when submitted status + version 1: increase version to 2, amend status + update overview" in {
+      val captor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      val edi = EventDataIdentifier(Event1, taxYear, "2")
+      when(mockEventReportingConnector.compileEvent(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi), any(), any())(any(), any()))
+        .thenReturn(Future.successful((): Unit))
+      when(mockUserAnswersCacheConnector
+        .changeVersion(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq("1"), ArgumentMatchers.eq("2"))(any(), any(), any()))
+        .thenReturn(Future.successful((): Unit))
+      when(mockUserAnswersCacheConnector.getByEventType(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi.eventType))(any(), any(), any()))
+        .thenReturn(Future.successful(Some(newUserAnswers)))
+      when(mockUserAnswersCacheConnector.isDataModified(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi.eventType))(any(), any(), any()))
+        .thenReturn(Future.successful(Some(true)))
+      when(mockUserAnswersCacheConnector.getByEventType(ArgumentMatchers.eq(pstr + "_original_cache"), ArgumentMatchers.eq(edi.eventType))(any(), any(), any()))
+        .thenReturn(Future.successful(Some(oldUserAnswers)))
+
+      val ua = emptyUserAnswersWithTaxYear
+        .setOrException(TaxYearPage, currentTaxYear, nonEventTypeData = true)
+        .setOrException(EventReportingOverviewPage, seqEROverview, nonEventTypeData = true)
+        .setOrException(VersionInfoPage, VersionInfo(1, Submitted), nonEventTypeData = true)
+
+      whenReady(compileService.compileEvent(Event1, pstr, ua)) { _ =>
+        verify(mockUserAnswersCacheConnector, times(1)).save(ArgumentMatchers.eq(pstr), captor.capture())(any(), any(), any())
+        verify(mockUserAnswersCacheConnector, times(1))
+          .changeVersion(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq("1"), ArgumentMatchers.eq("2"))(any(), any(), any())
+        val actualUAAfterSave = captor.getValue
+        actualUAAfterSave.get(VersionInfoPage) mustBe Some(VersionInfo(2, Compiled))
+        val actualOverviewValues = actualUAAfterSave.get(EventReportingOverviewPage)
+          .flatMap {
+            _.headOption.map { o =>
+              Tuple2(o.versionDetails.head.numberOfVersions, o.versionDetails.head.compiledVersionAvailable)
+            }
+          }
+        actualOverviewValues mustBe Some(Tuple2(2, true))
+      }
+    }
+
     "must maintain version and status when already compiled" in {
       val captor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       val edi = EventDataIdentifier(Event1, taxYear, "1")
@@ -165,42 +201,6 @@ class CompileServiceSpec extends SpecBase with BeforeAndAfterEach {
         val actualUAAfterSave = captor.getValue
         actualUAAfterSave.get(VersionInfoPage) mustBe Some(VersionInfo(1, Compiled))
         succeed
-      }
-    }
-
-    "must call connector with correct tax year and version when submitted status + version 1: increase version to 2, amend status + update overview" in {
-      val captor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-      val edi = EventDataIdentifier(Event1, taxYear, "2")
-      when(mockEventReportingConnector.compileEvent(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi), any(), any())(any(), any()))
-        .thenReturn(Future.successful((): Unit))
-      when(mockUserAnswersCacheConnector
-        .changeVersion(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq("1"), ArgumentMatchers.eq("2"))(any(), any(), any()))
-        .thenReturn(Future.successful((): Unit))
-      when(mockUserAnswersCacheConnector.getByEventType(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi.eventType))(any(), any(), any()))
-        .thenReturn(Future.successful(Some(newUserAnswers)))
-      when(mockUserAnswersCacheConnector.isDataModified(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi.eventType))(any(), any(), any()))
-        .thenReturn(Future.successful(Some(true)))
-      when(mockUserAnswersCacheConnector.getByEventType(ArgumentMatchers.eq(pstr + "_original_cache"), ArgumentMatchers.eq(edi.eventType))(any(), any(), any()))
-        .thenReturn(Future.successful(Some(oldUserAnswers)))
-
-      val ua = emptyUserAnswersWithTaxYear
-        .setOrException(TaxYearPage, currentTaxYear, nonEventTypeData = true)
-        .setOrException(EventReportingOverviewPage, seqEROverview, nonEventTypeData = true)
-        .setOrException(VersionInfoPage, VersionInfo(1, Submitted), nonEventTypeData = true)
-
-      whenReady(compileService.compileEvent(Event1, pstr, ua)) { _ =>
-        verify(mockUserAnswersCacheConnector, times(1)).save(ArgumentMatchers.eq(pstr), captor.capture())(any(), any(), any())
-        verify(mockUserAnswersCacheConnector, times(1))
-          .changeVersion(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq("1"), ArgumentMatchers.eq("2"))(any(), any(), any())
-        val actualUAAfterSave = captor.getValue
-        actualUAAfterSave.get(VersionInfoPage) mustBe Some(VersionInfo(2, Compiled))
-        val actualOverviewValues = actualUAAfterSave.get(EventReportingOverviewPage)
-          .flatMap {
-            _.headOption.map { o =>
-              Tuple2(o.versionDetails.head.numberOfVersions, o.versionDetails.head.compiledVersionAvailable)
-            }
-          }
-        actualOverviewValues mustBe Some(Tuple2(2, true))
       }
     }
   }
