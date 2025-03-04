@@ -91,6 +91,7 @@ class UpscanInitiateConnector @Inject()(httpClientV2: HttpClientV2, appConfig: F
       callbackUrl = upscanCallbackURL,
       successRedirect = redirectOnSuccess,
       errorRedirect = redirectOnError,
+      minimumFileSize = Some(1),
       maximumFileSize = Some(appConfig.maxUploadFileSize * (1024 * 1024))
     )
     initiate(url"${appConfig.initiateV2Url}", req, eventType)

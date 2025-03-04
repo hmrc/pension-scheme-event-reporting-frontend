@@ -82,7 +82,7 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
     val startTime = System.currentTimeMillis
     request.request.queryString.get("key").flatMap(_.headOption) match {
       case Some(uploadIdReference) =>
-        val submitUrl = Call("POST", routes.FileUploadResultController.onSubmit(waypoints, eventType).url + s"?key=$uploadIdReference")
+        val submitUrl = Call("POST", routes.FileUploadResultController.onPageLoad(waypoints, eventType).url + s"?key=$uploadIdReference")
         eventReportingConnector.getFileUploadOutcome(uploadIdReference).map {
           case FileUploadOutcomeResponse(_, IN_PROGRESS, _, _, _) =>
             status(view(preparedForm, waypoints, getEventTypeByName(eventType), None, submitUrl))
