@@ -64,6 +64,7 @@ case class TolerantAddress(addressLine1: Option[String],
   }
 
   private def shuffle: Option[Address] = (addressLine1, addressLine2, townOrCity, county) match {
+    case (Some(line1), Some(line2), None, None) => Some(Address(line1, None, line2, None, postcode, countryOpt.get))
     case (None, None, Some(line3), Some(line4)) => Some(Address(line3, None, line4, None, postcode, countryOpt.get))
     case (Some(line1), None, Some(line3), al4) => Some(Address(line1, None, line3, al4, postcode, countryOpt.get))
     case (Some(line1), None, None, Some(line4)) => Some(Address(line1, None, line4, None, postcode, countryOpt.get))
