@@ -170,6 +170,27 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach with 
       addressOption.get.country mustEqual "Country"
     }
 
+    "must correctly convert TolerantAddress to Address if one value missing" in {
+      val tolerantAddress = TolerantAddress(
+        Some("Line 1"),
+        Some("Line 2"),
+        None,
+        Some("Line 4"),
+        Some("12345"),
+        Some("Country")
+      )
+
+      val addressOption = tolerantAddress.toAddress
+
+      addressOption mustBe defined
+      addressOption.get.addressLine1 mustEqual "Line 1"
+      addressOption.get.addressLine2 mustEqual Some("Line 2")
+      addressOption.get.townOrCity mustEqual "Line 4"
+      addressOption.get.county mustEqual None
+      addressOption.get.postcode mustEqual Some("12345")
+      addressOption.get.country mustEqual "Country"
+    }
+
     "must correctly handle shuffling of address lines in TolerantAddress if non-UK address" in {
       val tolerantAddress = TolerantAddress(
         None,
