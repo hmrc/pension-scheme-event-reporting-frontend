@@ -105,6 +105,29 @@ class ChooseAddressControllerSpec extends SpecBase with BeforeAndAfterEach with 
       }
     }
 
+    "must save the answer correctly when not all address fields provided" in {
+      val uaCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+
+      when(mockUserAnswersCacheConnector.save(any(), any(), uaCaptor.capture())(any(), any(), any())).thenReturn(Future.successful(()))
+
+      val ua = emptyUserAnswers.setOrException(EnterPostcodePage(Event1EmployerAddressJourney, 0), Seq(tolerantAddressRequiredFieldsOnly))
+
+      val application =
+        applicationBuilder(userAnswers = Some(ua), extraModules)
+          .build()
+
+      running(application) {
+        val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "0"))
+        val result = route(application, request).value
+        val updatedAnswers = emptyUserAnswers.setOrException(ManualAddressPage(Event1EmployerAddressJourney, 0), addressRequiredFieldsOnly)
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual ChooseAddressPage(Event1EmployerAddressJourney, 0).navigate(waypoints, updatedAnswers, updatedAnswers).url
+        verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any(), any())
+        uaCaptor.getValue.get(ManualAddressPage(Event1EmployerAddressJourney, 0)) mustBe Some(addressRequiredFieldsOnly)
+      }
+    }
+
     "must return bad request when invalid data is submitted" in {
       val ua = emptyUserAnswers.setOrException(EnterPostcodePage(Event1EmployerAddressJourney, 0), seqTolerantAddresses)
 
