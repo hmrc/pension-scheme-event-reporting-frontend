@@ -2042,3 +2042,9 @@ eventReportingOverview.noReportsInProgress             = There are no event repo
 eventReportingOverview.pastEventReportingReturns       = Past event reports
 eventReportingOverview.noPastReturns                   = There are no past event reports.
 eventReportingOverview.allPastEventReportingReturns    = View or change all past event reports
+
+generic.upload.error.required = Choose the file to upload
+generic.upload.error.format = File must be a .csv format
+generic.upload.error.size = The selected file must be smaller than 4 MB
+generic.upload.error.malicious = The file you have uploaded has been flagged as malicious
+generic.upload.error.unknown = The file you are trying to upload is invalid

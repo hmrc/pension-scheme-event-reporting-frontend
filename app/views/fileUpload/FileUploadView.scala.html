@@ -36,6 +36,17 @@
         <input type="hidden" name="@key" value="@value">
     }
 
+    @errorMessage.map { message =>
+        @govukErrorSummary(ErrorSummary(
+            title = Text(messages("error.summary.title")),
+            errorList = Seq(
+                ErrorLink(
+                href = Some("#file-input"),
+                content = message.content
+            ))
+        ))
+    }
+
         <h1 class="govuk-heading-l">@messages("fileUpload.heading", eventByName)</h1>
 
         <details class="govuk-details" data-module="govuk-details">
