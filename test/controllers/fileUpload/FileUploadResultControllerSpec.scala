@@ -59,7 +59,7 @@ class FileUploadResultControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private def getRoute(eventType: EventType): String = routes.FileUploadResultController.onPageLoad(waypoints, eventType).url
 
-  private def postRoute(eventType: EventType): String = routes.FileUploadResultController.onSubmit(waypoints, eventType).url
+  private def postRoute(eventType: EventType): String = routes.FileUploadResultController.onPageLoad(waypoints, eventType).url
 
   override def beforeEach(): Unit = {
     super.beforeEach()

@@ -29,6 +29,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
+import org.scalatest.RecoverMethods.recoverToSucceededIf
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.{EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
 import play.api.mvc.AnyContent
@@ -155,6 +156,72 @@ class CompileServiceSpec extends SpecBase with BeforeAndAfterEach {
             }
           }
         actualOverviewValues mustBe Some(Tuple2(2, true))
+      }
+    }
+
+    "must maintain version and status when already compiled" in {
+      val captor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      val edi = EventDataIdentifier(Event1, taxYear, "1")
+      when(mockEventReportingConnector.compileEvent(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi), any(), any())(any(), any()))
+        .thenReturn(Future.successful((): Unit))
+
+      val ua = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, Compiled), nonEventTypeData = true)
+
+      whenReady(compileService.compileEvent(Event1, pstr, ua)) { _ =>
+        verify(mockUserAnswersCacheConnector, times(1))
+          .save(ArgumentMatchers.eq(pstr), captor.capture())(any(), any(), any())
+        verify(mockEventReportingConnector, times(1))
+          .compileEvent(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi), ArgumentMatchers.eq(1), ArgumentMatchers.eq(false))(any(), any())
+
+        val actualUAAfterSave = captor.getValue
+        actualUAAfterSave.get(VersionInfoPage) mustBe Some(VersionInfo(1, Compiled))
+      }
+    }
+
+    "must throw exception when no version info is available" in {
+      val ua = emptyUserAnswersWithTaxYear // No VersionInfoPage set
+
+      recoverToSucceededIf[RuntimeException] {
+        compileService.compileEvent(Event1, pstr, ua)
+      }.map { _ =>
+        verify(mockUserAnswersCacheConnector, times(0)).save(any(), any())(any(), any(), any())
+        verify(mockEventReportingConnector, times(0)).compileEvent(any(), any(), any(), any())(any(), any())
+        succeed
+      }
+    }
+
+    "must not compile when submitted and data not modified" in {
+      val edi = EventDataIdentifier(Event1, taxYear, "1")
+      when(mockUserAnswersCacheConnector.isDataModified(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi.eventType))(any(), any(), any()))
+        .thenReturn(Future.successful(Some(false)))
+
+      val ua = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, Submitted), nonEventTypeData = true)
+
+      whenReady(compileService.compileEvent(Event1, pstr, ua)) { _ =>
+        verify(mockUserAnswersCacheConnector, times(0)).save(any(), any())(any(), any(), any())
+        verify(mockEventReportingConnector, times(0)).compileEvent(any(), any(), any(), any())(any(), any())
+        verify(mockUserAnswersCacheConnector, times(1)).isDataModified(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(Event1))(any(), any(), any())
+        succeed
+      }
+    }
+
+    "must handle compile with delete flag set to true" in {
+      val captor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      val edi = EventDataIdentifier(Event1, taxYear, "1")
+      when(mockEventReportingConnector.compileEvent(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi), any(), any())(any(), any()))
+        .thenReturn(Future.successful((): Unit))
+
+      val ua = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(1, Compiled), nonEventTypeData = true)
+
+      whenReady(compileService.compileEvent(Event1, pstr, ua, delete = true)) { _ =>
+        verify(mockUserAnswersCacheConnector, times(1))
+          .save(ArgumentMatchers.eq(pstr), captor.capture())(any(), any(), any())
+        verify(mockEventReportingConnector, times(1))
+          .compileEvent(ArgumentMatchers.eq(pstr), ArgumentMatchers.eq(edi), ArgumentMatchers.eq(1), ArgumentMatchers.eq(true))(any(), any())
+
+        val actualUAAfterSave = captor.getValue
+        actualUAAfterSave.get(VersionInfoPage) mustBe Some(VersionInfo(1, Compiled))
+        succeed
       }
     }
   }
