@@ -26,7 +26,6 @@ import pages.event6.{AmountCrystallisedAndDatePage, Event6CheckYourAnswersPage}
 import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
-import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, SummaryListRow}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import viewmodels.govuk.SummaryListFluency

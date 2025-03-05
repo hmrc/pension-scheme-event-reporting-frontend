@@ -31,8 +31,8 @@ class ManualAddressFormProviderSpec extends SpecBase with AddressBehaviours with
   private val companyName = companyDetails.companyName
   private val addressLine1 = alphaString()
   private val addressLine2 = alphaString()
-  private val addressLine3 = alphaString()
-  private val addressLine4 = alphaString()
+  private val townOrCity = alphaString()
+  private val county = alphaString()
   private val postCode = "ZZ1 1ZZ"
 
   private val countryOptions = FakeCountryOptions()
@@ -40,8 +40,8 @@ class ManualAddressFormProviderSpec extends SpecBase with AddressBehaviours with
   val validData: Map[String, String] = Map(
     "addressLine1" -> addressLine1,
     "addressLine2" -> addressLine2,
-    "addressLine3" -> addressLine3,
-    "addressLine4" -> addressLine4,
+    "townOrCity" -> townOrCity,
+    "county" -> county,
     "postCode" -> postCode,
     "country" -> "GB"
   )
@@ -51,9 +51,9 @@ class ManualAddressFormProviderSpec extends SpecBase with AddressBehaviours with
   "Address form" - {
     behave like questionForm(Address(
       addressLine1,
-      addressLine2,
-      Some(addressLine3),
-      Some(addressLine4),
+      Some(addressLine2),
+      townOrCity,
+      Some(county),
       Some(postCode),
       "GB"
     ))
@@ -66,7 +66,7 @@ class ManualAddressFormProviderSpec extends SpecBase with AddressBehaviours with
       countryOptions,
       Map(
         "addressLine1" -> addressLine1,
-        "addressLine2" -> addressLine2
+        "townOrCity" -> townOrCity
       )
     )
 
@@ -77,7 +77,7 @@ class ManualAddressFormProviderSpec extends SpecBase with AddressBehaviours with
       "enterPostcode.error.nonUKLength",
       Map(
         "addressLine1" -> addressLine1,
-        "addressLine2" -> addressLine2
+        "townOrCity" -> townOrCity
       ),
       (address: Address) => address.postcode.getOrElse("")
     )
@@ -93,28 +93,28 @@ class ManualAddressFormProviderSpec extends SpecBase with AddressBehaviours with
 
     behave like formWithAddressField(
       form,
+      "townOrCity",
+      messages("address.townOrCity.error.required", companyName),
+      messages("address.townOrCity.error.length", companyName),
+      messages("address.townOrCity.error.invalid", companyName)
+    )
+
+    behave like formWithOptionalAddressField(
+      form,
       "addressLine2",
-      messages("address.addressLine2.error.required", companyName),
       messages("address.addressLine2.error.length", companyName),
-      messages("address.addressLine2.error.invalid", companyName)
+      messages("address.addressLine2.error.invalid", companyName),
+      validData,
+      (address: Address) => address.addressLine2
     )
 
     behave like formWithOptionalAddressField(
       form,
-      "addressLine3",
-      messages("address.addressLine3.error.length", companyName),
-      messages("address.addressLine3.error.invalid", companyName),
+      "county",
+      messages("address.county.error.length", companyName),
+      messages("address.county.error.invalid", companyName),
       validData,
-      (address: Address) => address.addressLine3
-    )
-
-    behave like formWithOptionalAddressField(
-      form,
-      "addressLine4",
-      messages("address.addressLine4.error.length", companyName),
-      messages("address.addressLine4.error.invalid", companyName),
-      validData,
-      (address: Address) => address.addressLine4
+      (address: Address) => address.county
     )
   }
 

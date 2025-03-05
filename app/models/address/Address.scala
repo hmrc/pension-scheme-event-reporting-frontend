@@ -26,18 +26,18 @@ object AddressRecord {
 }
 
 case class Address(addressLine1: String,
-                   addressLine2: String,
-                   addressLine3: Option[String],
-                   addressLine4: Option[String],
+                   addressLine2: Option[String],
+                   townOrCity: String,
+                   county: Option[String],
                    postcode: Option[String],
                    country: String) {
 
   def lines(countryOptions: CountryOptions): Seq[String] = {
     Seq(
       Some(this.addressLine1),
-      Some(this.addressLine2),
-      this.addressLine3,
-      this.addressLine4,
+      this.addressLine2,
+      Some(this.townOrCity),
+      this.county,
       this.postcode,
       Some(countryOptions.getCountryNameFromCode(this))
     ).flatten(s => s)

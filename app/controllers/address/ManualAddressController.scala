@@ -23,7 +23,7 @@ import models.Index
 import models.address.Address
 import models.enumeration.AddressJourneyType
 import pages.Waypoints
-import pages.address.ManualAddressPage
+import pages.address.{EnterPostcodePage, ManualAddressPage}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -49,7 +49,13 @@ class ManualAddressController @Inject()(val controllerComponents: MessagesContro
     (identify andThen getData(addressJourneyType.eventType) andThen requireData) { implicit request =>
       val form: Form[Address] = formProvider(retrieveNameManual(request, index))
       val page = ManualAddressPage(addressJourneyType, index)
-      val preparedForm = request.userAnswers.get(page).fold(form)(form.fill)
+      val preparedForm = request.userAnswers.get(page) match {
+        case None => request.userAnswers.get(EnterPostcodePage(addressJourneyType, index)) match {
+          case Some(value) => form.fill(value.head.toPrepopAddress)
+          case None => form
+        }
+        case Some(value) => form.fill(value)
+      }
       Ok(
         view(
           preparedForm,

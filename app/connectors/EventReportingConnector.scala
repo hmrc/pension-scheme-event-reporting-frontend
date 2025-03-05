@@ -19,7 +19,7 @@ package connectors
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import models.amend.VersionsWithSubmitter
-import models.requests.{DataRequest, RequiredSchemeDataRequest}
+import models.requests.RequiredSchemeDataRequest
 import models.{EROverview, EventDataIdentifier, EventSummary, FileUploadOutcomeResponse, FileUploadOutcomeStatus, UserAnswers}
 import play.api.Logger
 import play.api.http.Status._

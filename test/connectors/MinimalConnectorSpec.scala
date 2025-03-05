@@ -20,7 +20,7 @@ import com.fasterxml.jackson.core.JsonParseException
 import com.github.tomakehurst.wiremock.client.WireMock._
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AsyncWordSpec
-import play.api.libs.json.{JsResultException, Json}
+import play.api.libs.json.Json
 import uk.gov.hmrc.http._
 import utils.WireMockHelper
 
@@ -33,7 +33,6 @@ class MinimalConnectorSpec
   private implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
   private val psaIdName = "psaId"
-  private val psaId = "A2100005"
 
   override protected def portConfigKey: String = "microservice.services.pension-administrator.port"
 
