@@ -56,21 +56,48 @@ case class TolerantAddress(addressLine1: Option[String],
 
   def toAddress: Option[Address] = (addressLine1, townOrCity, countryOpt) match {
     case (Some(line1), Some(townOrCity), Some(country)) => Some(Address(line1, addressLine2, townOrCity, county, postcode, country))
-    case (_, _, None) => None
-    case (None, None, _) if townOrCity.nonEmpty && county.nonEmpty => shuffle
-    case (Some(_), None, _) if townOrCity.nonEmpty || county.nonEmpty => shuffle
-    case (None, Some(_), _) if townOrCity.nonEmpty || county.nonEmpty => shuffle
-    case _ => None
+    case _ => shuffle
   }
 
-  private def shuffle: Option[Address] = (addressLine1, addressLine2, townOrCity, county) match {
-    case (Some(line1), Some(line2), None, None) => Some(Address(line1, None, line2, None, postcode, countryOpt.get))
-    case (None, None, Some(line3), Some(line4)) => Some(Address(line3, None, line4, None, postcode, countryOpt.get))
-    case (Some(line1), None, Some(line3), al4) => Some(Address(line1, None, line3, al4, postcode, countryOpt.get))
-    case (Some(line1), None, None, Some(line4)) => Some(Address(line1, None, line4, None, postcode, countryOpt.get))
-    case (None, Some(line2), Some(line3), al4) => Some(Address(line2, None, line3, al4, postcode, countryOpt.get))
-    case (None, Some(line2), None, Some(line4)) => Some(Address(line2, None, line4, None, postcode, countryOpt.get))
-    case _ => None
+
+  private def shuffle: Option[Address] = {
+    val values = Seq(addressLine1, addressLine2, townOrCity, county, postcode, countryOpt).flatten
+
+    values.length match {
+      case 5 => Some(Address(
+        values(0),
+        Some(values(1)),
+        values(2),
+        None,
+        Some(values(3)),
+        values(4)
+      ))
+      case 4 if (values(3) == "GB") => Some(Address(
+        values(0),
+        None,
+        values(1),
+        None,
+        Some(values(2)),
+        values(3)
+      ))
+      case 4 => Some(Address(
+        values(0),
+        Some(values(1)),
+        values(2),
+        None,
+        None,
+        values(3)
+      ))
+      case 3 => Some(Address(
+        values(0),
+        None,
+        values(1),
+        None,
+        None,
+        values(2)
+      ))
+      case _ => None
+    }
   }
 
 }
