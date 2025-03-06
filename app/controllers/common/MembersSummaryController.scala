@@ -95,7 +95,8 @@ class MembersSummaryController @Inject()(
 
   private def getMappedMembers(userAnswers: UserAnswers, isReadOnly: Boolean, eventType: EventType, searchTerm: Option[String])(implicit messages: Messages): Seq[SummaryListRowWithTwoValues] = {
     def searchTermFilter(membersSummary: MembersSummary) = searchTerm.forall { searchTerm =>
-      membersSummary.nINumber.toLowerCase.contains(searchTerm) || membersSummary.name.toLowerCase.contains(searchTerm)
+      val trimmedSearchTerm = searchTerm.trim()
+      membersSummary.nINumber.toLowerCase.contains(trimmedSearchTerm) || membersSummary.name.toLowerCase.contains(trimmedSearchTerm)
     }
 
     userAnswers.getAll(MembersPage(eventType))(MembersSummary.readsMember(eventType)).zipWithIndex.collect {
