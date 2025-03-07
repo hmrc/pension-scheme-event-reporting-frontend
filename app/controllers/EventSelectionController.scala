@@ -49,7 +49,10 @@ class EventSelectionController @Inject()(val controllerComponents: MessagesContr
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async { implicit request =>
     val displayEventList: Seq[RadioItem] = getFilteredOptions(request.userAnswers)
-    Future.successful(Ok(view(form, displayEventList, waypoints)))
+    println(s"\n ===> user answer on page load: ${request.userAnswers.get(EventSelectionPage)}")
+
+    val preparedForm = request.userAnswers.get(EventSelectionPage).fold(form)(v => form.fill(v))
+    Future.successful(Ok(view(preparedForm, displayEventList, waypoints)))
   }
 
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async {
@@ -70,16 +73,24 @@ class EventSelectionController @Inject()(val controllerComponents: MessagesContr
               futureUA.map { ua =>
 
                 val taxYear = TaxYear.getSelectedTaxYear(ua)
-                val answers = ua.setOrException(EventSelectionPage, value)
+                val originalUserAnswers = request.userAnswers
+//                val updatedAnswers = ua.setOrException(EventSelectionPage, value)
+                val updatedAnswers = originalUserAnswers.setOrException(EventSelectionPage, value)
+                println(s"\n ===> originalUserAnswers on submit: ${originalUserAnswers}")
+                println(s"\n ===> updatedAnswers on submit: ${updatedAnswers}")
                 auditService.sendEvent(
                   StartNewERAuditEvent(
                     request.loggedInUser.psaIdOrPspId,
                     request.pstr,
                     taxYear = taxYear,
                     eventType: EventType,
-                    reportVersion = answers.eventDataIdentifier(eventType).version))
-                Redirect(EventSelectionPage.navigate(waypoints, answers, answers).route)
-              }
+                    reportVersion = updatedAnswers.eventDataIdentifier(eventType).version))
+                userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
+                  println(s"\n ===> user answer on submit: ${request.userAnswers}")
+                  Redirect(EventSelectionPage.navigate(waypoints, ua, updatedAnswers).route)
+                }
+
+              }.flatten
             case _ =>
               val displayEventList: Seq[RadioItem] = getFilteredOptions(request.userAnswers)
               Future.successful(Ok(view(form, displayEventList, waypoints)))
