@@ -70,10 +70,8 @@ class EventSelectionController @Inject()(val controllerComponents: MessagesContr
               }
 
               futureUA.map { ua =>
-
                 val taxYear = TaxYear.getSelectedTaxYear(ua)
-                val originalUserAnswers = request.userAnswers
-                val updatedAnswers = originalUserAnswers.setOrException(EventSelectionPage, value, true)
+                val updatedAnswers = ua.setOrException(EventSelectionPage, value, nonEventTypeData = true)
                 auditService.sendEvent(
                   StartNewERAuditEvent(
                     request.loggedInUser.psaIdOrPspId,
