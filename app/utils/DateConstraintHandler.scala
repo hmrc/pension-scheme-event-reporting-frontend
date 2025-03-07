@@ -55,8 +55,8 @@ object DateConstraintHandlers extends Mappings {
       def handle(date: (LocalDate, LocalDate), errorKey: String)(implicit messages: Messages): Seq[Constraint[LocalDate]] =
         Seq(
           yearHas4Digits("genericDate.error.invalid.year"),
-          minDate(date._1, messages(errorKey, formatDateDMY(date._1), formatDateDMY(date._2))),
-          maxDate(date._2, messages(errorKey, formatDateDMY(date._1), formatDateDMY(date._2)))
+          minDate(date._1, messages(errorKey, formatDateDMY(date._1), formatDateDMY(date._2)), "day", "month", "year"),
+          maxDate(date._2, messages(errorKey, formatDateDMY(date._1), formatDateDMY(date._2)), "day", "month", "year")
         )
     }
 

@@ -39,12 +39,12 @@ private[mappings] class LocalDateFormatter(
 
     if (multipleInvalidInputs(input._1, input._2, input._3)) {
       // Generic date error displayed if more than one input is invalid.
-      Left(Seq(FormError(invalidKey, messages(invalidKey))))
+      Left(Seq(FormError(invalidKey, messages(invalidKey), fieldKeys)))
     } else {
       Try(LocalDate.of(input._3, input._2, input._1)) match {
         case Failure(exception) =>
           // Specific date component error displayed if only one input is invalid.
-          Left(Seq(FormError(invalidKey, messages(erroneousDateKey(exception.getMessage)))))
+          Left(Seq(FormError(invalidKey, messages(erroneousDateKey(exception.getMessage)), fieldKeys)))
         case Success(date) => Right(date)
       }
     }
@@ -104,7 +104,7 @@ private[mappings] class LocalDateFormatter(
     fields.count(_._2.isDefined) match {
       case 3 =>
         val formattedDate = formatDate(key, data).left.map {
-          _.map(_.copy(key = key, args = args))
+          _.map(_.copy(key = key, args = args +: fieldKeys))
         }
         formattedDate match {
           case errors@Left(_) => errors
@@ -116,17 +116,17 @@ private[mappings] class LocalDateFormatter(
                 if (taxYearForDate == taxYear) {
                   rightDate
                 } else {
-                  Left(List(FormError(key, invalidKey, Seq(taxYear.toString, (taxYear + 1).toString))))
+                  Left(List(FormError(key, invalidKey, Seq(taxYear.toString, (taxYear + 1).toString) +: fieldKeys)))
                 }
             }
         }
       case 2 =>
-        Left(List(FormError(key, s"${messages("genericDate.error.invalid.missingInformation")} ${missingFields.head}", args)))
+        Left(List(FormError(key, s"${messages("genericDate.error.invalid.missingInformation")} ${missingFields.head}", args +: missingFields)))
       case 1 =>
         val missingFieldsString = s"${missingFields.head} and ${missingFields.tail.head}"
-        Left(List(FormError(key, s"${messages("genericDate.error.invalid.missingInformation")} $missingFieldsString", args)))
+        Left(List(FormError(key, s"${messages("genericDate.error.invalid.missingInformation")} $missingFieldsString", args +: missingFields)))
       case _ =>
-        Left(List(FormError(key, "genericDate.error.invalid.allFieldsMissing", args)))
+        Left(List(FormError(key, "genericDate.error.invalid.allFieldsMissing", args +: missingFields)))
     }
   }
 
