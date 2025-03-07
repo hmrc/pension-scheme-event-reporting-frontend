@@ -74,10 +74,7 @@ class EventSelectionController @Inject()(val controllerComponents: MessagesContr
 
                 val taxYear = TaxYear.getSelectedTaxYear(ua)
                 val originalUserAnswers = request.userAnswers
-//                val updatedAnswers = ua.setOrException(EventSelectionPage, value)
-                val updatedAnswers = originalUserAnswers.setOrException(EventSelectionPage, value)
-                println(s"\n ===> originalUserAnswers on submit: ${originalUserAnswers}")
-                println(s"\n ===> updatedAnswers on submit: ${updatedAnswers}")
+                val updatedAnswers = originalUserAnswers.setOrException(EventSelectionPage, value, true)
                 auditService.sendEvent(
                   StartNewERAuditEvent(
                     request.loggedInUser.psaIdOrPspId,
@@ -85,8 +82,7 @@ class EventSelectionController @Inject()(val controllerComponents: MessagesContr
                     taxYear = taxYear,
                     eventType: EventType,
                     reportVersion = updatedAnswers.eventDataIdentifier(eventType).version))
-                userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-                  println(s"\n ===> user answer on submit: ${request.userAnswers}")
+                userAnswersCacheConnector.save(request.pstr, updatedAnswers).map { _ =>
                   Redirect(EventSelectionPage.navigate(waypoints, ua, updatedAnswers).route)
                 }
 

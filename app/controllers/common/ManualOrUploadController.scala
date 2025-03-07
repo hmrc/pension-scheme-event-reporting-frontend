@@ -16,6 +16,7 @@
 
 package controllers.common
 
+import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.common.ManualOrUploadFormProvider
 import models.enumeration.EventType
@@ -28,18 +29,20 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.common.ManualOrUploadView
 
 import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class ManualOrUploadController @Inject()(val controllerComponents: MessagesControllerComponents,
                                          identify: IdentifierAction,
                                          getData: DataRetrievalAction,
                                          formProvider: ManualOrUploadFormProvider,
-                                         view: ManualOrUploadView
-                                             ) extends FrontendBaseController with I18nSupport {
-
+                                         view: ManualOrUploadView,
+                                         userAnswersCacheConnector: UserAnswersCacheConnector
+                                        ) (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
     val form = formProvider(eventType)
-    Ok(view(form, waypoints, eventType, index))
+    val preparedForm = request.userAnswers.flatMap(_.get(ManualOrUploadPage(eventType, index))).fold(form){v => form.fill(v)}
+    Ok(view(preparedForm, waypoints, eventType, index))
   }
 
   def onSubmit(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) {
@@ -51,6 +54,7 @@ class ManualOrUploadController @Inject()(val controllerComponents: MessagesContr
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(ManualOrUploadPage(eventType, index), value)
+          userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers)
           Redirect(ManualOrUploadPage(eventType, index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
         }
       )
