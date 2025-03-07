@@ -49,7 +49,9 @@ class EventSelectionController @Inject()(val controllerComponents: MessagesContr
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async { implicit request =>
     val displayEventList: Seq[RadioItem] = getFilteredOptions(request.userAnswers)
-    Future.successful(Ok(view(form, displayEventList, waypoints)))
+
+    val preparedForm = request.userAnswers.get(EventSelectionPage).fold(form)(v => form.fill(v))
+    Future.successful(Ok(view(preparedForm, displayEventList, waypoints)))
   }
 
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async {
@@ -68,18 +70,20 @@ class EventSelectionController @Inject()(val controllerComponents: MessagesContr
               }
 
               futureUA.map { ua =>
-
                 val taxYear = TaxYear.getSelectedTaxYear(ua)
-                val answers = ua.setOrException(EventSelectionPage, value)
+                val updatedAnswers = ua.setOrException(EventSelectionPage, value, nonEventTypeData = true)
                 auditService.sendEvent(
                   StartNewERAuditEvent(
                     request.loggedInUser.psaIdOrPspId,
                     request.pstr,
                     taxYear = taxYear,
                     eventType: EventType,
-                    reportVersion = answers.eventDataIdentifier(eventType).version))
-                Redirect(EventSelectionPage.navigate(waypoints, answers, answers).route)
-              }
+                    reportVersion = updatedAnswers.eventDataIdentifier(eventType).version))
+                userAnswersCacheConnector.save(request.pstr, updatedAnswers).map { _ =>
+                  Redirect(EventSelectionPage.navigate(waypoints, ua, updatedAnswers).route)
+                }
+
+              }.flatten
             case _ =>
               val displayEventList: Seq[RadioItem] = getFilteredOptions(request.userAnswers)
               Future.successful(Ok(view(form, displayEventList, waypoints)))

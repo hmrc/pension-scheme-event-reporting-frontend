@@ -98,6 +98,8 @@ class EventSelectionControllerSpec extends SpecBase with SummaryListFluency with
       running(application) {
         when(mockUserAnswersCacheConnector.getByEventType(any(), any())(any(), any(), any()))
           .thenReturn(Future.successful(Some(ua)))
+        when(mockUserAnswersCacheConnector.save(any(), any)(any(), any(), any()))
+          .thenReturn(Future.successful((): Unit))
         doNothing().when(mockAuditService).sendEvent(any())(any(), any())
 
         val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "event1"))
