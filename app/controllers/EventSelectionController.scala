@@ -49,7 +49,6 @@ class EventSelectionController @Inject()(val controllerComponents: MessagesContr
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async { implicit request =>
     val displayEventList: Seq[RadioItem] = getFilteredOptions(request.userAnswers)
-    println(s"\n ===> user answer on page load: ${request.userAnswers.get(EventSelectionPage)}")
 
     val preparedForm = request.userAnswers.get(EventSelectionPage).fold(form)(v => form.fill(v))
     Future.successful(Ok(view(preparedForm, displayEventList, waypoints)))
