@@ -102,9 +102,10 @@ class UnauthPaymentSummaryController @Inject()(
                                         searchTerm: Option[String])
                                        (implicit messages: Messages): Seq[SummaryListRow] = {
     def searchTermFilter(membersSummary: MembersOrEmployersSummary) = searchTerm.forall { searchTerm =>
-      val ninoMatches = membersSummary.nino.exists { nino => nino.toLowerCase.contains(searchTerm) }
-      val companyNumberMatches = membersSummary.companyNumber.exists { companyNumber => companyNumber.toLowerCase.contains(searchTerm) }
-      ninoMatches || membersSummary.name.toLowerCase.contains(searchTerm) || companyNumberMatches
+      val trimmedSearchTerm = searchTerm.trim()
+      val ninoMatches = membersSummary.nino.exists { nino => nino.toLowerCase.contains(trimmedSearchTerm) }
+      val companyNumberMatches = membersSummary.companyNumber.exists { companyNumber => companyNumber.toLowerCase.contains(trimmedSearchTerm) }
+      ninoMatches || membersSummary.name.toLowerCase.contains(trimmedSearchTerm) || companyNumberMatches
     }
 
     userAnswers.getAll(MembersOrEmployersPage(EventType.Event1))(MembersOrEmployersSummary.readsMemberOrEmployer)
