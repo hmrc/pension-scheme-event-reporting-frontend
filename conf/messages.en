@@ -1872,12 +1872,13 @@ cannotResume.title = This event report cannot be submitted
 cannotResume.heading = This event report cannot be submitted
 cannotResume.p1 = You have attempted to amend or create an event report but no changes have been made.
 genericDate.error.invalid = Enter the real date
-genericDate.error.invalid.day = The day is invalid
-genericDate.error.invalid.month = The month is invalid
-genericDate.error.invalid.year = The year is invalid
+genericDate.error.invalid.day = Enter a real day
+genericDate.error.invalid.month = Enter a real month
+genericDate.error.invalid.year = Enter a real year
 genericDate.error.invalid.missingInformation = The date must include a
 genericDate.error.invalid.allFieldsMissing = The date must include a day, month and year
-genericDate.error.outsideRelevantTaxYear = Date must be between 6 April {0} and 5 April {1}
+genericDate.error.outsideReportedYear = Date must be between {0} and {1}
+genericDate.hint = The date must be between {0} and {1}. For example, 22 09 {2}
 
 returnHistory.title = Event reporting return history for tax year ending 5 April {0}
 returnHistory.heading = Event reporting return history for tax year ending 5 April {0}
@@ -1907,7 +1908,6 @@ crystallisedDate.event24.date.hint = For example, 22 09 2022
 crystallisedDate.event24.date.error.nothingEntered = Enter the date
 crystallisedDate.event24.date.error.noDayMonthOrYear = The date must include a day, month and year
 crystallisedDate.event24.date.error.outsideDateRanges = Enter a real date
-crystallisedDate.event24.date.error.outsideReportedYear = Date must be between {0} and {1}
 crystallisedDate.event24.date.change.hidden = When did the relevant benefit crystallisation event take place?
 crystallisedDate.event24.date.checkYourAnswersLabel = When did the relevant benefit crystallisation event take place?
 

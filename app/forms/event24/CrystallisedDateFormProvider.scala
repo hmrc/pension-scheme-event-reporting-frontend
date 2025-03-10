@@ -32,7 +32,7 @@ class CrystallisedDateFormProvider @Inject() extends Mappings with Transforms { 
     Form(
       mapping(
         localDateMappingWithDateRange(
-          field = "crystallisedDate", date = (min, max), outOfRangeKey = "crystallisedDate.event24.date.error.outsideReportedYear")
+          field = "crystallisedDate", date = (min, max))
       )
       (CrystallisedDate.apply)(CrystallisedDate.unapply)
     )

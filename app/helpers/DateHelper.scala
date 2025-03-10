@@ -16,6 +16,9 @@
 
 package helpers
 
+import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Hint, Text}
+
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -27,6 +30,11 @@ class DateHelper {
 object DateHelper {
 
   val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
+
+  def dateMustBeBetweenHint(startDate:LocalDate, endDate: LocalDate)(implicit messages: Messages): Hint =
+    Hint(content = Text(
+      messages("genericDate.hint", dateFormatter.format(startDate), dateFormatter.format(endDate), startDate.getYear.toString)
+    ))
 
   def extractTaxYear(date: LocalDate): Int = {
     val year = date.getYear

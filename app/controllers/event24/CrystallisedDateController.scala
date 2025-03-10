@@ -52,7 +52,7 @@ class CrystallisedDateController @Inject()(val controllerComponents: MessagesCon
       case Some(value) => formProvider(startDate, endDate).fill(value)
       case None => formProvider(startDate, endDate)
     }
-    Ok(view(preparedForm, waypoints, index))
+    Ok(view(preparedForm, waypoints, index, startDate, endDate))
   }
 
   def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData).async { implicit request =>
@@ -62,7 +62,7 @@ class CrystallisedDateController @Inject()(val controllerComponents: MessagesCon
 
     formProvider(startDate, endDate).bindFromRequest().fold(
       formWithErrors => {
-        Future.successful(BadRequest(view(formWithErrors, waypoints, index)))
+        Future.successful(BadRequest(view(formWithErrors, waypoints, index, startDate, endDate)))
       },
       value => {
         val originalUserAnswers = request.userAnswers

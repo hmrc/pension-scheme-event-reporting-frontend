@@ -32,7 +32,7 @@ object DateConstraintHandlers extends Mappings {
 
   private val (april: Int, taxYearCloseDay: Int, taxYearOpenDay: Int) = (4, 5, 6)
 
-  def localDateMappingWithDateRange[T](field: String = "value", date: T, outOfRangeKey: String,
+  def localDateMappingWithDateRange[T](field: String = "value", date: T, outOfRangeKey: String = "genericDate.error.outsideReportedYear",
                                        invalidKey: String = "genericDate.error.invalid")
                                       (implicit messages: Messages, handler: DateConstraintHandler[T]): (String, Mapping[LocalDate]) =
     field -> localDate(invalidKey).verifying(firstError(withinDateRange(date, outOfRangeKey): _*))
