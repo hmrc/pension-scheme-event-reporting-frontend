@@ -20,6 +20,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.event24.TypeOfProtectionGroup1FormProvider
 import models.enumeration.EventType
+import models.event24.TypeOfProtectionGroup1
 import models.{Index, UserAnswers}
 import pages.Waypoints
 import pages.event24.{TypeOfProtectionGroup1Page, TypeOfProtectionGroup2Page}
