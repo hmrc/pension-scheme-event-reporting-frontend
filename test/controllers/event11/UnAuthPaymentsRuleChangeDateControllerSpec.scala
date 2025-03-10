@@ -76,7 +76,7 @@ class UnAuthPaymentsRuleChangeDateControllerSpec extends SpecBase with BeforeAnd
         val view = application.injector.instanceOf[UnAuthPaymentsRuleChangeDateView]
 
         status(result) mustEqual OK
-        contentAsString(result).removeAllNonces()mustEqual view(form, waypoints)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(form, waypoints, stubMin, stubMax)(request, messages(application)).toString
       }
     }
 
@@ -92,7 +92,7 @@ class UnAuthPaymentsRuleChangeDateControllerSpec extends SpecBase with BeforeAnd
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result).removeAllNonces()mustEqual view(form.fill(validAnswer), waypoints)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(form.fill(validAnswer), waypoints, stubMin, stubMax)(request, messages(application)).toString
       }
     }
 
@@ -132,7 +132,7 @@ class UnAuthPaymentsRuleChangeDateControllerSpec extends SpecBase with BeforeAnd
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result).removeAllNonces()mustEqual view(boundForm, waypoints)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(boundForm, waypoints, stubMin, stubMax)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any(), any())
       }
     }

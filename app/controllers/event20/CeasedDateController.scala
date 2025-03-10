@@ -54,7 +54,7 @@ class CeasedDateController @Inject()(val controllerComponents: MessagesControlle
           case Some(value) => formProvider(startDate, endDate).fill(value)
           case None => formProvider(startDate, endDate)
         }
-        Ok(view(preparedForm, waypoints))
+        Ok(view(preparedForm, waypoints, startDate, endDate))
       case _ => Redirect(JourneyRecoveryPage.route(waypoints))
     }
   }
@@ -69,7 +69,7 @@ class CeasedDateController @Inject()(val controllerComponents: MessagesControlle
 
           formProvider(startDate, endDate).bindFromRequest().fold(
             formWithErrors => {
-              Future.successful(BadRequest(view(formWithErrors, waypoints)))
+              Future.successful(BadRequest(view(formWithErrors, waypoints, startDate, endDate)))
             },
             value => {
               val originalUserAnswers = request.userAnswers

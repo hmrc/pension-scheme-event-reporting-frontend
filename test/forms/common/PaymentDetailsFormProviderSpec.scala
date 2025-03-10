@@ -121,14 +121,14 @@ class PaymentDetailsFormProviderSpec extends SpecBase
       form = form,
       key = eventDateKey,
       min = stubMin,
-      formError = FormError(eventDateKey, messages("paymentDetails.date.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
+      formError = FormError(eventDateKey, messages("genericDate.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
     )
 
     behave like dateFieldWithMax(
       form = form,
       key = eventDateKey,
       max = stubMax,
-      formError = FormError(eventDateKey, messages("paymentDetails.date.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
+      formError = FormError(eventDateKey, messages("genericDate.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
     )
   }
 }

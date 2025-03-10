@@ -93,7 +93,7 @@ class PaymentDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
         val view = application.injector.instanceOf[PaymentDetailsView]
 
         status(result) mustEqual OK
-        contentAsString(result).removeAllNonces()mustEqual view.render(form, waypoints, eventType, index = 0, request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view.render(form, waypoints, eventType, index = 0, stubMin, stubMax, request, messages(application)).toString
       }
     }
   }
@@ -109,7 +109,7 @@ class PaymentDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result).removeAllNonces()mustEqual view.render(form.fill(validValue), waypoints, eventType, index = 0, request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view.render(form.fill(validValue), waypoints, eventType, index = 0, stubMin, stubMax, request, messages(application)).toString
       }
     }
   }
@@ -147,7 +147,7 @@ class PaymentDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result).removeAllNonces()mustEqual view(boundForm, waypoints, eventType, 0)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(boundForm, waypoints, eventType, 0, stubMin, stubMax)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any(), any())
       }
     }

@@ -25,7 +25,7 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, taxYear: Int)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("event13.changeDate.title"))) {
 
@@ -40,7 +40,7 @@
                 field  = form("value"),
                 legend = LegendViewModel(messages("event13.changeDate.heading")).asPageHeading()
             )
-            .withHint(HintViewModel(messages("event13.changeDate.hint")))
+            .withHint(helpers.DateHelper.dateHintFromTaxYear(taxYear))
         )
 
         @govukButton(

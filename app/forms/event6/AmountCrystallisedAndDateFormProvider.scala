@@ -30,7 +30,7 @@ class AmountCrystallisedAndDateFormProvider @Inject() extends Mappings with Tran
 
   import AmountCrystallisedAndDateFormProvider._
 
-  def apply(max: LocalDate)(implicit messages: Messages): Form[CrystallisedDetails] =
+  def apply(startDate:LocalDate, endDate: LocalDate)(implicit messages: Messages): Form[CrystallisedDetails] =
     Form(
       mapping("amountCrystallised" ->
         bigDecimal2DP("amountCrystallisedAndDate.value.error.nothingEntered",
@@ -41,25 +41,13 @@ class AmountCrystallisedAndDateFormProvider @Inject() extends Mappings with Tran
             minimumValue[BigDecimal](0, "amountCrystallisedAndDate.value.error.negativeValue"),
             zeroValue[BigDecimal](0, "amountCrystallisedAndDate.value.error.zeroEntered")
           ),
-        localDateMappingWithDateRange(field = "crystallisedDate", date = (startDate, endDate(max)),
-          outOfRangeKey = "amountCrystallisedAndDate.date.error.outsideReportedYear")
+        localDateMappingWithDateRange(field = "crystallisedDate", date = (startDate, endDate))
       )
       (CrystallisedDetails.apply)(CrystallisedDetails.unapply)
     )
 }
 
 object AmountCrystallisedAndDateFormProvider {
-
-  private val startDate: LocalDate = LocalDate.of(2006, 4, 6)
-
-  private def endDate(date: LocalDate): LocalDate = {
-    date match {
-      case _ if date.isBefore(LocalDate.of(date.getYear, 4, 6)) =>
-        LocalDate.of(date.getYear, 4, 5)
-      case _ =>
-        LocalDate.of(date.getYear + 1, 4, 5)
-    }
-  }
 
   private val maxCrystallisedValue: BigDecimal = 999999999.99
 }

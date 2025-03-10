@@ -21,12 +21,11 @@ import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import controllers.event6.AmountCrystallisedAndDateController.startDateOfCurrentTaxYear
 import forms.event6.AmountCrystallisedAndDateFormProvider
 import models.enumeration.EventType
-import models.event6.CrystallisedDetails
+import models.requests.OptionalDataRequest
 import models.{Index, Quarters, TaxYear, UserAnswers}
 import pages.event6.AmountCrystallisedAndDatePage
 import pages.{TaxYearPage, Waypoints}
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, Messages}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.event6.AmountCrystallisedAndDateView
@@ -45,26 +44,32 @@ class AmountCrystallisedAndDateController @Inject()(val controllerComponents: Me
 
   private val eventType = EventType.Event6
 
-  private def form(startDateOfCurrentTaxYear: LocalDate)(implicit messages: Messages): Form[CrystallisedDetails] = {
-    val endDate = Quarters.getQuarter(startDateOfCurrentTaxYear).endDate
-    formProvider(endDate)
+  private val startDate: LocalDate = LocalDate.of(2006, 4, 6)
+
+  private def endDate(implicit request: OptionalDataRequest[_]): LocalDate = {
+    val startDate = startDateOfCurrentTaxYear(request.userAnswers.flatMap(_.get(TaxYearPage)))
+    val date = Quarters.getQuarter(startDate).endDate
+    date match {
+      case _ if date.isBefore(LocalDate.of(date.getYear, 4, 6)) =>
+        LocalDate.of(date.getYear, 4, 5)
+      case _ =>
+        LocalDate.of(date.getYear + 1, 4, 5)
+    }
   }
 
   def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val startDate = startDateOfCurrentTaxYear(request.userAnswers.flatMap(_.get(TaxYearPage)))
 
     val preparedForm = request.userAnswers.flatMap(_.get(AmountCrystallisedAndDatePage(eventType, index))) match {
-      case Some(value) => form(startDateOfCurrentTaxYear = startDate).fill(value)
-      case None        => form(startDate)
+      case Some(value) => formProvider(startDate, endDate).fill(value)
+      case None        => formProvider(startDate, endDate)
     }
-    Ok(view(preparedForm, waypoints, index))
+    Ok(view(preparedForm, waypoints, index, startDate, endDate))
   }
 
   def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async { implicit request =>
-    val startDate = startDateOfCurrentTaxYear(request.userAnswers.flatMap(_.get(TaxYearPage)))
-    form(startDate).bindFromRequest().fold(
+    formProvider(startDate, endDate).bindFromRequest().fold(
       formWithErrors => {
-        Future.successful(BadRequest(view(formWithErrors, waypoints, index)))
+        Future.successful(BadRequest(view(formWithErrors, waypoints, index, startDate, endDate)))
       },
       value => {
         val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)

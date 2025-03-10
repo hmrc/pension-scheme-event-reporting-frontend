@@ -26,6 +26,6 @@ class BecameDateFormProvider {
 
   def apply(min: LocalDate, max: LocalDate)(implicit messages: Messages): Form[LocalDate] =
     Form(
-      localDateMappingWithDateRange(field = "becameDateMasterTrust", date = (min, max), outOfRangeKey = "schemeChangeDate.event20A.error.outsideReportedYear")
+      localDateMappingWithDateRange(field = "becameDateMasterTrust", date = (min, max))
     )
 }

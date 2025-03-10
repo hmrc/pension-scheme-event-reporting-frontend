@@ -40,7 +40,8 @@ class ChangeDateControllerSpec extends SpecBase with BeforeAndAfterEach with Moc
   private val waypoints = EmptyWaypoints
 
   private val formProvider = new ChangeDateFormProvider()
-  private val form = formProvider(2022)
+  private val taxYear = 2022
+  private val form = formProvider(taxYear)
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
@@ -75,7 +76,7 @@ class ChangeDateControllerSpec extends SpecBase with BeforeAndAfterEach with Moc
         val view = application.injector.instanceOf[ChangeDateView]
 
         status(result) mustEqual OK
-        contentAsString(result).removeAllNonces()mustEqual view(form, waypoints)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(form, waypoints, taxYear)(request, messages(application)).toString
       }
     }
 
@@ -91,7 +92,7 @@ class ChangeDateControllerSpec extends SpecBase with BeforeAndAfterEach with Moc
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result).removeAllNonces()mustEqual view(form.fill(validAnswer), waypoints)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(form.fill(validAnswer), waypoints, taxYear)(request, messages(application)).toString
       }
     }
 
@@ -135,7 +136,7 @@ class ChangeDateControllerSpec extends SpecBase with BeforeAndAfterEach with Moc
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result).removeAllNonces()mustEqual view(boundForm, waypoints)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(boundForm, waypoints, taxYear)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any(), any())
       }
     }

@@ -50,14 +50,14 @@ class BecameDateFormProviderSpec extends SpecBase
       form = form,
       key = becameDateKey,
       min = stubMin,
-      formError = FormError(becameDateKey, messages("schemeChangeDate.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
+      formError = FormError(becameDateKey, messages("genericDate.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
     )
 
     behave like dateFieldWithMax(
       form = form,
       key = becameDateKey,
       max = stubMax,
-      formError = FormError(becameDateKey, messages("schemeChangeDate.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
+      formError = FormError(becameDateKey, messages("genericDate.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
     )
   }
 }

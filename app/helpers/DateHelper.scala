@@ -31,6 +31,12 @@ object DateHelper {
 
   val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
 
+  def dateHintFromTaxYear(taxYear: Int)(implicit messages: Messages): Hint = {
+    val startDate: LocalDate = LocalDate.of(taxYear, 4, 6)
+    val endDate: LocalDate = LocalDate.of(taxYear + 1, 4, 5)
+    dateMustBeBetweenHint(startDate, endDate)
+  }
+
   def dateMustBeBetweenHint(startDate:LocalDate, endDate: LocalDate)(implicit messages: Messages): Hint =
     Hint(content = Text(
       messages("genericDate.hint", dateFormatter.format(startDate), dateFormatter.format(endDate), startDate.getYear.toString)

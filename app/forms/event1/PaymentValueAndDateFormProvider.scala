@@ -43,8 +43,7 @@ class PaymentValueAndDateFormProvider @Inject() extends Mappings with Transforms
             maximumValue[BigDecimal](maxPaymentValue, "paymentValueAndDate.value.error.amountTooHigh"),
             minimumValue[BigDecimal](0, "paymentValueAndDate.value.error.negative")
           ),
-        localDateMappingWithDateRange(field = "paymentDate", date = (startDate, endDate),
-          outOfRangeKey = "paymentValueAndDate.date.error.outsideRelevantTaxYear")
+        localDateMappingWithDateRange(field = "paymentDate", date = (startDate, endDate))
       )
       (PaymentDetails.apply)(PaymentDetails.unapply)
     )

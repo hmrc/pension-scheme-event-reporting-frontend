@@ -50,14 +50,14 @@ class DateOfChangeFormProviderSpec extends SpecBase
       form = form,
       key = dateOfChangeKey,
       min = stubMin,
-      formError = FormError(dateOfChangeKey, messages("dateOfChange.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
+      formError = FormError(dateOfChangeKey, messages("genericDate.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
     )
 
     behave like dateFieldWithMax(
       form = form,
       key = dateOfChangeKey,
       max = stubMax,
-      formError = FormError(dateOfChangeKey, messages("dateOfChange.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
+      formError = FormError(dateOfChangeKey, messages("genericDate.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
     )
   }
 }

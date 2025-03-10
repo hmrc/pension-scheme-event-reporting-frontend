@@ -26,6 +26,6 @@ class CeasedDateFormProvider {
 
   def apply(min: LocalDate, max: LocalDate)(implicit messages: Messages): Form[LocalDate] =
     Form(
-      localDateMappingWithDateRange(field = "ceasedDateMasterTrust", date = (min, max), outOfRangeKey = "schemeChangeDate.event20A.error.outsideReportedYear")
+      localDateMappingWithDateRange(field = "ceasedDateMasterTrust", date = (min, max))
     )
 }

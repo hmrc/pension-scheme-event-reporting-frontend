@@ -53,7 +53,7 @@ class PaymentDetailsController @Inject()(val controllerComponents: MessagesContr
       case Some(value) => formProvider(startDate, endDate).fill(value)
       case None => formProvider(startDate, endDate)
     }
-    Ok(view(preparedForm, waypoints, eventType, index))
+    Ok(view(preparedForm, waypoints, eventType, index, startDate, endDate))
   }
 
   def onSubmit(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData).async { implicit request =>
@@ -62,7 +62,7 @@ class PaymentDetailsController @Inject()(val controllerComponents: MessagesContr
 
     formProvider(startDate, endDate).bindFromRequest().fold(
       formWithErrors => {
-        Future.successful(BadRequest(view(formWithErrors, waypoints, eventType, index)))
+        Future.successful(BadRequest(view(formWithErrors, waypoints, eventType, index, startDate, endDate)))
       },
       value => {
         val originalUserAnswers = request.userAnswers

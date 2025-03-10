@@ -31,7 +31,7 @@ class SchemeChangeDateFormProvider @Inject() extends Mappings with Transforms {
   def apply(min: LocalDate, max: LocalDate)(implicit messages: Messages): Form[SchemeChangeDate] =
     Form(
       mapping(
-        localDateMappingWithDateRange(field = "schemeChangeDate", date = (min, max), outOfRangeKey = "schemeChangeDate.error.outsideReportedYear")
+        localDateMappingWithDateRange(field = "schemeChangeDate", date = (min, max))
       )
       (SchemeChangeDate.apply)(SchemeChangeDate.unapply)
     )

@@ -31,7 +31,7 @@ class UnAuthPaymentsRuleChangeDateFormProvider @Inject() extends Mappings {
   def apply(min: LocalDate, max: LocalDate)(implicit messages: Messages): Form[Event11Date] =
     Form(
       mapping(
-        localDateMappingWithDateRange(date = (min, max), outOfRangeKey = "unAuthPaymentsRuleChangeDate.error.outsideReportedYear")
+        localDateMappingWithDateRange(date = (min, max))
       )
       (Event11Date.apply)(Event11Date.unapply)
     )

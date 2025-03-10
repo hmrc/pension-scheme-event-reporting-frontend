@@ -43,17 +43,19 @@ class ChangeDateController @Inject()(val controllerComponents: MessagesControlle
   private val eventType = EventType.Event13
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val form = formProvider(getTaxYearFromOption(request.userAnswers))
+    val taxYear = getTaxYearFromOption(request.userAnswers)
+    val form = formProvider(taxYear)
     val preparedForm = request.userAnswers.flatMap(_.get(ChangeDatePage)).fold(form)(form.fill)
-    Ok(view(preparedForm, waypoints))
+    Ok(view(preparedForm, waypoints, taxYear))
   }
 
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
-      val form = formProvider(getTaxYearFromOption(request.userAnswers))
+      val taxYear = getTaxYearFromOption(request.userAnswers)
+      val form = formProvider(taxYear)
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, waypoints))),
+          Future.successful(BadRequest(view(formWithErrors, waypoints, taxYear))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
           val updatedAnswers = originalUserAnswers.setOrException(ChangeDatePage, value)

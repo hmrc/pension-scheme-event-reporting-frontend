@@ -81,7 +81,7 @@ class SchemeChangeDateControllerSpec extends SpecBase with BeforeAndAfterEach wi
         val view = application.injector.instanceOf[SchemeChangeDateView]
 
         status(result) mustEqual OK
-        contentAsString(result).removeAllNonces() mustEqual view(form, waypoints, becomeAScheme)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(form, waypoints, becomeAScheme, stubMin, stubMax)(request, messages(application)).toString
       }
     }
 
@@ -99,7 +99,7 @@ class SchemeChangeDateControllerSpec extends SpecBase with BeforeAndAfterEach wi
         val view = application.injector.instanceOf[SchemeChangeDateView]
 
         status(result) mustEqual OK
-        contentAsString(result).removeAllNonces() mustEqual view(form, waypoints, ceasedToBecomeAScheme)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(form, waypoints, ceasedToBecomeAScheme, stubMin, stubMax)(request, messages(application)).toString
       }
     }
 
@@ -118,7 +118,7 @@ class SchemeChangeDateControllerSpec extends SpecBase with BeforeAndAfterEach wi
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result).removeAllNonces()mustEqual view(form.fill(validValue), waypoints, becomeAScheme)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(form.fill(validValue), waypoints, becomeAScheme, stubMin, stubMax)(request, messages(application)).toString
       }
     }
 
@@ -137,7 +137,7 @@ class SchemeChangeDateControllerSpec extends SpecBase with BeforeAndAfterEach wi
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result).removeAllNonces()mustEqual view(form.fill(validValue), waypoints, ceasedToBecomeAScheme)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(form.fill(validValue), waypoints, ceasedToBecomeAScheme, stubMin, stubMax)(request, messages(application)).toString
       }
     }
 
@@ -205,7 +205,7 @@ class SchemeChangeDateControllerSpec extends SpecBase with BeforeAndAfterEach wi
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result).removeAllNonces()mustEqual view(boundForm, waypoints, becomeAScheme)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(boundForm, waypoints, becomeAScheme, stubMin, stubMax)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any(), any())
       }
     }
@@ -228,7 +228,7 @@ class SchemeChangeDateControllerSpec extends SpecBase with BeforeAndAfterEach wi
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result).removeAllNonces()mustEqual view(boundForm, waypoints, ceasedToBecomeAScheme)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(boundForm, waypoints, ceasedToBecomeAScheme, stubMin, stubMax)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any(), any())
       }
     }

@@ -112,7 +112,18 @@ class Event6Validator @Inject()(
       Field(dateOfEventYear, parsedDate.year, lumpSumDate, fieldNoLumpSumDate, Some(Event6FieldNames.lumpSumDate))
     )
 
-    val form: Form[CrystallisedDetails] = amountCrystallisedAndDateFormProvider(maxDate)
+    val startDate: LocalDate = LocalDate.of(2006, 4, 6)
+
+    def endDate(date: LocalDate): LocalDate = {
+      date match {
+        case _ if date.isBefore(LocalDate.of(date.getYear, 4, 6)) =>
+          LocalDate.of(date.getYear, 4, 5)
+        case _ =>
+          LocalDate.of(date.getYear + 1, 4, 5)
+      }
+    }
+
+    val form: Form[CrystallisedDetails] = amountCrystallisedAndDateFormProvider(startDate, endDate(maxDate))
 
     form.bind(
       Field.seqToMap(fields)

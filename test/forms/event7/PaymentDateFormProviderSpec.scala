@@ -30,7 +30,7 @@ class PaymentDateFormProviderSpec extends SpecBase
   private val stubMin: LocalDate = LocalDate.of(2006, 4, 6)
   private val stubMax: LocalDate = LocalDate.of(2023, 4, 5)
 
-  private val form = new PaymentDateFormProvider().apply(max = stubMax)
+  private val form = new PaymentDateFormProvider().apply(stubMin, stubMax)
 
   private val paymentDateKey = "paymentDate"
 
@@ -56,14 +56,14 @@ class PaymentDateFormProviderSpec extends SpecBase
       form = form,
       key = paymentDateKey,
       min = stubMin,
-      formError = FormError(paymentDateKey, messages("paymentDate.date.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
+      formError = FormError(paymentDateKey, messages("genericDate.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
     )
 
     behave like dateFieldWithMax(
       form = form,
       key = paymentDateKey,
       max = stubMax,
-      formError = FormError(paymentDateKey, messages("paymentDate.date.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
+      formError = FormError(paymentDateKey, messages("genericDate.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
     )
   }
 }

@@ -50,14 +50,14 @@ class SchemeChangeDateFormProviderSpec extends SpecBase
       form = form,
       key = schemeChangeDateKey,
       min = stubMin,
-      formError = FormError(schemeChangeDateKey, messages("schemeChangeDate.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
+      formError = FormError(schemeChangeDateKey, messages("genericDate.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
     )
 
     behave like dateFieldWithMax(
       form = form,
       key = schemeChangeDateKey,
       max = stubMax,
-      formError = FormError(schemeChangeDateKey, messages("schemeChangeDate.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
+      formError = FormError(schemeChangeDateKey, messages("genericDate.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
     )
   }
 }

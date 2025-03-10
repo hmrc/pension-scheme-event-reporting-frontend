@@ -104,7 +104,7 @@ private[mappings] class LocalDateFormatter(
     fields.count(_._2.isDefined) match {
       case 3 =>
         val formattedDate = formatDate(key, data).left.map {
-          _.map(_.copy(key = key, args = args +: fieldKeys))
+          _.map(_.copy(key = key, args = args ++ fieldKeys))
         }
         formattedDate match {
           case errors@Left(_) => errors
@@ -116,17 +116,17 @@ private[mappings] class LocalDateFormatter(
                 if (taxYearForDate == taxYear) {
                   rightDate
                 } else {
-                  Left(List(FormError(key, invalidKey, Seq(taxYear.toString, (taxYear + 1).toString) +: fieldKeys)))
+                  Left(List(FormError(key, invalidKey, Seq(taxYear.toString, (taxYear + 1).toString) ++ fieldKeys)))
                 }
             }
         }
       case 2 =>
-        Left(List(FormError(key, s"${messages("genericDate.error.invalid.missingInformation")} ${missingFields.head}", args +: missingFields)))
+        Left(List(FormError(key, s"${messages("genericDate.error.invalid.missingInformation")} ${missingFields.head}", args ++ missingFields)))
       case 1 =>
         val missingFieldsString = s"${missingFields.head} and ${missingFields.tail.head}"
-        Left(List(FormError(key, s"${messages("genericDate.error.invalid.missingInformation")} $missingFieldsString", args +: missingFields)))
+        Left(List(FormError(key, s"${messages("genericDate.error.invalid.missingInformation")} $missingFieldsString", args ++ missingFields)))
       case _ =>
-        Left(List(FormError(key, "genericDate.error.invalid.allFieldsMissing", args +: missingFields)))
+        Left(List(FormError(key, "genericDate.error.invalid.allFieldsMissing", args ++ missingFields)))
     }
   }
 
