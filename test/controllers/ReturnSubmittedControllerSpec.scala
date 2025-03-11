@@ -77,7 +77,8 @@ class ReturnSubmittedControllerSpec extends SpecBase {
             schemeName,
             taxYear,
             dateSubmitted,
-            email)(request, messages(application)).toString
+            email,
+            routes.EventReportingOverviewController.onPageLoad(request.srn).url)(request, messages(application)).toString
       }
     }
 
@@ -106,7 +107,8 @@ class ReturnSubmittedControllerSpec extends SpecBase {
             schemeName,
             taxYear,
             dateSubmitted,
-            email)(request, messages(application)).toString
+            email,
+            routes.EventReportingOverviewController.onPageLoad(request.srn).url)(request, messages(application)).toString
       }
     }
   }

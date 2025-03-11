@@ -59,9 +59,10 @@ class ReturnSubmittedController @Inject()(
 
       val dateHelper = new DateHelper
       val dateSubmitted: String = dateHelper.now.format(dateFormatter)
+      val returnUrl = controllers.routes.EventReportingOverviewController.onPageLoad(request.srn).url
 
       Ok(view(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url,
-        viewOtherPensionSchemesUrl, schemeName, taxYear, dateSubmitted, minimalDetails.email))
+        viewOtherPensionSchemesUrl, schemeName, taxYear, dateSubmitted, minimalDetails.email, returnUrl))
     }
   }
 }

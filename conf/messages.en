@@ -98,6 +98,7 @@ confirmation.p2 = You will receive a charge reference for this submission. It mu
 confirmation.li2.1 = View your
 confirmation.li2.2 = other pension schemes
 confirmation.li3 = Print this page
+confirmation.returnToOverview = Return to event reporting overview
 
 eventReportingTile.heading = Event Reporting
 eventReportingTile.subHeading = Event report {0} to {1}:

@@ -20,14 +20,12 @@ import base.SpecBase
 import connectors.UserAnswersCacheConnector
 import data.SampleData.{erOverviewSeq, userAnswersWithOneMemberAndEmployerEvent1}
 import forms.event1.UnauthPaymentSummaryFormProvider
-import models.enumeration.EventType
 import models.enumeration.VersionStatus.Submitted
 import models.{Index, TaxYear, VersionInfo}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import pages.common.{MembersPage, RemoveMemberPage}
 import pages.event1.UnauthPaymentSummaryPage
 import pages.{EmptyWaypoints, EventReportingOverviewPage, TaxYearPage, VersionInfoPage}
 import play.api.Application
@@ -72,7 +70,6 @@ class UnauthPaymentSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
   } else {
     Messages("unauthPaymentSummary.title", taxYear)
   }
-  private val pageTitle = Messages("unauthPaymentSummary.title", taxYear)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
