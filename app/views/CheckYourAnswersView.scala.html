@@ -36,6 +36,10 @@
     @govukSummaryList(list)
 
     @govukButton(
-        ButtonViewModel(messages("site.saveAndContinue")).asLink(continueUrl).withAttribute(("id", "submit"))
-    )
+        ButtonViewModel(messages("site.saveAndContinue"))
+            .asLink(continueUrl)
+            .withAttribute("id" -> "submit")
+            .withAttribute("data-prevent-double-click" -> "true")
+        )
+
 }
