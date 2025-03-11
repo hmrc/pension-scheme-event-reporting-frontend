@@ -26,7 +26,7 @@ govukButton: GovukButton
 
 @(viewModel: OverviewViewModel)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
-@layout(pageTitle = messages("eventSummary.title", "selectedTaxYear")) {
+@layout(pageTitle = titleNoForm(messages("eventReportingOverview.title"))) {
 
       <span class="govuk-caption-l">
           @viewModel.schemeName
