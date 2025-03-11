@@ -51,16 +51,16 @@ object TaxYear extends Enumerable.Implicits {
       )
   }
 
-  def optionsFiltered(func: TaxYear => Boolean)(implicit messages: Messages): Seq[RadioItem] = {
+  def optionsFiltered(func: TaxYear => Boolean, selectedTaxYear: Option[TaxYear])(implicit messages: Messages): Seq[RadioItem] = {
     values.zipWithIndex.flatMap {
       case (value, index) =>
         if (func(value)) {
           Seq(RadioItem(
             content = Text(messages("chooseTaxYear.yearRangeRadio", value.startYear, value.endYear)),
             value = Some(value.startYear),
-            id = Some(s"value_$index")
-          )
-          )
+            id = Some(s"value_$index"),
+            checked = selectedTaxYear.contains(value)
+          ))
         } else {
           Nil
         }

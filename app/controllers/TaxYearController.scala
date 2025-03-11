@@ -67,18 +67,18 @@ class TaxYearController @Inject()(val controllerComponents: MessagesControllerCo
       (ua.get(EventReportingTileLinksPage), ua.get(EventReportingOverviewPage)) match {
         case (Some(PastEventTypes), Some(seqEROverview)) =>
           val applicableYears: Seq[String] = seqEROverview.flatMap(yearsWhereSubmittedVersionAvailable)
-          TaxYear.optionsFiltered(taxYear => applicableYears.contains(taxYear.startYear))
+          TaxYear.optionsFiltered(taxYear => applicableYears.contains(taxYear.startYear), ua.get(TaxYearPage))
         case (Some(InProgress), Some(seqEROverview)) =>
           val applicableYears: Seq[String] = seqEROverview.flatMap(yearsWhereCompiledVersionAvailable)
-          TaxYear.optionsFiltered(taxYear => applicableYears.contains(taxYear.startYear))
+          TaxYear.optionsFiltered(taxYear => applicableYears.contains(taxYear.startYear), ua.get(TaxYearPage))
         case (Some(_), Some(seqEROverview)) =>
           val yearsInProgressOrSubmitted: Seq[Int] = seqEROverview.collect{
             case x if x.versionDetails.exists(x => x.compiledVersionAvailable || x.submittedVersionAvailable) => x.taxYear.startYear.toInt
           }
           TaxYear.optionsFiltered( taxYear => taxYear.startYear.toInt >= config.eventReportingStartTaxYear &&
-                                              !yearsInProgressOrSubmitted.contains(taxYear.startYear.toInt))
+                                              !yearsInProgressOrSubmitted.contains(taxYear.startYear.toInt), ua.get(TaxYearPage))
         case _ =>
-          TaxYear.optionsFiltered( taxYear =>  taxYear.startYear.toInt >= config.eventReportingStartTaxYear)
+          TaxYear.optionsFiltered( taxYear =>  taxYear.startYear.toInt >= config.eventReportingStartTaxYear, ua.get(TaxYearPage))
       }
 
     status(view(form, waypoints, radioOptions, routes.EventReportingOverviewController.onPageLoad(request.pstr).url))
@@ -86,8 +86,7 @@ class TaxYearController @Inject()(val controllerComponents: MessagesControllerCo
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async { implicit request =>
 
-    val preparedForm = request.userAnswers.get(TaxYearPage).fold(form)(form.fill)
-    Future.successful(renderPage(preparedForm, waypoints, Ok))
+    Future.successful(renderPage(form, waypoints, Ok))
   }
 
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData() andThen requireData).async {

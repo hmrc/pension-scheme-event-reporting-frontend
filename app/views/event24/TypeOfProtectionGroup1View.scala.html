@@ -68,7 +68,9 @@ pageTitle = title(form, messages("typeOfProtectionGroup1.event24.title"))
                 <div class="govuk-checkboxes" data-module="govuk-checkboxes">
                     @TypeOfProtectionGroup1.protectionOptions.zipWithIndex.map { case (item, index) =>
                         <div class="govuk-checkboxes__item">
-                            <input class="govuk-checkboxes__input" id="value_@index" name="value[@index]" type="checkbox" value="@item">
+                            <input class="govuk-checkboxes__input" id="value_@index" name="value[@index]" type="checkbox" value="@item"
+                                   @{if(form.data.values.toSet.contains(item.toString) &&
+                                   !form.data.values.toSet.contains("noneOfTheAbove")) "checked" else ""}>
                             <label class="govuk-label govuk-checkboxes__label" for="value_@index">
                                 @messages(s"typeOfProtection.event24.${item.toString.replaceAll("[, ]", "")}")
                             </label>
@@ -76,9 +78,11 @@ pageTitle = title(form, messages("typeOfProtectionGroup1.event24.title"))
                     }
 
                     @if(protectionPageVal != "noOtherProtections") {
+
                         <div class="govuk-checkboxes__divider">or</div>
                         <div class="govuk-checkboxes__item">
-                            <input class="govuk-checkboxes__input" id="value_5" name="value[5]" type="checkbox" value="noneOfTheAbove" data-behaviour="exclusive">
+                            <input class="govuk-checkboxes__input" id="value_5" name="value[5]" type="checkbox" value="noneOfTheAbove" data-behaviour="exclusive"
+                                   @{if(form.data.values.toSet.contains("noneOfTheAbove")) "checked" else ""}>
                             <label class="govuk-label govuk-checkboxes__label" for="value_5">
                                 @messages(s"typeOfProtection.event24.noneOfTheAbove")
                             </label>
