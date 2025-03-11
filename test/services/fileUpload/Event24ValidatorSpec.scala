@@ -218,7 +218,7 @@ class Event24ValidatorSpec extends BulkUploadSpec[Event24Validator](2023) with B
         ValidationError(2, 2, "membersDetails.error.lastName.required", "lastName"),
         ValidationError(3, 3, "membersDetails.error.nino.required", "nino"),
         ValidationError(4, 4, "genericDate.error.invalid.allFieldsMissing", "crystallisedDate", Seq("day", "month", "year")),
-        ValidationError(5, 4, "genericDate.error.invalid.year", "crystallisedDate"),
+        ValidationError(5, 4, "genericDate.error.invalid.year", "crystallisedDate", Seq("year")),
         ValidationError(6, 5, "bceTypeSelection.error.format", "bceType"),
         ValidationError(7, 6, "totalAmountBenefitCrystallisation.event24.error.nonNumeric", "totalAmount"),
         ValidationError(8, 7, "validProtection.event24.error.required", "validProtection"),

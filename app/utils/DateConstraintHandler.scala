@@ -65,9 +65,9 @@ object DateConstraintHandlers extends Mappings {
       def handle(date: (Int, LocalDate), errorKey: String)(implicit messages: Messages): Seq[Constraint[LocalDate]] =
         Seq(
           yearHas4Digits("genericDate.error.invalid.year"),
-          minDate(LocalDate.of(date._1, april, taxYearOpenDay), errorKey, date._1.toString, (date._1 + 1).toString),
-          maxDate(LocalDate.of(date._1 + 1, april, taxYearCloseDay), errorKey, date._1.toString, (date._1 + 1).toString),
-          isNotBeforeOpenDate(date._2, "schemeWindUpDate.error.beforeOpenDate", formatDateDMY(date._2))
+          minDate(LocalDate.of(date._1, april, taxYearOpenDay), errorKey, date._1.toString, (date._1 + 1).toString, "day", "month", "year"),
+          maxDate(LocalDate.of(date._1 + 1, april, taxYearCloseDay), errorKey, date._1.toString, (date._1 + 1).toString, "day", "month", "year"),
+          isNotBeforeOpenDate(date._2, "schemeWindUpDate.error.beforeOpenDate", formatDateDMY(date._2), "day", "month", "year")
         )
     }
 }

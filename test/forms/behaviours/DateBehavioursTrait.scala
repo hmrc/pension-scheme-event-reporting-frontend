@@ -98,7 +98,7 @@ trait DateBehavioursTrait extends FieldBehaviours {
 
       val result = form.bind(data)
 
-      result.errors must contain(formError)
+      result.errors must contain(formError.copy(args = Seq("year")))
     }
   }
 

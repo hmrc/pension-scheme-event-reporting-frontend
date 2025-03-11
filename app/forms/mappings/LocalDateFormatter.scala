@@ -35,16 +35,16 @@ private[mappings] class LocalDateFormatter(
 
   private val fieldKeys: List[String] = List("day", "month", "year")
 
-  def tryLocalDate(input: (Int, Int, Int)): Either[Seq[FormError], LocalDate] = {
+  private def tryLocalDate(key: String, input: (Int, Int, Int)): Either[Seq[FormError], LocalDate] = {
 
     if (multipleInvalidInputs(input._1, input._2, input._3)) {
       // Generic date error displayed if more than one input is invalid.
-      Left(Seq(FormError(invalidKey, messages(invalidKey), fieldKeys)))
+      Left(Seq(FormError(key, messages(invalidKey), fieldKeys)))
     } else {
       Try(LocalDate.of(input._3, input._2, input._1)) match {
         case Failure(exception) =>
-          // Specific date component error displayed if only one input is invalid.
-          Left(Seq(FormError(invalidKey, messages(erroneousDateKey(exception.getMessage)), fieldKeys)))
+          val (errors, errorArgs) = erroneousDateKey(exception.getMessage)
+          Left(Seq(FormError(key, messages(errors), errorArgs)))
         case Success(date) => Right(date)
       }
     }
@@ -63,29 +63,33 @@ private[mappings] class LocalDateFormatter(
     isBadDMY | isBadDM | isBadDY | isBadMY
   }
 
-  private val erroneousDateKey: String => String = {
-    case errorMessage@invalidDay if errorMessage.contains("DayOfMonth") => "genericDate.error.invalid.day"
-    case errorMessage@invalidMonth if errorMessage.contains("MonthOfYear") => "genericDate.error.invalid.month"
-    case errorMessage@invalidYear if errorMessage.contains("Year") => "genericDate.error.invalid.year"
-    case _ => invalidKey
+  private val erroneousDateKey: String => (String, Seq[String]) = {
+    case errorMessage if errorMessage.contains("DayOfMonth") => "genericDate.error.invalid.day" -> Seq("day")
+    case errorMessage if errorMessage.contains("MonthOfYear") => "genericDate.error.invalid.month" -> Seq("month")
+    case errorMessage if errorMessage.contains("Year") => "genericDate.error.invalid.year" -> Seq("year")
+    case _ => invalidKey -> fieldKeys
   }
 
   private def formatDate(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
 
-    val int = intFormatter(
-      requiredKey = invalidKey,
-      wholeNumberKey = invalidKey,
-      nonNumericKey = invalidKey,
-      args
-    )
-
     val finalData = data.pipe(removeWhitespaceFromData).pipe(convertMonthInData(key, _))
 
+    def addArgs(arg: String)(errors: Seq[FormError]) = errors.map(formError => formError.copy(key = key, args = formError.args ++ Seq(arg)))
+
+    def int(intType: String) = intFormatter(
+      requiredKey = invalidKey + "." + intType,
+      wholeNumberKey = invalidKey + "." + intType,
+      nonNumericKey = invalidKey + "." + intType,
+      args
+    ).bind(key + "." + intType, finalData).left.map(addArgs(intType))
+
+
+
     for {
-      day <- int.bind(s"$key.day", finalData)
-      month <- int.bind(s"$key.month", finalData)
-      year <- int.bind(s"$key.year", finalData)
-      date <- tryLocalDate((day, month, year): (Int, Int, Int))
+      day <- int("day")
+      month <- int("month")
+      year <- int("year")
+      date <- tryLocalDate(key, (day, month, year): (Int, Int, Int))
     } yield date
   }
 
@@ -103,9 +107,8 @@ private[mappings] class LocalDateFormatter(
 
     fields.count(_._2.isDefined) match {
       case 3 =>
-        val formattedDate = formatDate(key, data).left.map {
-          _.map(_.copy(key = key, args = args ++ fieldKeys))
-        }
+        val formattedDate = formatDate(key, data)
+        println(formattedDate)
         formattedDate match {
           case errors@Left(_) => errors
           case rightDate@Right(d) =>
