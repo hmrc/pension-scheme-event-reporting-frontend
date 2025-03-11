@@ -42,8 +42,6 @@
     @form("value").error.map(err => messages(err.message, err.args: _*))
 }
 
-@{val noneOfTheAboveChecked = form.data.values.toSet.contains("noneOfTheAbove")}
-
 @layout(
 pageTitle = title(form, messages("typeOfProtectionGroup1.event24.title"))
 ) {
