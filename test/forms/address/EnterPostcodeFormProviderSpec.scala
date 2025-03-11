@@ -24,7 +24,7 @@ class EnterPostcodeFormProviderSpec extends SpecBase with AddressBehaviours {
 
   private val companyName = companyDetails.companyName
 
-  private val requiredKey = s"Enter $companyName’s postcode"
+  private val requiredKey = "Enter a full UK postcode"
   private val lengthKey = "enterPostcode.error.length"
   private val invalid = "Enter a full UK postcode"
   private val fieldName = "value"
