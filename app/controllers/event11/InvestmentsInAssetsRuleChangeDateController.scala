@@ -53,7 +53,7 @@ class InvestmentsInAssetsRuleChangeDateController @Inject()(val controllerCompon
       case Some(value) => formProvider(startDate, endDate).fill(value)
       case None => formProvider(startDate, endDate)
     }
-    Ok(view(preparedForm, waypoints))
+    Ok(view(preparedForm, waypoints, startDate, endDate))
 
   }
 
@@ -64,7 +64,7 @@ class InvestmentsInAssetsRuleChangeDateController @Inject()(val controllerCompon
       val endDate = LocalDate.of(selectedTaxYear, Month.APRIL, 5)
       formProvider(startDate, endDate).bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, waypoints))),
+          Future.successful(BadRequest(view(formWithErrors, waypoints, startDate, endDate))),
         value => {
           val originalUserAnswers = request.userAnswers
           val updatedAnswers = originalUserAnswers.setOrException(InvestmentsInAssetsRuleChangeDatePage, value)

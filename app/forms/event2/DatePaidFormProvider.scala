@@ -30,7 +30,7 @@ class DatePaidFormProvider @Inject() extends Mappings with Transforms {
     val startDate: LocalDate = LocalDate.of(2006, Month.APRIL, 6)
     val endDate: LocalDate = LocalDate.of(taxYear + 1, Month.APRIL, 5)
     Form(
-      localDateMappingWithDateRange(date = (startDate, endDate), outOfRangeKey = "datePaid.event2.error.outside.taxYear")
+      localDateMappingWithDateRange(date = (startDate, endDate))
     )
   }
 }

@@ -209,7 +209,7 @@ trait Constraints {
   protected def yearHas4Digits(errorKey: String): Constraint[LocalDate] =
     Constraint {
       case date if date.getYear >= 1000 => Valid
-      case _ => Invalid(errorKey)
+      case _ => Invalid(errorKey,"year")
     }
 
   protected def isEqual(expectedValue: Option[String], errorKey: String): Constraint[String] =

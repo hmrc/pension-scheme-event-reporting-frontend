@@ -186,7 +186,7 @@ class Event24ValidatorSpec extends BulkUploadSpec[Event24Validator](2023) with B
       val ((output, errors), rowNumber) = validate(data)
 
       errors mustBe Seq(
-        ValidationError(1, 4, "Date must be between 06 April 2023 and 05 April 2024", "crystallisedDate")
+        ValidationError(1, 4, "Date must be between 06 April 2023 and 05 April 2024", "crystallisedDate", Seq("day", "month", "year"))
       )
     }
 
@@ -217,8 +217,8 @@ class Event24ValidatorSpec extends BulkUploadSpec[Event24Validator](2023) with B
         ValidationError(1, 1, "membersDetails.error.firstName.required", "firstName"),
         ValidationError(2, 2, "membersDetails.error.lastName.required", "lastName"),
         ValidationError(3, 3, "membersDetails.error.nino.required", "nino"),
-        ValidationError(4, 4, "genericDate.error.invalid.allFieldsMissing", "crystallisedDate"),
-        ValidationError(5, 4, "genericDate.error.invalid.year", "crystallisedDate"),
+        ValidationError(4, 4, "genericDate.error.invalid.allFieldsMissing", "crystallisedDate", Seq("day", "month", "year")),
+        ValidationError(5, 4, "genericDate.error.invalid.year", "crystallisedDate", Seq("year")),
         ValidationError(6, 5, "bceTypeSelection.error.format", "bceType"),
         ValidationError(7, 6, "totalAmountBenefitCrystallisation.event24.error.nonNumeric", "totalAmount"),
         ValidationError(8, 7, "validProtection.event24.error.required", "validProtection"),

@@ -43,7 +43,7 @@ class CrystallisedDateFormProviderSpec extends SpecBase
       max = stubMax,
       formError = FormError(
         "crystallisedDate",
-        messages("crystallisedDate.event24.date.error.outsideReportedYear",
+        messages("genericDate.error.outsideReportedYear",
           formatDateDMY(stubMin),
           formatDateDMY(stubMax)
         )

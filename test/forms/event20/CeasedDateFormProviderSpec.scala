@@ -50,14 +50,14 @@ class CeasedDateFormProviderSpec extends SpecBase
       form = form,
       key = ceasedDateKey,
       min = stubMin,
-      formError = FormError(ceasedDateKey, messages("schemeChangeDate.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
+      formError = FormError(ceasedDateKey, messages("genericDate.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
     )
 
     behave like dateFieldWithMax(
       form = form,
       key = ceasedDateKey,
       max = stubMax,
-      formError = FormError(ceasedDateKey, messages("schemeChangeDate.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
+      formError = FormError(ceasedDateKey, messages("genericDate.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
     )
   }
 }

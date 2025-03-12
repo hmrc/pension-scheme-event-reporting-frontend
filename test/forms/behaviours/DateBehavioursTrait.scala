@@ -98,7 +98,7 @@ trait DateBehavioursTrait extends FieldBehaviours {
 
       val result = form.bind(data)
 
-      result.errors must contain(formError)
+      result.errors must contain(formError.copy(args = Seq("year")))
     }
   }
 
@@ -119,7 +119,7 @@ trait DateBehavioursTrait extends FieldBehaviours {
 
           val result = form.bind(data)
 
-          result.errors must contain(formError)
+          result.errors must contain(formError.copy(args = formError.args ++ Seq("day", "month", "year")))
       }
     }
   }
@@ -141,7 +141,7 @@ trait DateBehavioursTrait extends FieldBehaviours {
 
           val result = form.bind(data)
 
-          result.errors must contain(formError)
+          result.errors must contain(formError.copy(args = formError.args ++ Seq("day", "month", "year")))
       }
     }
   }
@@ -152,7 +152,7 @@ trait DateBehavioursTrait extends FieldBehaviours {
 
       val result = form.bind(Map.empty[String, String])
 
-      result.errors must contain(FormError(key, requiredAllKey, errorArgs))
+      result.errors must contain(FormError(key, requiredAllKey, errorArgs ++ Seq("day", "month", "year")))
     }
   }
 }

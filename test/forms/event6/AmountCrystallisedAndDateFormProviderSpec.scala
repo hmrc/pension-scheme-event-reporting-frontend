@@ -32,7 +32,7 @@ class AmountCrystallisedAndDateFormProviderSpec extends SpecBase
 
   private val validDate = LocalDate.of(2023, 1, 1)
 
-  private val form = new AmountCrystallisedAndDateFormProvider().apply(max = stubMax)
+  private val form = new AmountCrystallisedAndDateFormProvider().apply(stubMin, stubMax)
 
   private val amountCrystallisedKey = "amountCrystallised"
   private val crystallisedDateKey = "crystallisedDate"
@@ -122,14 +122,14 @@ class AmountCrystallisedAndDateFormProviderSpec extends SpecBase
       form = form,
       key = crystallisedDateKey,
       min = stubMin,
-      formError = FormError(crystallisedDateKey, messages("amountCrystallisedAndDate.date.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
+      formError = FormError(crystallisedDateKey, messages("genericDate.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
     )
 
     behave like dateFieldWithMax(
       form = form,
       key = crystallisedDateKey,
       max = stubMax,
-      formError = FormError(crystallisedDateKey, messages("amountCrystallisedAndDate.date.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
+      formError = FormError(crystallisedDateKey, messages("genericDate.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
     )
   }
 }

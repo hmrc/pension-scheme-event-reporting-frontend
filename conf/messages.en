@@ -187,13 +187,8 @@ eventSummary.lockedBy = Event locked by
 
 schemeWindUpDate.title = When was the scheme wound up?
 schemeWindUpDate.heading = When was the scheme wound up?
-schemeWindUpDate.hint = For example, 27 3 2022
 schemeWindUpDate.checkYourAnswersLabel = When was the scheme wound up?
-schemeWindUpDate.error.required.all = Enter the date the scheme was wound up
-schemeWindUpDate.error.required.two = The date must include a {0} and {1}
 schemeWindUpDate.error.outside.taxYear = Date must be between 6 April {0} and 5 April {1}
-schemeWindUpDate.error.required = The date must include a {0}
-schemeWindUpDate.error.invalid = Enter a real date
 schemeWindUpDate.change.hidden = When was the scheme wound up?
 schemeWindUpDate.error.beforeOpenDate = You have attempted to wind up the scheme before it was created. The date must come on or after {0}
 
@@ -369,7 +364,6 @@ datePaid.event2.error.required.all = Enter the date
 datePaid.event2.error.required.two = The date must include {0} and {1}
 datePaid.event2.error.required = The date must include {0}
 datePaid.event2.error.invalid = Enter a real date
-datePaid.event2.error.outside.taxYear = The date must be between {0} to {1}
 datePaid.event2.change.hidden = When the payment was made
 
 membersSummary.event2.title = Event 2: Lump sum death benefit payment events reported in the tax year ending 5 April {0}
@@ -607,11 +601,6 @@ paymentValueAndDate.value.change.hidden = Payment details
 paymentValueAndDate.value.checkYourAnswersLabel = Payment details
 
 paymentValueAndDate.date.heading = Date of payment or when benefit made available
-paymentValueAndDate.date.hint = For example, 22 09 2022
-paymentValueAndDate.date.error.nothingEntered = Enter the date
-paymentValueAndDate.date.error.noDayMonthOrYear = The date must include a day, month and year
-paymentValueAndDate.date.error.outsideDateRanges = Enter a real date
-paymentValueAndDate.date.error.outsideRelevantTaxYear = Date must be between {0} and {1}
 paymentValueAndDate.date.change.hidden = Payment date
 paymentValueAndDate.date.checkYourAnswersLabel = Payment date
 
@@ -924,9 +913,6 @@ country.EE = Estonia
 testDate.heading = Test Only Date Tool
 testDate.title = Test Only Date Tool
 testDate.hint = For example, 22 09 2022
-testDate.error.noDayMonthOrYear = The date must include a day, month and year
-testDate.error.nothingEntered = Enter the mock date
-testDate.error.outsideDateRanges = Enter a real date
 unauthPaymentAndSanctionCharges.title = Paying unauthorised payment and scheme sanction charges
 unauthPaymentAndSanctionCharges.heading = Paying unauthorised payment and scheme sanction charges
 unauthPaymentAndSanctionCharges.p1 = The unauthorised payments you report may be subject to charges.
@@ -1297,11 +1283,6 @@ amountCrystallisedAndDate.value.change.hidden = The total amount crystallised
 amountCrystallisedAndDate.value.checkYourAnswersLabel = Crystallisation details
 
 amountCrystallisedAndDate.date.heading = Date of the benefit crystallisation
-amountCrystallisedAndDate.date.hint = For example, 22 09 2022
-amountCrystallisedAndDate.date.error.nothingEntered = Enter the date
-amountCrystallisedAndDate.date.error.noDayMonthOrYear = The date must include a day, month and year
-amountCrystallisedAndDate.date.error.outsideDateRanges = Enter a real date
-amountCrystallisedAndDate.date.error.outsideReportedYear = Date must be between {0} and {1}
 amountCrystallisedAndDate.date.change.hidden = The date of the benefit crystallisation
 amountCrystallisedAndDate.date.checkYourAnswersLabel = Date of the benefit crystallisation
 
@@ -1325,11 +1306,6 @@ amounts.value.error.negative = The amount must not be a negative amount of money
 
 paymentDate.heading = When was the payment made?
 paymentDate.title = When was the payment made?
-paymentDate.date.hint = For example, 22 09 2022
-paymentDate.date.error.nothingEntered = Enter the date
-paymentDate.date.error.noDayMonthOrYear = The date must include a day, month and year
-paymentDate.date.error.outsideDateRanges = Enter a real date
-paymentDate.date.error.outsideReportedYear = Date must be between {0} and {1}
 paymentDate.date.change.hidden = The date of the payment
 paymentDate.date.checkYourAnswersLabel = The date the payment was made
 
@@ -1347,11 +1323,6 @@ lumpSumAmountAndDate.value.change.hidden = The lump sum amount
 lumpSumAmountAndDate.value.checkYourAnswersLabel = Lump sum details
 
 lumpSumAmountAndDate.date.heading = When was the payment made?
-lumpSumAmountAndDate.date.hint = For example, 27 3 2007
-lumpSumAmountAndDate.date.error.nothingEntered = Enter the date
-lumpSumAmountAndDate.date.error.noDayMonthOrYear = The date must include a day, month and year
-lumpSumAmountAndDate.date.error.outsideDateRanges = Enter a real date
-lumpSumAmountAndDate.date.error.outsideReportedYear = Date must be between {0} and {1}
 lumpSumAmountAndDate.date.change.hidden = The date of the lump sum payment
 lumpSumAmountAndDate.date.checkYourAnswersLabel = The date the payment was made
 
@@ -1377,12 +1348,7 @@ schemeStructure.change.hidden = Scheme structure
 
 event13.changeDate.title = When was the change made?
 event13.changeDate.heading = When was the change made?
-event13.changeDate.hint = For example, 27 3 2007
 event13.changeDate.checkYourAnswersLabel = The date the change was made
-event13.changeDate.error.required.all = Enter the date when the change was made
-event13.changeDate.error.required.two = The date must include {0} and {1}
-event13.changeDate.error.required = The date must include {0}
-event13.changeDate.error.invalid = Enter a real date
 event13.changeDate.change.hidden = The date the change was made
 event13.changeDate.error.outside.taxYear = Date must be between 6 April {0} and 5 April {1}
 
@@ -1441,11 +1407,6 @@ event5.paymentDetails.date.heading = Date the period of non-payment started
 event4.paymentDetails.date.change.hidden = the date of the payment
 event5.paymentDetails.date.checkYourAnswersLabel = Date of the payment
 
-paymentDetails.date.hint = For example, 22 09 2022
-paymentDetails.date.error.nothingEntered = Enter the date
-paymentDetails.date.error.noDayMonthOrYear = The date must include a day, month and year
-paymentDetails.date.error.outsideDateRanges = Enter a real date
-paymentDetails.date.error.outsideReportedYear = Date must be between {0} and {1}
 paymentDetails.date.change.hidden = The date of the payment
 paymentDetails.date.checkYourAnswersLabel = Date of the payment
 
@@ -1466,14 +1427,7 @@ hasSchemeChangedRules.event11.change.hidden = Has the scheme changed its rules t
 
 unAuthPaymentsRuleChangeDate.title = When did this unauthorised payments rule change take effect?
 unAuthPaymentsRuleChangeDate.heading = When did this unauthorised payments rule change take effect?
-unAuthPaymentsRuleChangeDate.hint = For example, 12 11 2007
 unAuthPaymentsRuleChangeDate.checkYourAnswersLabel = When the unauthorised payments rule change took place
-unAuthPaymentsRuleChangeDate.error.required.all = Enter the date
-unAuthPaymentsRuleChangeDate.error.required.two = The date must include {0} and {1}
-unAuthPaymentsRuleChangeDate.error.required = The date must include a {0}
-unAuthPaymentsRuleChangeDate.error.invalid = Enter a real date
-unAuthPaymentsRuleChangeDate.error.outsideDateRanges = Enter a real date
-unAuthPaymentsRuleChangeDate.error.outsideReportedYear = The date must be between {0} and {1}
 unAuthPaymentsRuleChangeDate.change.hidden = When did this unauthorised payments rule change take effect?
 
 hasSchemeChangedRulesInvestmentsInAssets.title = Has the scheme changed its rules to allow investments in assets other than contracts or policies of insurance?
@@ -1484,14 +1438,7 @@ hasSchemeChangedRulesInvestmentsInAssets.change.hidden = Has the scheme changed 
 
 investmentsInAssetsRuleChangeDate.title = When did this investment in assets rule change take effect?
 investmentsInAssetsRuleChangeDate.heading = When did this investment in assets rule change take effect?
-investmentsInAssetsRuleChangeDate.hint = For example, 12 11 2007
 investmentsInAssetsRuleChangeDate.checkYourAnswersLabel = When the scheme changed its rules to allow investments in assets
-investmentsInAssetsRuleChangeDate.error.required.all = Enter the date
-investmentsInAssetsRuleChangeDate.error.required.two = The date must include {0} and {1}
-investmentsInAssetsRuleChangeDate.error.required = The date must include a {0}
-investmentsInAssetsRuleChangeDate.error.invalid = Enter a real date
-investmentsInAssetsRuleChangeDate.error.outsideDateRanges = Enter a real date
-investmentsInAssetsRuleChangeDate.error.outsideReportedYear = The date must be between {0} and {1}
 investmentsInAssetsRuleChangeDate.change.hidden = When did this investment in assets rule change take effect?
 
 becomeOrCeaseScheme.title = What change has taken place for this pension scheme?
@@ -1506,13 +1453,6 @@ itBecameAnInvestmentRegulatedPensionScheme.schemeChangeDate.title = When did the
 itBecameAnInvestmentRegulatedPensionScheme.schemeChangeDate.heading = When did the pension scheme become investment regulated?
 itHasCeasedToBeAnInvestmentRegulatedPensionScheme.schemeChangeDate.title = When did the pension scheme cease to be investment regulated?
 itHasCeasedToBeAnInvestmentRegulatedPensionScheme.schemeChangeDate.heading = When did the pension scheme cease to be investment regulated?
-
-schemeChangeDate.hint = For example, 27 3 2007
-
-schemeChangeDate.error.nothingEntered = Enter the date
-schemeChangeDate.error.noDayMonthOrYear = The date must include a day, month and year
-schemeChangeDate.error.outsideDateRanges = Enter a real date
-schemeChangeDate.error.outsideReportedYear = The date must be between {0} and {1}
 
 became.schemeChangeDate.change.hidden = The date for when the pension scheme became investment regulated
 ceased.schemeChangeDate.change.hidden = The date for when the pension scheme ceased to be investment regulated
@@ -1539,9 +1479,6 @@ dateOfChange.hint = For example, 27 3 2007
 
 dateOfChange.checkYourAnswersLabel = When the rule change took place
 dateOfChange.error.nothingEntered = Enter the date
-dateOfChange.error.noDayMonthOrYear = The date must include a day, month and year
-dateOfChange.error.outsideDateRanges = Enter a real date
-dateOfChange.error.outsideReportedYear = The date must be between {0} and {1}
 dateOfChange.change.hidden = The date for when the scheme changed its rules
 
 cannotSubmit.title = This event is not required
@@ -1622,22 +1559,12 @@ whatChange.change.hidden = What change has taken place for this pension scheme?
 
 becameDate.title = When did the scheme become an occupational pension scheme?
 becameDate.heading = When did the scheme become an occupational pension scheme?
-becameDate.hint = For example, 12 11 2007
 becameDate.checkYourAnswersLabel = When pension scheme became an occupational pension scheme
-becameDate.error.required.all = Enter the date
-becameDate.error.required.two = The date must include {0} and {1}
-becameDate.error.required = The date must include {0}
-becameDate.error.invalid = Enter a real date
 becameDate.change.hidden = When did the scheme become an occupational pension scheme?
 
 ceasedDate.title = When did the scheme cease to be occupational?
 ceasedDate.heading = When did the scheme cease to be occupational?
-ceasedDate.hint = For example, 12 11 2007
 ceasedDate.checkYourAnswersLabel = When did pension scheme cease to be an occupational pension scheme
-ceasedDate.error.required.all = Enter the date
-ceasedDate.error.required.two = The date must include {0} and {1}
-ceasedDate.error.required = The date must include {0}
-ceasedDate.error.invalid = Enter a real date
 ceasedDate.change.hidden = When did the scheme cease to be occupational?
 
 whatYouWillNeed.event20.title = What you will need
@@ -1653,13 +1580,8 @@ event19.countryOrTerritory.change.checkYourAnswersLabel = Country or territory
 
 event19.dateChangeMade.title = When did the country or territory change take place for this scheme?
 event19.dateChangeMade.heading = When did the country or territory change take place for this scheme?
-event19.dateChangeMade.hint = For example, 12 11 2007
 event19.dateChangeMade.checkYourAnswersLabel = When did the country or territory change take place for this scheme?
-event19.dateChangeMade.error.required.all = Enter the date when the change was made
-event19.dateChangeMade.error.required.two = The date must include the {0} and {1}
-event19.dateChangeMade.error.required = The date must include the {0}
 event19.dateChangeMade.error.outside.taxYear = Date must be between 6 April {0} and 5 April {1}
-event19.dateChangeMade.error.invalid = Enter a real date
 event19.dateChangeMade.change.hidden = When did the country or territory change take place for this scheme?
 
 whatYouWillNeed.event19.p = To record a change to the registered country or territory of establishment for the scheme you will need to tell us the following:
@@ -1687,11 +1609,6 @@ becameDateMasterTrust.error.required.two = The date must include {0} and {1}
 becameDateMasterTrust.error.required = The date must include {0}
 becameDateMasterTrust.error.invalid = Enter a real date
 becameDateMasterTrust.change.hidden = When did the scheme become a Master Trust?
-
-schemeChangeDate.event20A.error.nothingEntered = Enter the date
-schemeChangeDate.event20A.error.noDayMonthOrYear = The date must include a day, month and year
-schemeChangeDate.event20A.error.outsideDateRanges = Enter a real date
-schemeChangeDate.event20A.error.outsideReportedYear = The date must be between {0} and {1}
 
 whatChange.becameMasterTrust = It became a Master Trust
 whatChange.ceasedMasterTrust = It has ceased to be a Master Trust
@@ -1871,13 +1788,15 @@ pageNotFound404.p4 = contact HMRC.
 cannotResume.title = This event report cannot be submitted
 cannotResume.heading = This event report cannot be submitted
 cannotResume.p1 = You have attempted to amend or create an event report but no changes have been made.
+
 genericDate.error.invalid = Enter the real date
-genericDate.error.invalid.day = The day is invalid
-genericDate.error.invalid.month = The month is invalid
-genericDate.error.invalid.year = The year is invalid
+genericDate.error.invalid.day = Enter a real day
+genericDate.error.invalid.month = Enter a real month
+genericDate.error.invalid.year = Enter a real year
 genericDate.error.invalid.missingInformation = The date must include a
 genericDate.error.invalid.allFieldsMissing = The date must include a day, month and year
-genericDate.error.outsideRelevantTaxYear = Date must be between 6 April {0} and 5 April {1}
+genericDate.error.outsideReportedYear = Date must be between {0} and {1}
+genericDate.hint = The date must be between {0} and {1}. For example, 22 09 {2}
 
 returnHistory.title = Event reporting return history for tax year ending 5 April {0}
 returnHistory.heading = Event reporting return history for tax year ending 5 April {0}
@@ -1903,11 +1822,6 @@ whatYouWillNeed.event24.item4 = whether any lump sum payment took the member ove
 
 crystallisedDate.event24.heading = When did the relevant benefit crystallisation event take place?
 crystallisedDate.event24.title = When was the relevant benefit crystallisation event?
-crystallisedDate.event24.date.hint = For example, 22 09 2022
-crystallisedDate.event24.date.error.nothingEntered = Enter the date
-crystallisedDate.event24.date.error.noDayMonthOrYear = The date must include a day, month and year
-crystallisedDate.event24.date.error.outsideDateRanges = Enter a real date
-crystallisedDate.event24.date.error.outsideReportedYear = Date must be between {0} and {1}
 crystallisedDate.event24.date.change.hidden = When did the relevant benefit crystallisation event take place?
 crystallisedDate.event24.date.checkYourAnswersLabel = When did the relevant benefit crystallisation event take place?
 

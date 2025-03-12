@@ -54,7 +54,7 @@ class SchemeChangeDateController @Inject()(val controllerComponents: MessagesCon
           case Some(value) => formProvider(startDate, endDate).fill(value)
           case None => formProvider(startDate, endDate)
         }
-        Ok(view(preparedForm, waypoints, value.toString))
+        Ok(view(preparedForm, waypoints, value.toString, startDate, endDate))
       case _ => Redirect(JourneyRecoveryPage.route(waypoints))
     }
   }
@@ -69,7 +69,7 @@ class SchemeChangeDateController @Inject()(val controllerComponents: MessagesCon
 
           formProvider(startDate, endDate).bindFromRequest().fold(
             formWithErrors => {
-              Future.successful(BadRequest(view(formWithErrors, waypoints, value.toString)))
+              Future.successful(BadRequest(view(formWithErrors, waypoints, value.toString, startDate, endDate)))
             },
             value => {
               val originalUserAnswers = request.userAnswers

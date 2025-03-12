@@ -503,11 +503,11 @@ class Event1ValidatorSpec extends BulkUploadSpec[Event1Validator] with BeforeAnd
       val ((output, errors), rowNumber) = validate(data)
 
       errors mustBe Seq(
-        ValidationError(1, 25, "genericDate.error.invalid.allFieldsMissing", "paymentDate"),
-        ValidationError(2, 25, "The date must include a day", "paymentDate", List()),
-        ValidationError(3, 25, "The date must include a month and year", "paymentDate", List()),
-        ValidationError(4, 25, "Date must be between 06 April 2022 and 05 April 2023", "paymentDate"),
-        ValidationError(5, 25, "genericDate.error.invalid", "paymentDate")
+        ValidationError(1, 25, "genericDate.error.invalid.allFieldsMissing", "paymentDate", Seq("day", "month", "year")),
+        ValidationError(2, 25, "The date must include a day", "paymentDate", Seq("day")),
+        ValidationError(3, 25, "The date must include a month and year", "paymentDate", Seq("month", "year")),
+        ValidationError(4, 25, "Date must be between 06 April 2022 and 05 April 2023", "paymentDate", Seq("day", "month", "year")),
+        ValidationError(5, 25, "genericDate.error.invalid.year", "paymentDate", Seq("year"))
       )
     }
 

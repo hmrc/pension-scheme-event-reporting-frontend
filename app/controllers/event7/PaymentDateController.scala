@@ -21,12 +21,10 @@ import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import controllers.event7.PaymentDateController.paymentDateOpt
 import forms.event7.PaymentDateFormProvider
 import models.enumeration.EventType
-import models.event7.PaymentDate
 import models.{Index, Quarters, TaxYear, UserAnswers}
 import pages.event7.PaymentDatePage
 import pages.{TaxYearPage, Waypoints}
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, Messages}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.event7.PaymentDateView
@@ -43,30 +41,35 @@ class PaymentDateController @Inject()(val controllerComponents: MessagesControll
                                                     view: PaymentDateView
                                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def form(startDate: LocalDate)(implicit messages: Messages): Form[PaymentDate] = {
-    val endDate = Quarters.getQuarter(startDate).endDate
-    formProvider(
-      endDate
-    )
+  private val startDate: LocalDate = LocalDate.of(2006, 4, 6)
+
+  private def endDate(paymentStartDate: LocalDate): LocalDate = {
+    val date = Quarters.getQuarter(paymentStartDate).endDate
+    date match {
+      case _ if date.isBefore(LocalDate.of(date.getYear, 4, 6)) =>
+        LocalDate.of(date.getYear, 4, 5)
+      case _ =>
+        LocalDate.of(date.getYear + 1, 4, 5)
+    }
   }
 
   private val eventType = EventType.Event7
 
   def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val startDate = paymentDateOpt(request.userAnswers.flatMap(_.get(TaxYearPage)))
+    val paymentStartDate = paymentDateOpt(request.userAnswers.flatMap(_.get(TaxYearPage)))
 
     val preparedForm = request.userAnswers.flatMap(_.get(PaymentDatePage(index))) match {
-      case Some(value) => form(startDate = startDate).fill(value)
-      case None => form(startDate)
+      case Some(value) => formProvider(startDate, endDate(paymentStartDate)).fill(value)
+      case None => formProvider(startDate, endDate(paymentStartDate))
     }
-    Ok(view(preparedForm, waypoints, index))
+    Ok(view(preparedForm, waypoints, index, startDate, endDate(paymentStartDate)))
   }
 
   def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async { implicit request =>
-    val startDate = paymentDateOpt(request.userAnswers.flatMap(_.get(TaxYearPage)))
-    form(startDate).bindFromRequest().fold(
+    val paymentStartDate = paymentDateOpt(request.userAnswers.flatMap(_.get(TaxYearPage)))
+    formProvider(startDate, endDate(paymentStartDate)).bindFromRequest().fold(
       formWithErrors => {
-        Future.successful(BadRequest(view(formWithErrors, waypoints, index)))
+        Future.successful(BadRequest(view(formWithErrors, waypoints, index, startDate, endDate(paymentStartDate))))
       },
       value => {
         val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)

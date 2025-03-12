@@ -48,14 +48,14 @@ class DatePaidFormProviderSpec extends SpecBase with BigDecimalFieldBehaviours w
       form = form,
       key = datePaidKey,
       min = stubMin,
-      formError = FormError(datePaidKey, messages("datePaid.event2.error.outside.taxYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
+      formError = FormError(datePaidKey, messages("genericDate.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
     )
 
     behave like dateFieldWithMax(
       form = form,
       key = datePaidKey,
       max = stubMax,
-      formError = FormError(datePaidKey, messages("datePaid.event2.error.outside.taxYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
+      formError = FormError(datePaidKey, messages("genericDate.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
     )
   }
 }

@@ -44,16 +44,18 @@ class PaymentValueAndDateController @Inject()(val controllerComponents: Messages
   private val eventType = EventType.Event1
 
   def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)) { implicit request =>
-    val form = formProvider(getTaxYearFromOption(request.userAnswers))
+    val taxYear = getTaxYearFromOption(request.userAnswers)
+    val form = formProvider(taxYear)
     val preparedForm = request.userAnswers.flatMap(_.get(PaymentValueAndDatePage(index))).fold(form)(form.fill)
-    Ok(view(preparedForm, waypoints, index))
+    Ok(view(preparedForm, waypoints, index, taxYear))
   }
 
   def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async { implicit request =>
-    val form = formProvider(getTaxYearFromOption(request.userAnswers))
+    val taxYear = getTaxYearFromOption(request.userAnswers)
+    val form = formProvider(taxYear)
     form.bindFromRequest().fold(
       formWithErrors => {
-        Future.successful(BadRequest(view(formWithErrors, waypoints, index)))
+        Future.successful(BadRequest(view(formWithErrors, waypoints, index, taxYear)))
       },
 
       value => {

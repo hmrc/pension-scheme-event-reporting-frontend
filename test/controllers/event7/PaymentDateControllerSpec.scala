@@ -40,10 +40,18 @@ class PaymentDateControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
 
   private val waypoints = EmptyWaypoints
 
-  private val stubMax: LocalDate = LocalDate.of(LocalDate.now().getYear + 1, 4, 5)
-
+  private val stubMin: LocalDate = LocalDate.of(2006, 4, 6)
+  private val stubMax: LocalDate = {
+    val date = LocalDate.now()
+    date match {
+      case _ if date.isBefore(LocalDate.of(date.getYear, 4, 6)) =>
+        LocalDate.of(date.getYear, 4, 5)
+      case _ =>
+        LocalDate.of(date.getYear + 1, 4, 5)
+    }
+  }
   private val formProvider = new PaymentDateFormProvider()
-  private val form = formProvider(stubMax)
+  private val form = formProvider(stubMin, stubMax)
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
@@ -78,7 +86,7 @@ class PaymentDateControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
         val view = application.injector.instanceOf[PaymentDateView]
 
         status(result) mustEqual OK
-        contentAsString(result).removeAllNonces() mustEqual view(form, waypoints, 0)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(form, waypoints, 0, stubMin, stubMax)(request, messages(application)).toString
       }
     }
 
@@ -96,7 +104,7 @@ class PaymentDateControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result).removeAllNonces()mustEqual view(form.fill(validValue), waypoints, 0)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(form.fill(validValue), waypoints, 0, stubMin, stubMax)(request, messages(application)).toString
       }
     }
 
@@ -137,7 +145,7 @@ class PaymentDateControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result).removeAllNonces()mustEqual view(boundForm, waypoints, 0)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(boundForm, waypoints, 0, stubMin, stubMax)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any(), any())
       }
     }

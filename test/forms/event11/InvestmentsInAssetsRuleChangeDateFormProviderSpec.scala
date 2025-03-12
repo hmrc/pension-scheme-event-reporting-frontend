@@ -50,14 +50,14 @@ class InvestmentsInAssetsRuleChangeDateFormProviderSpec extends SpecBase
       form = form,
       key = dateKey,
       min = stubMin,
-      formError = FormError(dateKey, messages("investmentsInAssetsRuleChangeDate.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
+      formError = FormError(dateKey, messages("genericDate.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
     )
 
     behave like dateFieldWithMax(
       form = form,
       key = dateKey,
       max = stubMax,
-      formError = FormError(dateKey, messages("investmentsInAssetsRuleChangeDate.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
+      formError = FormError(dateKey, messages("genericDate.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
     )
   }
 }

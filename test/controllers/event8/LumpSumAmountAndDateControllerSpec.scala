@@ -42,7 +42,7 @@ class LumpSumAmountAndDateControllerSpec extends SpecBase with BeforeAndAfterEac
   private val waypoints = EmptyWaypoints
 
   private val stubMin: LocalDate = LocalDate.of(2006, 4, 6) //06-04-2006
-  private val stubMax: LocalDate = LocalDate.of(2023, 4, 5) //05-04-2023
+  private val stubMax: LocalDate = LocalDate.now() //05-04-2023
 
   private val formProvider = new LumpSumAmountAndDateFormProvider()
   private val form = formProvider(stubMin, stubMax)
@@ -85,7 +85,7 @@ class LumpSumAmountAndDateControllerSpec extends SpecBase with BeforeAndAfterEac
         val view = application.injector.instanceOf[LumpSumAmountAndDateView]
 
         status(result) mustEqual OK
-        contentAsString(result).removeAllNonces() mustEqual view(form, waypoints, event8, 0)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(form, waypoints, event8, 0, stubMin, stubMax)(request, messages(application)).toString
       }
     }
 
@@ -101,7 +101,7 @@ class LumpSumAmountAndDateControllerSpec extends SpecBase with BeforeAndAfterEac
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result).removeAllNonces() mustEqual view(form.fill(validValue), waypoints, event8, 0)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(form.fill(validValue), waypoints, event8, 0, stubMin, stubMax)(request, messages(application)).toString
       }
     }
 
@@ -141,7 +141,7 @@ class LumpSumAmountAndDateControllerSpec extends SpecBase with BeforeAndAfterEac
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result).removeAllNonces() mustEqual view(boundForm, waypoints, event8, 0)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(boundForm, waypoints, event8, 0, stubMin, stubMax)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any(), any())
       }
     }
@@ -161,7 +161,7 @@ class LumpSumAmountAndDateControllerSpec extends SpecBase with BeforeAndAfterEac
         val view = application.injector.instanceOf[LumpSumAmountAndDateView]
 
         status(result) mustEqual OK
-        contentAsString(result).removeAllNonces()mustEqual view(form, waypoints, event8a, 0)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(form, waypoints, event8a, 0, stubMin, stubMax)(request, messages(application)).toString
       }
     }
 
@@ -177,7 +177,7 @@ class LumpSumAmountAndDateControllerSpec extends SpecBase with BeforeAndAfterEac
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result).removeAllNonces()mustEqual view(form.fill(validValue), waypoints, event8a, 0)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(form.fill(validValue), waypoints, event8a, 0, stubMin, stubMax)(request, messages(application)).toString
       }
     }
 
@@ -217,7 +217,7 @@ class LumpSumAmountAndDateControllerSpec extends SpecBase with BeforeAndAfterEac
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result).removeAllNonces()mustEqual view(boundForm, waypoints, event8a, 0)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(boundForm, waypoints, event8a, 0, stubMin, stubMax)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any(), any())
       }
     }

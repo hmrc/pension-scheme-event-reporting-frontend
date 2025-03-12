@@ -29,7 +29,7 @@ class BecameDateFormProvider {
   def apply(min: LocalDate, max: LocalDate)(implicit messages: Messages): Form[Event20Date] =
     Form(
       mapping(
-        localDateMappingWithDateRange(field = "becameDate", date = (min, max), outOfRangeKey = "schemeChangeDate.error.outsideReportedYear")
+        localDateMappingWithDateRange(field = "becameDate", date = (min, max))
       )
       (Event20Date.apply)(Event20Date.unapply)
     )

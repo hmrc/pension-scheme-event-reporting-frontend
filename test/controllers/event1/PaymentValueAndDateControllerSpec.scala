@@ -40,7 +40,8 @@ class PaymentValueAndDateControllerSpec extends SpecBase with BeforeAndAfterEach
   private val waypoints = EmptyWaypoints
 
   private val formProvider = new PaymentValueAndDateFormProvider()
-  private val form = formProvider(2022)
+  private val taxYear = 2022
+  private val form = formProvider(taxYear)
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
@@ -52,7 +53,7 @@ class PaymentValueAndDateControllerSpec extends SpecBase with BeforeAndAfterEach
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
-  private val validDate = LocalDate.of(2023, 1, 1)
+  private val validDate = LocalDate.of(taxYear + 1, 1, 1)
   private val validValue = PaymentDetails(1000.00, validDate)
 
   import PaymentValueAndDateControllerSpec._
@@ -76,7 +77,7 @@ class PaymentValueAndDateControllerSpec extends SpecBase with BeforeAndAfterEach
         val view = application.injector.instanceOf[PaymentValueAndDateView]
 
         status(result) mustEqual OK
-        contentAsString(result).removeAllNonces()mustEqual view(form, waypoints, 0)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(form, waypoints, 0, taxYear)(request, messages(application)).toString
       }
     }
 
@@ -94,7 +95,7 @@ class PaymentValueAndDateControllerSpec extends SpecBase with BeforeAndAfterEach
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result).removeAllNonces()mustEqual view(form.fill(validValue), waypoints, 0)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(form.fill(validValue), waypoints, 0, taxYear)(request, messages(application)).toString
       }
     }
 
@@ -135,7 +136,7 @@ class PaymentValueAndDateControllerSpec extends SpecBase with BeforeAndAfterEach
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result).removeAllNonces()mustEqual view(boundForm, waypoints, 0)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(boundForm, waypoints, 0, 2022)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any(), any())
       }
     }

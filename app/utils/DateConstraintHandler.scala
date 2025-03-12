@@ -32,7 +32,7 @@ object DateConstraintHandlers extends Mappings {
 
   private val (april: Int, taxYearCloseDay: Int, taxYearOpenDay: Int) = (4, 5, 6)
 
-  def localDateMappingWithDateRange[T](field: String = "value", date: T, outOfRangeKey: String,
+  def localDateMappingWithDateRange[T](field: String = "value", date: T, outOfRangeKey: String = "genericDate.error.outsideReportedYear",
                                        invalidKey: String = "genericDate.error.invalid")
                                       (implicit messages: Messages, handler: DateConstraintHandler[T]): (String, Mapping[LocalDate]) =
     field -> localDate(invalidKey).verifying(firstError(withinDateRange(date, outOfRangeKey): _*))
@@ -55,8 +55,8 @@ object DateConstraintHandlers extends Mappings {
       def handle(date: (LocalDate, LocalDate), errorKey: String)(implicit messages: Messages): Seq[Constraint[LocalDate]] =
         Seq(
           yearHas4Digits("genericDate.error.invalid.year"),
-          minDate(date._1, messages(errorKey, formatDateDMY(date._1), formatDateDMY(date._2))),
-          maxDate(date._2, messages(errorKey, formatDateDMY(date._1), formatDateDMY(date._2)))
+          minDate(date._1, messages(errorKey, formatDateDMY(date._1), formatDateDMY(date._2)), "day", "month", "year"),
+          maxDate(date._2, messages(errorKey, formatDateDMY(date._1), formatDateDMY(date._2)), "day", "month", "year")
         )
     }
 
@@ -65,9 +65,9 @@ object DateConstraintHandlers extends Mappings {
       def handle(date: (Int, LocalDate), errorKey: String)(implicit messages: Messages): Seq[Constraint[LocalDate]] =
         Seq(
           yearHas4Digits("genericDate.error.invalid.year"),
-          minDate(LocalDate.of(date._1, april, taxYearOpenDay), errorKey, date._1.toString, (date._1 + 1).toString),
-          maxDate(LocalDate.of(date._1 + 1, april, taxYearCloseDay), errorKey, date._1.toString, (date._1 + 1).toString),
-          isNotBeforeOpenDate(date._2, "schemeWindUpDate.error.beforeOpenDate", formatDateDMY(date._2))
+          minDate(LocalDate.of(date._1, april, taxYearOpenDay), errorKey, date._1.toString, (date._1 + 1).toString, "day", "month", "year"),
+          maxDate(LocalDate.of(date._1 + 1, april, taxYearCloseDay), errorKey, date._1.toString, (date._1 + 1).toString, "day", "month", "year"),
+          isNotBeforeOpenDate(date._2, "schemeWindUpDate.error.beforeOpenDate", formatDateDMY(date._2), "day", "month", "year")
         )
     }
 }

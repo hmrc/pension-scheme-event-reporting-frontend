@@ -16,6 +16,7 @@
 
 @import controllers.event7.routes
 @import utils.DateErrorTargetHelper.targetField
+@import java.time.LocalDate
 
 @this(
     layout: templates.SchemeLayout,
@@ -26,7 +27,7 @@
     govukDateInput: GovukDateInput
 )
 
-@(form: Form[_], waypoints: Waypoints, index: Index)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, index: Index, startDate: LocalDate, endDate: LocalDate)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("paymentDate.title"))) {
 
@@ -45,7 +46,7 @@
                     classes = "govuk-fieldset__legend--l"
                 )
             )
-            .withHint(Hint(content = Text(messages("paymentDate.date.hint"))))
+            .withHint(helpers.DateHelper.dateMustBeBetweenHint(startDate, endDate))
         )
 
         @govukButton(

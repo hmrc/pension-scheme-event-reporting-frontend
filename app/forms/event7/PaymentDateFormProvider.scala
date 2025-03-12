@@ -28,21 +28,10 @@ import javax.inject.Inject
 
 class PaymentDateFormProvider @Inject() extends Mappings with Transforms { // scalastyle:off magic.number
 
-  private val startDate: LocalDate = LocalDate.of(2006, 4, 6)
-
-  private def endDate(date: LocalDate): LocalDate = {
-    date match {
-      case _ if date.isBefore(LocalDate.of(date.getYear, 4, 6)) =>
-        LocalDate.of(date.getYear, 4, 5)
-      case _ =>
-        LocalDate.of(date.getYear + 1, 4, 5)
-    }
-  }
-
-  def apply(max: LocalDate)(implicit messages: Messages): Form[PaymentDate] =
+  def apply(startDate: LocalDate, endDate: LocalDate)(implicit messages: Messages): Form[PaymentDate] =
     Form(
       mapping(
-        localDateMappingWithDateRange(field = "paymentDate", date = (startDate, endDate(max)), outOfRangeKey = "paymentDate.date.error.outsideReportedYear")
+        localDateMappingWithDateRange(field = "paymentDate", date = (startDate, endDate))
       )
       (PaymentDate.apply)(PaymentDate.unapply)
     )

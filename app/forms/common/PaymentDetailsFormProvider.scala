@@ -41,7 +41,7 @@ class PaymentDetailsFormProvider @Inject() extends Mappings with Transforms {
             minimumValue[BigDecimal](0, "paymentDetails.value.error.negativeValue"),
             zeroValue[BigDecimal](0, "paymentDetails.value.error.zeroEntered")
           ),
-        localDateMappingWithDateRange(field = "eventDate", date = (min, max), outOfRangeKey = "paymentDetails.date.error.outsideReportedYear")
+        localDateMappingWithDateRange(field = "eventDate", date = (min, max))
       )
       (PaymentDetails.apply)(PaymentDetails.unapply)
     )

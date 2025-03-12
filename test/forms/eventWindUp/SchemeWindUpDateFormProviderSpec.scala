@@ -38,20 +38,20 @@ class SchemeWindUpDateFormProviderSpec extends DateBehaviours with SpecBase {
 
     behave like dateField(form, "value", validData)
 
-    behave like mandatoryDateField(form, "value", "genericDate.error.invalid.allFieldsMissing")
+    behave like mandatoryDateField(form, "value", "genericDate.error.invalid.allFieldsMissing", Seq("day", "month", "year"))
 
     behave like dateFieldWithMax(
       form = form,
       key = "value" ,
       max = LocalDate.of(2023,4,5),
-      formError = FormError("value", "schemeWindUpDate.error.outside.taxYear", Seq("2022", "2023"))
+      formError = FormError("value", "schemeWindUpDate.error.outside.taxYear", Seq("2022", "2023", "day", "month", "year"))
     )
 
     behave like dateFieldWithMin(
       form = form,
       key = "value" ,
       min = LocalDate.of(2022,4,6),
-      formError = FormError("value", "schemeWindUpDate.error.outside.taxYear", Seq("2022", "2023"))
+      formError = FormError("value", "schemeWindUpDate.error.outside.taxYear", Seq("2022", "2023", "day", "month", "year"))
     )
 
     s"fail to bind a date earlier than openDate ${openDate.format(DateTimeFormatter.ISO_LOCAL_DATE)}" in {
@@ -67,7 +67,7 @@ class SchemeWindUpDateFormProviderSpec extends DateBehaviours with SpecBase {
 
       val result = formOpenDate.bind(data)
 
-      result.errors must contain(FormError.apply("value", "schemeWindUpDate.error.beforeOpenDate", Seq(formattedDate)))
+      result.errors must contain(FormError.apply("value", "schemeWindUpDate.error.beforeOpenDate", Seq(formattedDate, "day", "month", "year")))
     }
 
       }

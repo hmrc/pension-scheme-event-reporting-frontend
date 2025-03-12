@@ -17,6 +17,7 @@
 @import controllers.event6.routes
 @import viewmodels.InputWidth._
 @import utils.DateErrorTargetHelper.targetField
+@import java.time.LocalDate
 
 @this(
     layout: templates.SchemeLayout,
@@ -27,7 +28,7 @@
     govukDateInput: GovukDateInput
 )
 
-@(form: Form[_], waypoints: Waypoints, index: Index)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, index: Index, startDate: LocalDate, endDate: LocalDate)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("amountCrystallisedAndDate.title"))) {
 
@@ -54,7 +55,7 @@
                 field = form("crystallisedDate"),
                 legend = Legend(content = Text(messages("amountCrystallisedAndDate.date.heading")))
             )
-            .withHint(Hint(content = Text(messages("amountCrystallisedAndDate.date.hint"))))
+            .withHint(helpers.DateHelper.dateMustBeBetweenHint(startDate, endDate))
         )
 
         @govukButton(

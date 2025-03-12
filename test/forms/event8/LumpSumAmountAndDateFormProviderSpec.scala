@@ -121,14 +121,14 @@ class LumpSumAmountAndDateFormProviderSpec extends SpecBase
       form = form,
       key = lumpSumDateKey,
       min = stubMin,
-      formError = FormError(lumpSumDateKey, messages("lumpSumAmountAndDate.date.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
+      formError = FormError(lumpSumDateKey, messages("genericDate.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
     )
 
     behave like dateFieldWithMax(
       form = form,
       key = lumpSumDateKey,
       max = stubMax,
-      formError = FormError(lumpSumDateKey, messages("lumpSumAmountAndDate.date.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
+      formError = FormError(lumpSumDateKey, messages("genericDate.error.outsideReportedYear", formatDateDMY(stubMin), formatDateDMY(stubMax)))
     )
   }
 }

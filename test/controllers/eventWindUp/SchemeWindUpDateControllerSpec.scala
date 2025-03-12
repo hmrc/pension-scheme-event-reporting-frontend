@@ -43,6 +43,7 @@ class SchemeWindUpDateControllerSpec extends SpecBase with BeforeAndAfterEach wi
   private val openDate = LocalDate.of(2022, 5, 1)
 
   private val formProvider = new SchemeWindUpDateFormProvider
+  private val startDate = LocalDate.of(2022, 4, 6)
   private val form = formProvider(2022, openDate)
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
@@ -81,7 +82,7 @@ class SchemeWindUpDateControllerSpec extends SpecBase with BeforeAndAfterEach wi
         val view = application.injector.instanceOf[SchemeWindUpDateView]
 
         status(result) mustEqual OK
-        contentAsString(result).removeAllNonces() mustEqual view(form, waypoints)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(form, waypoints, startDate, openDate)(request, messages(application)).toString
       }
     }
 
@@ -100,7 +101,7 @@ class SchemeWindUpDateControllerSpec extends SpecBase with BeforeAndAfterEach wi
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result).removeAllNonces() mustEqual view(form.fill(validAnswer), waypoints)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(form.fill(validAnswer), waypoints, startDate, openDate)(request, messages(application)).toString
       }
     }
 
@@ -152,7 +153,7 @@ class SchemeWindUpDateControllerSpec extends SpecBase with BeforeAndAfterEach wi
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result).removeAllNonces() mustEqual view(boundForm, waypoints)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(boundForm, waypoints, startDate, openDate)(request, messages(application)).toString
       }
     }
   }

@@ -16,6 +16,7 @@
 
 @import controllers.event20.routes
 @import utils.DateErrorTargetHelper.targetField
+@import java.time.LocalDate
 
 @this(
     layout: templates.SchemeLayout,
@@ -25,7 +26,7 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, startDate: LocalDate, endDate: LocalDate)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("becameDate.title"))) {
 
@@ -40,7 +41,7 @@
                 field  = form("becameDate"),
                 legend = LegendViewModel(messages("becameDate.heading")).asPageHeading()
             )
-            .withHint(HintViewModel(messages("becameDate.hint")))
+            .withHint(helpers.DateHelper.dateMustBeBetweenHint(startDate, endDate))
         )
 
         @govukButton(

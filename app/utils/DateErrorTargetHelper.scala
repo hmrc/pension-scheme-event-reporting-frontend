@@ -22,6 +22,7 @@ object DateErrorTargetHelper {
     case invalidDay if message.contains("day") => Map(key -> s"$key.day")
     case invalidMonth if message.contains("month") => Map(key -> s"$key.month")
     case invalidYear if message.contains("year") => Map(key -> s"$key.year")
-    case _ => Map(key -> key)
+    case _ if message.contains("day") && message.contains("month") && message.contains("year") => Map(key -> s"$key.year")
+    case _ => Map(key -> s"$key.day")
   }
 }

@@ -41,7 +41,7 @@ class LumpSumAmountAndDateFormProvider @Inject() extends Mappings with Transform
             minimumValue[BigDecimal](0, "lumpSumAmountAndDate.value.error.negativeValue"),
             zeroValue[BigDecimal](0, "lumpSumAmountAndDate.value.error.zeroEntered")
           ),
-        localDateMappingWithDateRange(field = "lumpSumDate", date = (min, max), outOfRangeKey = "lumpSumAmountAndDate.date.error.outsideReportedYear")
+        localDateMappingWithDateRange(field = "lumpSumDate", date = (min, max))
       )
       (LumpSumDetails.apply)(LumpSumDetails.unapply)
     )

@@ -51,9 +51,11 @@ class SchemeWindUpDateController @Inject()(val controllerComponents: MessagesCon
     val psaOrPspId = request.loggedInUser.psaIdOrPspId
     val idValue = request.loggedInUser.idName
     schemeConnector.getOpenDate(idValue, psaOrPspId, request.pstr).flatMap { openDate =>
-      def form: Form[LocalDate] = formProvider(getTaxYearFromOption(request.userAnswers), openDate)
+      val taxYear = getTaxYearFromOption(request.userAnswers)
+      val startDate = LocalDate.of(taxYear, 4, 6)
+      def form: Form[LocalDate] = formProvider(taxYear, openDate)
       val preparedForm = request.userAnswers.flatMap(_.get(SchemeWindUpDatePage)).fold(form)(form.fill)
-      Future.successful(Ok(view(preparedForm, waypoints)))
+      Future.successful(Ok(view(preparedForm, waypoints, startDate, openDate)))
     }
   }
 
@@ -61,20 +63,22 @@ class SchemeWindUpDateController @Inject()(val controllerComponents: MessagesCon
     implicit request =>
       val psaOrPspId = request.loggedInUser.psaIdOrPspId
       val idValue = request.loggedInUser.idName
-        schemeConnector.getOpenDate(idValue, psaOrPspId, request.pstr).flatMap { openDate =>
-      def form: Form[LocalDate] = formProvider(getTaxYearFromOption(request.userAnswers), openDate)
-      form.bindFromRequest().fold(
-        formWithErrors => {
-          Future.successful(BadRequest(view(formWithErrors, waypoints)))
-        },
-        value => {
-          val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException(SchemeWindUpDatePage, value)
-          userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
-            Redirect(SchemeWindUpDatePage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+      schemeConnector.getOpenDate(idValue, psaOrPspId, request.pstr).flatMap { openDate =>
+        val taxYear = getTaxYearFromOption(request.userAnswers)
+        val startDate = LocalDate.of(taxYear, 4, 6)
+        def form: Form[LocalDate] = formProvider(taxYear, openDate)
+        form.bindFromRequest().fold(
+          formWithErrors => {
+            Future.successful(BadRequest(view(formWithErrors, waypoints, startDate, openDate)))
+          },
+          value => {
+            val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
+            val updatedAnswers = originalUserAnswers.setOrException(SchemeWindUpDatePage, value)
+            userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
+              Redirect(SchemeWindUpDatePage.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
+            }
           }
-        }
-      )
+        )
     }
   }
 
