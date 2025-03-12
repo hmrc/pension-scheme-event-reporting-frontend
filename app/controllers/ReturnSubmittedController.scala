@@ -22,7 +22,6 @@ import controllers.actions._
 import handlers.TaxYearNotAvailableException
 import helpers.DateHelper
 import helpers.DateHelper.dateFormatter
-import models.enumeration.AdministratorOrPractitioner.Administrator
 import pages.{TaxYearPage, Waypoints}
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -47,11 +46,6 @@ class ReturnSubmittedController @Inject()(
     minimalConnector.getMinimalDetails(request.loggedInUser.idName).map { minimalDetails =>
       val schemeName = request.schemeName
 
-      val viewOtherPensionSchemesUrl: String = request.loggedInUser.administratorOrPractitioner match {
-        case Administrator => config.yourPensionSchemesUrl
-        case _ => config.listPspUrl
-      }
-
       val taxYear = request.userAnswers.get(TaxYearPage) match {
         case Some(taxYear) => s"${taxYear.startYear} ${Messages("confirmation.taxYear.to")} ${taxYear.endYear}"
         case _ => throw new TaxYearNotAvailableException("Tax year not available on Return Submitted Controller")
@@ -61,8 +55,7 @@ class ReturnSubmittedController @Inject()(
       val dateSubmitted: String = dateHelper.now.format(dateFormatter)
       val returnUrl = controllers.routes.EventReportingOverviewController.onPageLoad(request.srn).url
 
-      Ok(view(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url,
-        viewOtherPensionSchemesUrl, schemeName, taxYear, dateSubmitted, minimalDetails.email, returnUrl))
+      Ok(view(controllers.routes.ReturnSubmittedController.onPageLoad(waypoints).url, schemeName, taxYear, dateSubmitted, minimalDetails.email, returnUrl))
     }
   }
 }

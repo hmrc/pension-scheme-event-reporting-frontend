@@ -22,7 +22,7 @@
     govukSummaryList: GovukSummaryList,
 )
 
-@(continueUrl: String, viewOtherPensionSchemesUrl: String, schemeName: String, taxYear: String, dateSubmitted: String, email: String, returnUrl: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(continueUrl: String, schemeName: String, taxYear: String, dateSubmitted: String, email: String, returnUrl: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("confirmation.title")), showBackLink = false) {
 
@@ -66,13 +66,12 @@
     <h2 class="govuk-heading-m">What to do next</h2>
 
     <p class="govuk-body">@messages("confirmation.p2")</p>
-    <ul class="govuk-list">
-        <li>@messages("confirmation.li2.1") <a class="govuk-link" href="@viewOtherPensionSchemesUrl">@messages("confirmation.li2.2")</a></li>
-        <li><a id="print-this-page-link" class="govuk-link" href="">@messages("confirmation.li3")</a></li>
-    </ul>
-    <br>
+    <br/>
+
     <p class="govuk-body">
         <a href="@returnUrl" class="govuk-link">@messages("confirmation.returnToOverview")</a>
     </p>
+    <p class="govuk-body"><a id="print-this-page-link" class="govuk-link" href="">@messages("confirmation.li3")</a></p>
+
 
 }
