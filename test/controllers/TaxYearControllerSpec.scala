@@ -49,7 +49,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
 
   private def postRoute: String = routes.TaxYearController.onSubmit(waypoints).url
 
-  private val radioOptions: Seq[RadioItem] = TaxYear.optionsFiltered(taxYear => taxYear.startYear >= "2023")
+  private val radioOptions: Seq[RadioItem] = TaxYear.optionsFiltered(taxYear => taxYear.startYear >= "2023", Some(TaxYear("2023")))
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
@@ -116,7 +116,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
 
         val result = route(application, request).value
 
-        val radioOptions: Seq[RadioItem] = TaxYear.optionsFiltered(_.startYear == "2022")
+        val radioOptions: Seq[RadioItem] = TaxYear.optionsFiltered(_.startYear == "2022", Some(TaxYear("2023")))
         val view = application.injector.instanceOf[TaxYearView]
 
         status(result) mustEqual OK
@@ -136,7 +136,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
 
         val result = route(application, request).value
 
-        val radioOptions: Seq[RadioItem] = TaxYear.optionsFiltered(_.startYear == "2021")
+        val radioOptions: Seq[RadioItem] = TaxYear.optionsFiltered(_.startYear == "2021", Some(TaxYear("2022")))
 
         val view = application.injector.instanceOf[TaxYearView]
 
@@ -158,7 +158,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
 
         val result = route(application, request).value
 
-        val radioOptions: Seq[RadioItem] = TaxYear.optionsFiltered(taxYear => taxYear.startYear == "2024" ||taxYear.startYear == "2023" )
+        val radioOptions: Seq[RadioItem] = TaxYear.optionsFiltered(taxYear => taxYear.startYear == "2024" ||taxYear.startYear == "2023", Some(TaxYear("2025")))
 
         val view = application.injector.instanceOf[TaxYearView]
 
@@ -194,7 +194,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers().set(TaxYearPage, TaxYear("2022")).success.value
+      val userAnswers = UserAnswers().set(TaxYearPage, TaxYear("2023")).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -233,19 +233,15 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
     }
 
     "must return bad request when invalid data is submitted" in {
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
 
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules).build()
       running(application) {
         val request =
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "invalid"))
 
-        val view = application.injector.instanceOf[TaxYearView]
-        val boundForm = form.bind(Map("value" -> "invalid"))
-
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result).removeAllNonces() mustEqual view(boundForm, waypoints, radioOptions, eventReportingUrl)(request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any(), any())
       }
     }

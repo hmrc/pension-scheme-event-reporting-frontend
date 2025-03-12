@@ -17,20 +17,26 @@
 package controllers.common
 
 import base.SpecBase
+import connectors.UserAnswersCacheConnector
 import forms.common.ManualOrUploadFormProvider
+import models.{TaxYear, VersionInfo}
 import models.common.ManualOrUpload
-import models.enumeration.EventType
-import models.enumeration.EventType.{Event1, Event22, Event23, Event6, Event24}
+import models.enumeration.{EventType, VersionStatus}
+import models.enumeration.EventType.{Event1, Event22, Event23, Event24, Event6}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import pages.EmptyWaypoints
+import pages.{EmptyWaypoints, TaxYearPage, VersionInfoPage}
 import pages.common.ManualOrUploadPage
 import play.api.data.Form
+import play.api.inject
+import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.common.ManualOrUploadView
 
-import scala.concurrent.Await
+import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
 
 class ManualOrUploadControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
@@ -38,12 +44,21 @@ class ManualOrUploadControllerSpec extends SpecBase with BeforeAndAfterEach with
   private val seqOfEvents = Seq(Event1, Event6, Event22, Event23, Event24)
   private val waypoints = EmptyWaypoints
   private val manualOrUploadFormProvider = new ManualOrUploadFormProvider()
+  private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
+  private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
+    inject.bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
+  )
   private def form(eventType: EventType): Form[ManualOrUpload] = manualOrUploadFormProvider(eventType)
 
   private def getRoute(eventType: EventType): String = routes.ManualOrUploadController.onPageLoad(waypoints, eventType, 0).url
 
   private def postRoute(eventType: EventType): String = routes.ManualOrUploadController.onSubmit(waypoints, eventType, 0).url
+
+  override def beforeEach(): Unit = {
+    super.beforeEach
+    reset(mockUserAnswersCacheConnector)
+  }
 
   "ManualOrUploadController" - {
     for (event <- seqOfEvents) {
@@ -74,7 +89,13 @@ class ManualOrUploadControllerSpec extends SpecBase with BeforeAndAfterEach with
 
   private def testSaveAnswerAndRedirectWhenValid(eventType: EventType): Unit = {
     s"must save the answer and redirect to the next page when valid data is submitted for Event $eventType" in {
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
+        .thenReturn(Future.successful(()))
+
+      val ua = emptyUserAnswersWithTaxYear.setOrException(TaxYearPage, TaxYear("2022"))
+        .setOrException(VersionInfoPage, VersionInfo(1, VersionStatus.Submitted))
+
+      val application = applicationBuilder(userAnswers = Some(ua), extraModules).build()
 
       running(application) {
         val request = FakeRequest(POST, postRoute(eventType)).withFormUrlEncodedBody(("value", ManualOrUpload.values.head.toString))
