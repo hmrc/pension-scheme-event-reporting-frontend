@@ -424,7 +424,7 @@ companyDetails.CYA.companyAddress = Company address
 
 enterPostcode.title = What is {0}’s postcode?
 enterPostcode.heading = What is {0}’s postcode?
-enterPostcode.error.required = Enter {0}’s postcode
+enterPostcode.error.required = Enter a full UK postcode
 enterPostcode.error.length = Enter a full UK postcode
 enterPostcode.error.length = The postcode cannot be more than 8 characters
 enterPostcode.error.nonUKLength = The postcode cannot be more than 10 characters

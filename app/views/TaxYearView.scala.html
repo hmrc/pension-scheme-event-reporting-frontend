@@ -24,6 +24,11 @@
 
 @(form: Form[_], waypoints: Waypoints, radioOptions: Seq[RadioItem], eventReportingUrl: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
+@field = @{form("value")}
+@errorMessage(field: Field) = @{
+    field.error.map { err => ErrorMessage(content = Text(messages(err.message, err.args: _*))) }
+}
+
 @layout(pageTitle = title(form, messages("taxYear.title"))) {
 
     @formHelper(action = routes.TaxYearController.onSubmit(waypoints), Symbol("autoComplete") -> "off") {
@@ -34,10 +39,11 @@
 
     @if(radioOptions.length > 0){
         @govukRadios(
-            RadiosViewModel(
-                field  = form("value"),
-                legend = LegendViewModel(messages("taxYear.heading")).asPageHeading(),
-                items  = radioOptions
+            Radios(
+                fieldset     = Some(FieldsetViewModel(LegendViewModel(messages("taxYear.heading")).asPageHeading())),
+                name         = field.name,
+                items        = radioOptions,
+                errorMessage = errorMessage(field)
             )
         )
 
