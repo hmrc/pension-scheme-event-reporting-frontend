@@ -108,7 +108,6 @@ private[mappings] class LocalDateFormatter(
     fields.count(_._2.isDefined) match {
       case 3 =>
         val formattedDate = formatDate(key, data)
-        println(formattedDate)
         formattedDate match {
           case errors@Left(_) => errors
           case rightDate@Right(d) =>
