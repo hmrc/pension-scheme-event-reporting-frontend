@@ -43,14 +43,14 @@ govukButton: GovukButton
         </p>
 
         @if(viewModel.outstandingAmount != messages("eventReportingOverview.totalOutstandingNotAvailable")) {
-            <p class="govuk-caption-l govuk-!-margin-top-6">
-                @messages("eventReportingOverview.totalOutstanding")
-            </p>
-
-            <p class="govuk-body govuk-!-font-size-36 gov-!-font-weight-bold">
-                <strong>@viewModel.outstandingAmount</strong>
-            </p>
-
+            <dl>
+                <dt class="govuk-caption-l govuk-margin-0 govuk-!-margin-top-6">
+                    @messages("eventReportingOverview.totalOutstanding")
+                </dt>
+                <dd class="govuk-body govuk-!-margin-0 govuk-!-font-size-36 gov-!-font-weight-bold">
+                    <strong>@viewModel.outstandingAmount</strong>
+                </dd>
+            </dl>
         } else {
             <p class="govuk-caption-l govuk-!-margin-top-6">
                 @messages("eventReportingOverview.totalOutstandingNotAvailable")
@@ -88,9 +88,9 @@ govukButton: GovukButton
             <hr>
         }
 
-        <h3 class="govuk-heading-l govuk-!-margin-top-6">
+        <h2 class="govuk-heading-l govuk-!-margin-top-6">
             @messages("eventReportingOverview.pastEventReportingReturns")
-        </h3>
+        </h2>
         @if(viewModel.pastYears.nonEmpty && viewModel.isAnySubmittedReports) {
             @for(tuple <- viewModel.pastYears) {
                 <ul class="govuk-list">
