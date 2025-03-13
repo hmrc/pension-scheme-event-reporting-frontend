@@ -18,61 +18,60 @@
 
 @this(
     layout: templates.Layout,
-    govukPanel : GovukPanel,
-    govukSummaryList : GovukSummaryList,
+    govukPanel: GovukPanel,
+    govukSummaryList: GovukSummaryList,
 )
 
-@(continueUrl: String, viewOtherPensionSchemesUrl: String, schemeName: String, taxYear: String, dateSubmitted: String, email: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(continueUrl: String, schemeName: String, taxYear: String, dateSubmitted: String, email: String, returnUrl: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("confirmation.title")), showBackLink = false) {
 
-@govukPanel(Panel(
-    title = messages("confirmation.panel.h1"),
-    content = messages("confirmation.panel.body")
-))
+    @govukPanel(Panel(
+        title = messages("confirmation.panel.h1"),
+        content = messages("confirmation.panel.body")
+    ))
 
-<p class="govuk-body">
-    @messages("confirmation.p1")
-    <span class="govuk-!-font-weight-bold">@email</span>
-</p>
+    <p class="govuk-body">
+        @messages("confirmation.p1")
+        <span class="govuk-!-font-weight-bold">@email</span>
+    </p>
 
-@govukSummaryList(SummaryList(
-    rows = Seq(
-      SummaryListRow(
-        key = Key(
-          content = messages("confirmation.summaryList.l1.scheme")
-        ),
-        value = Value(
-          content = schemeName
-        ),
-      ),
-      SummaryListRow(
-        key = Key(
-          content = messages("confirmation.summaryList.l2.taxYear")
-        ),
-        value = Value(
-          content = Text(taxYear)
-        ),
-      ),
-      SummaryListRow(
-        key = Key(
-          content = messages("confirmation.summaryList.l3.dateSubmitted")
-        ),
-        value = Value(
-          content = dateSubmitted
-        ),
-    ))))
+    @govukSummaryList(SummaryList(
+        rows = Seq(
+          SummaryListRow(
+            key = Key(
+              content = messages("confirmation.summaryList.l1.scheme")
+            ),
+            value = Value(
+              content = schemeName
+            ),
+          ),
+          SummaryListRow(
+            key = Key(
+              content = messages("confirmation.summaryList.l2.taxYear")
+            ),
+            value = Value(
+              content = Text(taxYear)
+            ),
+          ),
+          SummaryListRow(
+            key = Key(
+              content = messages("confirmation.summaryList.l3.dateSubmitted")
+            ),
+            value = Value(
+              content = dateSubmitted
+            ),
+        ))))
 
-<h2 class="govuk-heading-m">What to do next</h2>
+    <h2 class="govuk-heading-m">What to do next</h2>
 
-<p class="govuk-body">@messages("confirmation.p2")</p>
-<ul class="govuk-list">
-    <li>@messages("confirmation.li2.1") <a class="govuk-link" href="@viewOtherPensionSchemesUrl">@messages("confirmation.li2.2")</a></li>
-    <li><a id="print-this-page-link" class="govuk-link" href="">@messages("confirmation.li3")</a></li>
-</ul>
-<br>
-<ul class="govuk-list">
-    <li>@templates.ReturnToScheme()</li>
-</ul>
+    <p class="govuk-body">@messages("confirmation.p2")</p>
+    <br/>
+
+    <p class="govuk-body">
+        <a href="@returnUrl" class="govuk-link">@messages("confirmation.returnToOverview")</a>
+    </p>
+    <p class="govuk-body"><a id="print-this-page-link" class="govuk-link" href="">@messages("confirmation.li3")</a></p>
+
 
 }

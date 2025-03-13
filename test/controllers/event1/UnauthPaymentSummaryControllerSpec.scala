@@ -70,7 +70,6 @@ class UnauthPaymentSummaryControllerSpec extends SpecBase with BeforeAndAfterEac
   } else {
     Messages("unauthPaymentSummary.title", taxYear)
   }
-  private val pageTitle = Messages("unauthPaymentSummary.title", taxYear)
 
   override def beforeEach(): Unit = {
     super.beforeEach()

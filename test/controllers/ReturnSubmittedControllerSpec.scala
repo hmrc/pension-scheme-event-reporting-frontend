@@ -37,14 +37,13 @@ import scala.concurrent.Future
 class ReturnSubmittedControllerSpec extends SpecBase {
 
   private val waypoints = EmptyWaypoints
-  private val yourPensionSchemesUrl: String = "http://localhost:8204/manage-pension-schemes/your-pension-schemes"
-  private val listPspUrl: String = "http://localhost:8204/manage-pension-schemes/list-psp"
   private val schemeName = "schemeName"
   private val taxYear = "2022 to 2023"
   private val dateHelper = new DateHelper
   private val dateSubmitted: String = dateHelper.now.format(dateFormatter)
   private val mockMinimalConnector = mock[MinimalConnector]
   private val email = "xxx@xxx.com"
+  private val srn = "S2400000041"
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[MinimalConnector].toInstance(mockMinimalConnector)
@@ -73,11 +72,11 @@ class ReturnSubmittedControllerSpec extends SpecBase {
         contentAsString(result).removeAllNonces() mustEqual
           view(
             routes.ReturnSubmittedController.onPageLoad(waypoints).url,
-            yourPensionSchemesUrl,
             schemeName,
             taxYear,
             dateSubmitted,
-            email)(request, messages(application)).toString
+            email,
+            routes.EventReportingOverviewController.onPageLoad(srn).url)(request, messages(application)).toString
       }
     }
 
@@ -102,11 +101,11 @@ class ReturnSubmittedControllerSpec extends SpecBase {
         contentAsString(result).removeAllNonces() mustEqual
           view(
             routes.ReturnSubmittedController.onPageLoad(waypoints).url,
-            listPspUrl,
             schemeName,
             taxYear,
             dateSubmitted,
-            email)(request, messages(application)).toString
+            email,
+            routes.EventReportingOverviewController.onPageLoad(srn).url)(request, messages(application)).toString
       }
     }
   }
