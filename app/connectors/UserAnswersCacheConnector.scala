@@ -36,10 +36,11 @@ import scala.concurrent.{ExecutionContext, Future}
 class UserAnswersCacheConnector @Inject()(
                                            config: FrontendAppConfig,
                                            http: HttpClientV2
-                                         ) extends Logging {
+                                         )(implicit ec: ExecutionContext) extends Logging {
 
   private def url(srn: String) = url"${config.eventReportingUrl}/pension-scheme-event-reporting/user-answers/$srn"
   private def isDataModifiedUrl(srn: String) = url"${config.eventReportingUrl}/pension-scheme-event-reporting/compare/$srn"
+  private def refreshExpire(srn:String) = url"${config.eventReportingUrl}/pension-scheme-event-reporting/user-answers/refresh-expire/$srn"
 
   private def noEventHeaders(pstr: String) = Seq(
     ("Content-Type", "application/json"),
@@ -91,6 +92,15 @@ class UserAnswersCacheConnector @Inject()(
   def getByEventType(pstr: String, eventType: EventType)
          (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier, req: RequiredSchemeDataRequest[AnyContent]): Future[Option[UserAnswers]] = {
     getBySrn(pstr, eventType, req.srn)
+  }
+
+  def postRefreshExpire(implicit req: RequiredSchemeDataRequest[AnyContent], hc: HeaderCarrier): Future[Boolean] = {
+    http.post(refreshExpire(req.srn)).execute[HttpResponse].map {
+      case resp if resp.status == OK => true
+      case _ =>
+        logger.warn("Unable to refresh mongo expireAt")
+        false
+    }
   }
 
   def isDataModified(pstr: String, eventType: EventType)

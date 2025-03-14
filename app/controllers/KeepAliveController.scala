@@ -16,20 +16,22 @@
 
 package controllers
 
+import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
-import scala.concurrent.Future
+import scala.concurrent.ExecutionContext
 
 class KeepAliveController @Inject()(
                                      val controllerComponents: MessagesControllerComponents,
                                      identify: IdentifierAction,
-                                     getData: DataRetrievalAction
-                                   ) extends FrontendBaseController {
+                                     getData: DataRetrievalAction,
+                                     userAnswersCacheConnector: UserAnswersCacheConnector
+                                   ) (implicit ec: ExecutionContext) extends FrontendBaseController {
 
-  def keepAlive: Action[AnyContent] = Action.async {
-    Future successful Ok("OK")
+  def keepAlive: Action[AnyContent] =  (identify andThen getData()).async { implicit req =>
+    userAnswersCacheConnector.postRefreshExpire.map { _ => Ok("OK")}
   }
 }

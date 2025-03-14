@@ -17,11 +17,24 @@
 package controllers
 
 import base.SpecBase
+import connectors.UserAnswersCacheConnector
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
+import org.scalatest.BeforeAndAfterAll
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.inject
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
-class KeepAliveControllerSpec extends SpecBase with MockitoSugar {
+import scala.concurrent.Future
+
+class KeepAliveControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfterAll {
+
+  private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
+
+  override def beforeAll(): Unit = {
+    when(mockUserAnswersCacheConnector.postRefreshExpire(any(), any())).thenReturn(Future.successful(true))
+  }
 
   "keepAlive" - {
 
@@ -29,7 +42,7 @@ class KeepAliveControllerSpec extends SpecBase with MockitoSugar {
 
       "must keep the answers alive and return OK" in {
         val application =
-          applicationBuilder(Some(emptyUserAnswers))
+          applicationBuilder(Some(emptyUserAnswers), Seq(inject.bind[UserAnswersCacheConnector].to(mockUserAnswersCacheConnector)))
             .build()
 
         running(application) {
@@ -49,7 +62,7 @@ class KeepAliveControllerSpec extends SpecBase with MockitoSugar {
 
 
         val application =
-          applicationBuilder(None)
+          applicationBuilder(None, Seq(inject.bind[UserAnswersCacheConnector].to(mockUserAnswersCacheConnector)))
             .build()
 
         running(application) {
