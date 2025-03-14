@@ -52,9 +52,9 @@
 
     <ul class="govuk-list govuk-list--bullet">
      <li>@messages(s"fileUploadWhatYouWillNeed.event${eventType.toString}.item5.prefix")
-      <a href=@templateDownloadLink class="govuk-link">@messages(s"fileUploadWhatYouWillNeed.event${eventType.toString}.template.link.text")</a>
+      <a href=@templateDownloadLink class="govuk-link" download>@messages(s"fileUploadWhatYouWillNeed.event${eventType.toString}.template.link.text")</a>
       @messages(s"fileUploadWhatYouWillNeed.event${eventType.toString}.item5")</li>
-     <li><a href=@instructionsDownloadLink class="govuk-link">@messages(s"fileUploadWhatYouWillNeed.event${eventType.toString}.instructions.link.text")</a></li>
+     <li><a href=@instructionsDownloadLink class="govuk-link" download>@messages(s"fileUploadWhatYouWillNeed.event${eventType.toString}.instructions.link.text")</a></li>
     </ul>
 
     <p class="govuk-inset-text">@messages(s"fileUploadWhatYouWillNeed.event${eventType.toString}.inset")</p>
