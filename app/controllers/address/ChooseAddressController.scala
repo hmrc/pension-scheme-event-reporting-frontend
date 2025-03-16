@@ -20,16 +20,19 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.address.ChooseAddressFormProvider
 import models.Index
+import models.address.TolerantAddress
 import models.enumeration.AddressJourneyType
 import pages.Waypoints
 import pages.address.{ChooseAddressPage, EnterPostcodePage, ManualAddressPage}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.CountryOptions
 import views.html.address.ChooseAddressView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class ChooseAddressController @Inject()(val controllerComponents: MessagesControllerComponents,
                                         identify: IdentifierAction,
@@ -37,15 +40,32 @@ class ChooseAddressController @Inject()(val controllerComponents: MessagesContro
                                         requireData: DataRequiredAction,
                                         userAnswersCacheConnector: UserAnswersCacheConnector,
                                         formProvider: ChooseAddressFormProvider,
-                                        view: ChooseAddressView
+                                        view: ChooseAddressView,
+                                        countryOptions: CountryOptions
                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+
+
+  private def getSortedAddresses(addresses:Seq[TolerantAddress]) = {
+    addresses.distinct.sortWith { case (a1, a2) =>
+      def number(address: TolerantAddress) = address.addressLine1.flatMap { a =>
+        Try(a.split(" ").head.toInt).toOption
+      }
+
+      number(a1) -> number(a2) match {
+        case (Some(a1n), Some(a2n)) => a1n < a2n
+        case (None, Some(a2n)) => false
+        case (Some(a1n), None) => true
+        case (None, None) => a1.toPrepopAddress.lines(countryOptions).mkString(" ") < a2.toPrepopAddress.lines(countryOptions).mkString(" ")
+      }
+    }
+  }
 
 
   def onPageLoad(waypoints: Waypoints, addressJourneyType: AddressJourneyType, index: Index): Action[AnyContent] =
     (identify andThen getData(addressJourneyType.eventType) andThen requireData) { implicit request =>
       request.userAnswers.get(EnterPostcodePage(addressJourneyType, index)) match {
         case Some(addresses) =>
-          val sortedAddresses = addresses.distinct.sortBy(_.addressLine1)
+          val sortedAddresses = getSortedAddresses(addresses)
           val form = formProvider(sortedAddresses)
           val page = ChooseAddressPage(addressJourneyType, index)
           Ok(view(form, waypoints, addressJourneyType,

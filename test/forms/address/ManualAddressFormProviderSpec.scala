@@ -73,7 +73,7 @@ class ManualAddressFormProviderSpec extends SpecBase with AddressBehaviours with
     behave like formWithCountryAndPostCode(
       form,
       messages("address.postCode.error.required", companyName),
-      messages("enterPostcode.error.invalid", companyName),
+      messages("enterPostcode.error.invalid", postCode),
       "enterPostcode.error.nonUKLength",
       Map(
         "addressLine1" -> addressLine1,
