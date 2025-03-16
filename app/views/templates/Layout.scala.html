@@ -30,7 +30,9 @@
     hmrcTimeoutDialog: HmrcTimeoutDialog,
     hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
     hmrcScripts: HmrcScripts,
-    standardBetaBanner: StandardBetaBanner
+    standardBetaBanner: StandardBetaBanner,
+    autocompleteCss: HmrcAccessibleAutocompleteCss,
+    autocompleteJavascript: HmrcAccessibleAutocompleteJavascript
 )
 
 @(pageTitle: String, showBackLink: Boolean = true, timeout: Boolean = true, showSignOut: Boolean = true)(contentBlock: Html)(implicit request: Request[_], messages: Messages)
@@ -52,10 +54,12 @@
         } else None
     )
     <link rel="stylesheet" media="all" type="text/css" href='@routes.Assets.versioned("stylesheets/pensionschemeeventreportingfrontend-app.css")' />
+    @autocompleteCss()
 }
 
 @additionalScripts = {
     <script @CSPNonce.attr src='@controllers.routes.Assets.versioned("javascripts/application.js")'></script>
+    @autocompleteJavascript()
 }
 
 @beforeContent = {
@@ -87,7 +91,7 @@
     headerBlock = Some(hmrcStandardHeader(
         serviceUrl  = Some(appConfig.manageOverviewDashboardUrl),
         signOutUrl  = if(showSignOut) Some(controllers.auth.routes.AuthController.signOut.url) else None,
-        phaseBanner = Some(standardBetaBanner(url = appConfig.betaFeedbackUnauthenticatedUrl)),
+        phaseBanner = Some(standardBetaBanner(url = appConfig.betaFeedbackUnauthenticatedUrl))
     )),
     beforeContentBlock = Some(beforeContent),
     footerBlock        = Some(hmrcStandardFooter()),

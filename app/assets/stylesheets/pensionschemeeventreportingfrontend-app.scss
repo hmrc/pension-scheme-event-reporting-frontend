@@ -1,5 +1,4 @@
 @import "lib/govuk-frontend/dist/govuk/base";
-@import 'location-autocomplete.min';
 
 .govuk-radios__input:disabled~.govuk-radios__hint {
   color: inherit;
@@ -15,4 +14,8 @@
   &.js-enabled {
     display: inline-block;
   }
+}
+
+a.govuk-link {
+  min-height: 24px;
 }

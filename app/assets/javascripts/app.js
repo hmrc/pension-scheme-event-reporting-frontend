@@ -25,20 +25,6 @@ document.addEventListener('DOMContentLoaded', function(event) {
         });
     }
 
-    // handle country picker
-    var selectEl = document.querySelector('#country')
-    if( selectEl !== null ){
-        accessibleAutocomplete.enhanceSelectElement({
-            defaultValue: "",
-            selectElement: selectEl
-        })
-        document.querySelector('input[role="combobox"]').addEventListener('keydown', function(e){
-            if (e.which != 13 && e.which != 9) {
-                selectEl.value = "";
-            }
-        });
-    }
-
     // file upload status
     var ajaxRedirect = document.querySelector('#processing-status');
     if( ajaxRedirect !== null ){
