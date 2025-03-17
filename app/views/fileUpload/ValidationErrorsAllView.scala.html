@@ -30,9 +30,9 @@
  <h1 class="govuk-heading-l">@messages("fileupload.invalid.heading")</h1>
  <p class="govuk-body">@messages("fileupload.invalid.p1")</p>
  <p class="govuk-body">
-     <a href="@fileDownloadTemplateLink" class="govuk-link">@messages("fileupload.invalid.download.template.link")</a>,
+     <a href="@fileDownloadTemplateLink" class="govuk-link" download>@messages("fileupload.invalid.download.template.link")</a>,
      @messages("fileupload.invalid.subheading.p2")
-     <a href="@fileDownloadInstructionsLink" class="govuk-link">@messages("fileupload.invalid.download.instructions.link")</a>.
+     <a href="@fileDownloadInstructionsLink" class="govuk-link" download>@messages("fileupload.invalid.download.instructions.link")</a>.
  </p>
 
 @govukTable(
