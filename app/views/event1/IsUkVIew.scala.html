@@ -14,41 +14,32 @@
  * limitations under the License.
  *@
 
-@import controllers.address.routes
-
-@import viewmodels.InputWidth._
 @import models.enumeration.AddressJourneyType
 
 @this(
     layout: templates.SchemeLayout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    govukInput: GovukInput,
+    govukRadios: GovukRadios,
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, addressJourneyType: AddressJourneyType, pageTitle: String, pageHeading: String, index: Index)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[_],addressJourneyType: AddressJourneyType, waypoints: Waypoints, index: Index)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, pageTitle)) {
+@layout(pageTitle = title(form, messages("isUk.title"))) {
 
-    @formHelper(action = routes.EnterPostcodeController.onSubmit(waypoints, addressJourneyType, index)) {
+    @formHelper(action = controllers.address.routes.IsUkController.onSubmit(waypoints, addressJourneyType, index), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        @govukInput(
-            InputViewModel(
+        @govukRadios(
+            RadiosViewModel.yesNo(
                 field = form("value"),
-                label = LabelViewModel(pageHeading).asPageHeading()
+                legend = LegendViewModel(messages("isUk.heading")).asPageHeading()
             )
-            .withWidth(OneThird)
-            .withAutocomplete("postal-code")
         )
-
-        <p class="govuk-body">
-            @messages("enterPostcode.hint") <a href="@routes.ManualAddressController.onPageLoad(waypoints, addressJourneyType, index, true).url" class="govuk-link">@messages("enterPostcode.link")</a>.
-        </p>
 
         @govukButton(
             ButtonViewModel(messages("site.continue")).withAttribute(("id", "submit"))

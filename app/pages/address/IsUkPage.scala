@@ -16,24 +16,35 @@
 
 package pages.address
 
-import controllers.address.routes
 import models.UserAnswers
 import models.enumeration.AddressJourneyType
 import pages.common.MembersOrEmployersPage
-import pages.{Page, QuestionPage, Waypoints}
+import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class EnterPostcodePage(addressJourneyType: AddressJourneyType, index: Int) extends QuestionPage[String] {
+case class IsUkPage(addressJourneyType: AddressJourneyType, index: Int) extends QuestionPage[Boolean] {
 
   override def path: JsPath = MembersOrEmployersPage(addressJourneyType.eventType)(index) \ addressJourneyType.nodeName \ toString
 
-  override def toString: String = "enterPostcode"
+  override def toString: String = "isUk"
 
   override def route(waypoints: Waypoints): Call =
-    routes.EnterPostcodeController.onPageLoad(waypoints, addressJourneyType, index)
+    controllers.address.routes.IsUkController.onPageLoad(waypoints, addressJourneyType, index)
 
-  final override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    ChooseAddressPage(addressJourneyType, index)
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+    answers.get(this) match {
+      case Some(true) => EnterPostcodePage(addressJourneyType, index)
+      case Some(false) => ManualAddressPage(addressJourneyType, index, isUk = false)
+      case None => this
+    }
+  }
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page = {
+    answers.get(this) match {
+      case Some(true) => EnterPostcodePage(addressJourneyType, index)
+      case Some(false) => ManualAddressPage(addressJourneyType, index, isUk = false)
+      case None => this
+    }
   }
 }

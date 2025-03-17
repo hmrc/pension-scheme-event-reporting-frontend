@@ -41,8 +41,7 @@ case class ChooseAddressPage(addressJourneyType: AddressJourneyType, index: Int)
 
   override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page = {
     addressJourneyType match {
-      case Event1EmployerAddressJourney => Event1CheckYourAnswersPage(index)
-      case Event1MemberPropertyAddressJourney | Event1EmployerPropertyAddressJourney => PaymentValueAndDatePage(index)
+      case Event1EmployerAddressJourney | Event1MemberPropertyAddressJourney | Event1EmployerPropertyAddressJourney => Event1CheckYourAnswersPage(index)
       case _ => super.nextPageNormalMode(waypoints, updatedAnswers)
     }
   }

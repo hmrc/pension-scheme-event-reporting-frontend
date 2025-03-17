@@ -24,7 +24,7 @@ import models.address.TolerantAddress
 import models.enumeration.AddressJourneyType
 import models.requests.DataRequest
 import pages.Waypoints
-import pages.address.EnterPostcodePage
+import pages.address.{EnterPostcodePage, EnterPostcodeRetrievedPage}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -50,9 +50,10 @@ class EnterPostcodeController @Inject()(val controllerComponents: MessagesContro
     (identify andThen getData(addressJourneyType.eventType) andThen requireData) { implicit request =>
 
       val page = EnterPostcodePage(addressJourneyType, index)
+      val postCode = request.userAnswers.get(page).getOrElse("")
       Ok(
         view(
-          formProvider(retrieveNameManual(request, index)),
+          formProvider(postCode).fill(postCode),
           waypoints,
           addressJourneyType,
           addressJourneyType.title(page),
@@ -83,29 +84,35 @@ class EnterPostcodeController @Inject()(val controllerComponents: MessagesContro
           )
         }
 
+        def invalidResponse(postCode: String, error: String) = {
+          val updatedAnswers = request.userAnswers.setOrException(page, postCode)
+          userAnswersCacheConnector.save(
+            request.pstr,
+            addressJourneyType.eventType,
+            updatedAnswers
+          ).flatMap { _ =>
+            renderView(formWithError(Message(error, postCode), retrieveNameManual(request, index)).fill(postCode))
+          }
+        }
+
         formProvider(retrieveNameManual(request, index)).bindFromRequest().fold(
           formWithErrors => renderView(formWithErrors),
           postCode => {
             addressLookupConnector.addressLookupByPostCode(postCode).flatMap {
               case Nil =>
-                val emptyAddress = TolerantAddress(None, None, None, None, None, None)
-                val updatedAnswers = request.userAnswers.setOrException(page, Seq(emptyAddress.copy(postcode = Some(postCode))))
-                userAnswersCacheConnector.save(
-                  request.pstr,
-                  addressJourneyType.eventType,
-                  updatedAnswers
-                )
-                renderView(formWithError(Message("enterPostcode.error.invalid", postCode), retrieveNameManual(request, index)).fill(postCode))
+                invalidResponse(postCode, "enterPostcode.error.notFound")
               case addresses =>
                 val originalUserAnswers = request.userAnswers
-                val updatedAnswers = originalUserAnswers.setOrException(page, addresses)
+                val updatedAnswers = originalUserAnswers
+                  .setOrException(EnterPostcodeRetrievedPage(addressJourneyType, index), addresses)
+                  .setOrException(EnterPostcodePage(addressJourneyType, index), postCode)
                 userAnswersCacheConnector.save(request.pstr, addressJourneyType.eventType, updatedAnswers).map { _ =>
                   Redirect(page.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
                 }
 
             } recoverWith {
               case _ =>
-                renderView(formWithError(Message("enterPostcode.error.invalid", postCode), retrieveNameManual(request, index)))
+                invalidResponse(postCode, "enterPostcode.error.invalid")
             }
           }
         )

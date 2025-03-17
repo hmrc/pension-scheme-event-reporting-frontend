@@ -72,7 +72,7 @@ object AddressJourneyType extends Enumerable.Implicits {
       whichPage match {
         case EnterPostcodePage(_, _) => Message("residentialAddress.enterPostcode.h1")
         case ChooseAddressPage(_, _) => Message("residentialAddress.chooseAddress.h1")
-        case ManualAddressPage(_, _) => Message("residentialAddress.address.h1")
+        case ManualAddressPage(_, _, _) => Message("residentialAddress.address.h1")
         case _ => super.heading(whichPage, index)
       }
 
@@ -80,7 +80,7 @@ object AddressJourneyType extends Enumerable.Implicits {
       whichPage match {
         case EnterPostcodePage(_, _) => Message("residentialAddress.enterPostcode.title")
         case ChooseAddressPage(_, _) => Message("residentialAddress.chooseAddress.title")
-        case ManualAddressPage(_, _) => Message("residentialAddress.address.title")
+        case ManualAddressPage(_, _, _) => Message("residentialAddress.address.title")
         case _ => super.title(whichPage)
       }
   }
@@ -96,7 +96,7 @@ object AddressJourneyType extends Enumerable.Implicits {
       whichPage match {
         case EnterPostcodePage(_, _) => Message("residentialAddress.enterPostcode.h1")
         case ChooseAddressPage(_, _) => Message("residentialAddress.chooseAddress.h1")
-        case ManualAddressPage(_, _) => Message("residentialAddress.address.h1")
+        case ManualAddressPage(_, _, _) => Message("residentialAddress.address.h1")
         case _ => super.heading(whichPage, index)
       }
 
@@ -104,7 +104,7 @@ object AddressJourneyType extends Enumerable.Implicits {
       whichPage match {
         case EnterPostcodePage(_, _) => Message("residentialAddress.enterPostcode.title")
         case ChooseAddressPage(_, _) => Message("residentialAddress.chooseAddress.title")
-        case ManualAddressPage(_, _) => Message("residentialAddress.address.title")
+        case ManualAddressPage(_, _, _) => Message("residentialAddress.address.title")
         case _ => super.title(whichPage)
       }
   }

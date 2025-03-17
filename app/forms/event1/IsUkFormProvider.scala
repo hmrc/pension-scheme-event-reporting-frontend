@@ -14,21 +14,17 @@
  * limitations under the License.
  */
 
-package forms.address
+package forms.event1
 
-import forms.mappings.AddressMapping
+import forms.mappings.Mappings
 import play.api.data.Form
-import play.api.i18n.Messages
 
 import javax.inject.Inject
 
-class EnterPostcodeFormProvider @Inject() extends AddressMapping {
-  def apply(postCode: String)(implicit messages: Messages): Form[String] =
+class IsUkFormProvider @Inject() extends Mappings {
+
+  def apply(): Form[Boolean] =
     Form(
-      "value" -> postCodeMapping(
-        messages("enterPostcode.error.required", postCode),
-        "enterPostcode.error.length",
-        messages("enterPostcode.error.invalid", postCode)
-      )
+      "value" -> boolean("isUk.error.required", invalidKey = "isUk.error.format")
     )
 }

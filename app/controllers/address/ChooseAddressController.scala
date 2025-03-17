@@ -23,7 +23,7 @@ import models.Index
 import models.address.TolerantAddress
 import models.enumeration.AddressJourneyType
 import pages.Waypoints
-import pages.address.{ChooseAddressPage, EnterPostcodePage, ManualAddressPage}
+import pages.address.{ChooseAddressPage, EnterPostcodeRetrievedPage, ManualAddressPage}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -63,7 +63,7 @@ class ChooseAddressController @Inject()(val controllerComponents: MessagesContro
 
   def onPageLoad(waypoints: Waypoints, addressJourneyType: AddressJourneyType, index: Index): Action[AnyContent] =
     (identify andThen getData(addressJourneyType.eventType) andThen requireData) { implicit request =>
-      request.userAnswers.get(EnterPostcodePage(addressJourneyType, index)) match {
+      request.userAnswers.get(EnterPostcodeRetrievedPage(addressJourneyType, index)) match {
         case Some(addresses) =>
           val sortedAddresses = getSortedAddresses(addresses)
           val form = formProvider(sortedAddresses)
@@ -82,9 +82,9 @@ class ChooseAddressController @Inject()(val controllerComponents: MessagesContro
     (identify andThen getData(addressJourneyType.eventType) andThen requireData).async {
       implicit request =>
         val page = ChooseAddressPage(addressJourneyType, index)
-        request.userAnswers.get(EnterPostcodePage(addressJourneyType, index)) match {
+        request.userAnswers.get(EnterPostcodeRetrievedPage(addressJourneyType, index)) match {
           case Some(addresses) =>
-            val sortedAddresses = addresses.distinct.sortBy(_.addressLine1)
+            val sortedAddresses = getSortedAddresses(addresses)
             val form = formProvider(sortedAddresses)
             form.bindFromRequest().fold(
               formWithErrors => {
@@ -104,9 +104,9 @@ class ChooseAddressController @Inject()(val controllerComponents: MessagesContro
               },
               value => {
                 val originalUserAnswers = request.userAnswers
-                addresses(value).toAddress match {
+                getSortedAddresses(addresses)(value).toAddress match {
                   case Some(address) =>
-                    val updatedAnswers = originalUserAnswers.setOrException(ManualAddressPage(addressJourneyType, index), address)
+                    val updatedAnswers = originalUserAnswers.setOrException(ManualAddressPage(addressJourneyType, index, true), address)
                     userAnswersCacheConnector.save(request.pstr, addressJourneyType.eventType, updatedAnswers).map { _ =>
                       Redirect(page.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
                     }

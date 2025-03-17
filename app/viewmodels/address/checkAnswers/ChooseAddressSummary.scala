@@ -21,7 +21,7 @@ import models.enumeration.AddressJourneyType
 import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
 import models.{Index, UserAnswers}
 import org.apache.commons.lang3.StringUtils
-import pages.address.{EnterPostcodePage, ManualAddressPage}
+import pages.address.{IsUkPage, ManualAddressPage}
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.Html
@@ -66,7 +66,7 @@ object ChooseAddressSummary {
       "companyDetails.companyAddress.change.hidden"
     }
 
-    answers.get(ManualAddressPage(addressJourneyType, index)).map {
+    answers.get(ManualAddressPage(addressJourneyType, index, false)).map {
       answer =>
 
         val value = ValueViewModel(
@@ -80,7 +80,7 @@ object ChooseAddressSummary {
           value = value,
           actions = if (isReadOnly) None else {
             Some(Actions(items = Seq(
-              ActionItemViewModel("site.change", EnterPostcodePage(addressJourneyType, index).changeLink(waypoints, sourcePage).url)
+              ActionItemViewModel("site.change", IsUkPage(addressJourneyType, index).changeLink(waypoints, sourcePage).url)
                 .withVisuallyHiddenText(messages(visuallyHiddenTextKey))
             )))
           }

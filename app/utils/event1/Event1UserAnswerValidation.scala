@@ -23,7 +23,7 @@ import models.event1.PaymentNature.{OverpaymentOrWriteOff, RefundOfContributions
 import models.event1.WhoReceivedUnauthPayment.{Employer, Member}
 import models.requests.DataRequest
 import pages.EmptyWaypoints
-import pages.address.{EnterPostcodePage, ManualAddressPage}
+import pages.address.{EnterPostcodePage, IsUkPage, ManualAddressPage}
 import pages.common.MembersDetailsPage
 import pages.event1._
 import pages.event1.employer.CompanyDetailsPage
@@ -88,7 +88,7 @@ class Event1UserAnswerValidation @Inject()(compileService: CompileService) {
   def validateResidentialPropertyHeld(index: Index)
                                      (implicit hc: HeaderCarrier, executor: ExecutionContext, request: DataRequest[AnyContent]): Future[Result] = {
     val postcodeAnswer = request.userAnswers.get(EnterPostcodePage(AddressJourneyType.Event1MemberPropertyAddressJourney, index))
-    val manualAddressAnswer = request.userAnswers.get(ManualAddressPage(AddressJourneyType.Event1MemberPropertyAddressJourney, index))
+    val manualAddressAnswer = request.userAnswers.get(ManualAddressPage(AddressJourneyType.Event1MemberPropertyAddressJourney, index, false))
 
     (postcodeAnswer, manualAddressAnswer) match {
       case (Some(_), _) | (_, Some(_)) => validatePaymentDetails(index)
@@ -140,7 +140,7 @@ class Event1UserAnswerValidation @Inject()(compileService: CompileService) {
   def validateEmployerPaymentNature(index: Index)(implicit hc: HeaderCarrier, executor: ExecutionContext, request: DataRequest[AnyContent]): Future[Result] = {
     val employerPaymentNatureAnswer = request.userAnswers.get(pages.event1.employer.PaymentNaturePage(index))
     val employerPostcodeAnswer = request.userAnswers.get(EnterPostcodePage(AddressJourneyType.Event1EmployerPropertyAddressJourney, index))
-    val employerPropertyAddressAnswer = request.userAnswers.get(ManualAddressPage(AddressJourneyType.Event1EmployerPropertyAddressJourney, index))
+    val employerPropertyAddressAnswer = request.userAnswers.get(ManualAddressPage(AddressJourneyType.Event1EmployerPropertyAddressJourney, index, false))
     val paymentDetailsAnswer = request.userAnswers.get(PaymentValueAndDatePage(index))
 
     (employerPaymentNatureAnswer, employerPostcodeAnswer, employerPropertyAddressAnswer, paymentDetailsAnswer) match {
@@ -149,7 +149,7 @@ class Event1UserAnswerValidation @Inject()(compileService: CompileService) {
         _ => Redirect(controllers.event1.routes.UnauthPaymentSummaryController.onPageLoad(EmptyWaypoints))
       }
       case (Some(_), None, None,  _) => Future.successful(
-        Redirect(ManualAddressPage(AddressJourneyType.Event1EmployerPropertyAddressJourney, index)
+        Redirect(ManualAddressPage(AddressJourneyType.Event1EmployerPropertyAddressJourney, index, false)
           .changeLink(EmptyWaypoints, Event1CheckYourAnswersPage(index)).url
         )
       )
@@ -165,12 +165,12 @@ class Event1UserAnswerValidation @Inject()(compileService: CompileService) {
   def validateEmployerRoute(index: Index)(implicit hc: HeaderCarrier, executor: ExecutionContext, request: DataRequest[AnyContent]): Future[Result] = {
     val companyDetailsAnswer = request.userAnswers.get(CompanyDetailsPage(index))
     val companyPostcodeAnswer = request.userAnswers.get(EnterPostcodePage(AddressJourneyType.Event1EmployerAddressJourney, index))
-    val companyAddressAnswer = request.userAnswers.get(ManualAddressPage(AddressJourneyType.Event1EmployerAddressJourney, index))
+    val companyAddressAnswer = request.userAnswers.get(ManualAddressPage(AddressJourneyType.Event1EmployerAddressJourney, index, false))
 
     (companyDetailsAnswer, companyPostcodeAnswer, companyAddressAnswer) match {
       case (Some(_), Some(_), _) | (Some(_), _, Some(_)) => validateEmployerPaymentNature(index)
       case (Some(_), None, None) => Future.successful(
-        Redirect(EnterPostcodePage(AddressJourneyType.Event1EmployerAddressJourney, index)
+        Redirect(IsUkPage(AddressJourneyType.Event1EmployerAddressJourney, index)
           .changeLink(EmptyWaypoints, Event1CheckYourAnswersPage(index)).url)
       )
       case _ => Future.successful(
