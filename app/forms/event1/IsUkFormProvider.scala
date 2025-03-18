@@ -25,6 +25,6 @@ class IsUkFormProvider @Inject() extends Mappings {
 
   def apply(): Form[Boolean] =
     Form(
-      "value" -> boolean("isUk.error.required", invalidKey = "isUk.error.format")
+      "value" -> boolean("isUk.error.required", invalidKey = "isUk.error.required")
     )
 }

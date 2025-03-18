@@ -26,7 +26,7 @@ class EnterPostcodeFormProviderSpec extends SpecBase with AddressBehaviours {
 
   private val requiredKey = "Enter a full UK postcode"
   private val lengthKey = "enterPostcode.error.length"
-  private val invalid = "Enter a full UK postcode"
+  private val invalid = "Enter a real Postcode e.g. AA1 1AA"
   private val fieldName = "value"
 
   private val formProvider = new EnterPostcodeFormProvider()

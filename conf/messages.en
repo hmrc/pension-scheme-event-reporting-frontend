@@ -466,7 +466,7 @@ address.addressLine1 = Address Line 1
 address.addressLine2 = Address Line 2 (optional)
 address.townOrCity = Town or City
 address.county = County (optional)
-address.postCode = Postcode (UK only)
+address.postCode = Postcode
 address.country = Country
 
 entityType.theCompany = the company
@@ -1965,7 +1965,7 @@ generic.upload.error.size = The selected file must be smaller than 4 MB
 generic.upload.error.malicious = The file you have uploaded has been flagged as malicious
 generic.upload.error.unknown = The file you are trying to upload is invalid
 
-isUk.error.required = isUk.error.required
-isUk.error.format = isUk.error.format
-isUk.title = isUk.title
-isUk.heading = isUk.heading
+isUk.error.required = Select whether the {0} is in the UK
+isUk.title = Is {0} in the UK?
+isUk.heading = Is {0} in the UK?
+residentialProperty = the residential property

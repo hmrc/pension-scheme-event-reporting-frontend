@@ -20,7 +20,6 @@ import connectors.{AddressLookupConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.address.EnterPostcodeFormProvider
 import models.Index
-import models.address.TolerantAddress
 import models.enumeration.AddressJourneyType
 import models.requests.DataRequest
 import pages.Waypoints
@@ -50,10 +49,10 @@ class EnterPostcodeController @Inject()(val controllerComponents: MessagesContro
     (identify andThen getData(addressJourneyType.eventType) andThen requireData) { implicit request =>
 
       val page = EnterPostcodePage(addressJourneyType, index)
-      val postCode = request.userAnswers.get(page).getOrElse("")
+      val form = request.userAnswers.get(page).fold(formProvider(""))( postCode => formProvider(postCode).fill(postCode))
       Ok(
         view(
-          formProvider(postCode).fill(postCode),
+          form,
           waypoints,
           addressJourneyType,
           addressJourneyType.title(page),

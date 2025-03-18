@@ -21,11 +21,13 @@ import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierA
 import forms.event1.IsUkFormProvider
 import models.Index
 import models.enumeration.AddressJourneyType
+import models.requests.DataRequest
 import pages.Waypoints
 import pages.address.IsUkPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.AddressHelper.retrieveNameManual
 import views.html.event1.IsUkVIew
 
 import javax.inject.Inject
@@ -42,15 +44,23 @@ class IsUkController @Inject()(val controllerComponents: MessagesControllerCompo
 
   def onPageLoad(waypoints: Waypoints, addressJourneyType: AddressJourneyType, index: Index): Action[AnyContent] =
     (identify andThen getData(addressJourneyType.eventType) andThen requireData) { implicit request =>
-
+      val name = getName(addressJourneyType, index, request)
       Ok(
         view(
           request.userAnswers.get(IsUkPage(addressJourneyType, index)).fold(formProvider())(formProvider().fill),
           addressJourneyType,
           waypoints,
-          index
+          index,
+          name
         )
       )
+    }
+
+  private def getName(addressJourneyType: AddressJourneyType, index: Index, request: DataRequest[AnyContent]) =
+    if(addressJourneyType.nodeName == "employerResidentialAddress") {
+      messagesApi.preferred(request)("residentialProperty")
+    } else {
+      retrieveNameManual(request, index)
     }
 
   def onSubmit(waypoints: Waypoints, addressJourneyType: AddressJourneyType, index: Index): Action[AnyContent] =
@@ -60,11 +70,13 @@ class IsUkController @Inject()(val controllerComponents: MessagesControllerCompo
         val page = IsUkPage(addressJourneyType, index)
 
 
+        val name = getName(addressJourneyType, index, request)
+
         formProvider().bindFromRequest().fold(
           formWithErrors => Future.successful(
             BadRequest(
               view(
-                formWithErrors, addressJourneyType, waypoints, index
+                formWithErrors, addressJourneyType, waypoints, index, name
               )
             )
           ),

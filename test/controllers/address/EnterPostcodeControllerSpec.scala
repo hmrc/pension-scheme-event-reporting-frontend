@@ -50,6 +50,8 @@ class EnterPostcodeControllerSpec extends SpecBase with BeforeAndAfterEach with 
 
   private def postRoute: String = routes.EnterPostcodeController.onSubmit(waypoints, Event1EmployerAddressJourney, 0).url
 
+  private val postCode = seqTolerantAddresses.head.postcode.get
+
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
     bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector),
     bind[AddressLookupConnector].toInstance(mockAddressLookupConnector)
@@ -90,7 +92,7 @@ class EnterPostcodeControllerSpec extends SpecBase with BeforeAndAfterEach with 
       running(application) {
         val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "zz11zz"))
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.setOrException(EnterPostcodePage(Event1EmployerAddressJourney, 0), seqTolerantAddresses)
+        val updatedAnswers = emptyUserAnswers.setOrException(EnterPostcodePage(Event1EmployerAddressJourney, 0), postCode)
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual EnterPostcodePage(Event1EmployerAddressJourney, 0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url

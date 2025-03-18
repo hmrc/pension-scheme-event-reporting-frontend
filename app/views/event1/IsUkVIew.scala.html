@@ -24,9 +24,9 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_],addressJourneyType: AddressJourneyType, waypoints: Waypoints, index: Index)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[_],addressJourneyType: AddressJourneyType, waypoints: Waypoints, index: Index, name: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("isUk.title"))) {
+@layout(pageTitle = title(form, messages("isUk.title", name))) {
 
     @formHelper(action = controllers.address.routes.IsUkController.onSubmit(waypoints, addressJourneyType, index), Symbol("autoComplete") -> "off") {
 
@@ -37,7 +37,7 @@
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
-                legend = LegendViewModel(messages("isUk.heading")).asPageHeading()
+                legend = LegendViewModel(messages("isUk.heading", name)).asPageHeading()
             )
         )
 
