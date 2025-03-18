@@ -17,6 +17,7 @@
 package controllers.event8a
 
 import base.SpecBase
+import connectors.UserAnswersCacheConnector
 import data.SampleData.{erOverviewSeq, sampleMemberJourneyDataEvent8A}
 import models.common.MembersDetails
 import models.enumeration.EventType.Event8A
@@ -51,16 +52,19 @@ import scala.concurrent.Future
 
 class Event8ACheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency with BeforeAndAfterEach {
 
+  import Event8ACheckYourAnswersControllerSpec._
+
   private val mockCompileService = mock[CompileService]
+  private val mockUserCacheConnector = mock[UserAnswersCacheConnector]
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
-    bind[CompileService].toInstance(mockCompileService)
+    bind[CompileService].toInstance(mockCompileService),
+    bind[UserAnswersCacheConnector].toInstance(mockUserCacheConnector)
   )
-
-  import Event8ACheckYourAnswersControllerSpec._
 
   override def beforeEach(): Unit = {
     super.beforeEach()
+    when(mockUserCacheConnector.save(any(),any(), any())(any(),any(), any())).thenReturn(Future.successful())
     reset(mockCompileService)
   }
 

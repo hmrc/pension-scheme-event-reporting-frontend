@@ -17,6 +17,7 @@
 package controllers.event24
 
 import base.SpecBase
+import connectors.UserAnswersCacheConnector
 import models.common.MembersDetails
 import models.enumeration.EventType.Event24
 import models.enumeration.VersionStatus.{Compiled, Submitted}
@@ -44,16 +45,20 @@ class Event24CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
 
   private val mockCompileService = mock[CompileService]
 
-  private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
-    bind[CompileService].toInstance(mockCompileService)
-  )
-
   private val TypeOfProtectionGroup1Answer: Set[TypeOfProtectionGroup1] = Set(
     TypeOfProtectionGroup1.RecognisedOverseasPSTE
   )
 
+  private val mockUserCacheConnector = mock[UserAnswersCacheConnector]
+
+  private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
+    bind[CompileService].toInstance(mockCompileService),
+    bind[UserAnswersCacheConnector].toInstance(mockUserCacheConnector)
+  )
+
   override def beforeEach(): Unit = {
     super.beforeEach()
+    when(mockUserCacheConnector.save(any(),any(), any())(any(),any(), any())).thenReturn(Future.successful())
     reset(mockCompileService)
   }
 

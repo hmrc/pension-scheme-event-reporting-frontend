@@ -16,10 +16,12 @@
 
 package utils
 
+import connectors.UserAnswersCacheConnector
 import models.Index
 import models.enumeration.EventType
 import models.enumeration.EventType._
 import models.requests.DataRequest
+import pages.common.MemberCompiled
 import play.api.mvc.{AnyContent, Result}
 import services.CompileService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -64,20 +66,27 @@ case class UserAnswersValidation @Inject()(compileService: CompileService,
                                            event19UserAnswerValidation: Event19UserAnswerValidation,
                                            event20UserAnswerValidation: Event20UserAnswerValidation,
                                            events22and23UserAnswerValidation: Events22and23UserAnswerValidation,
-                                           event24UserAnswerValidation: Event24UserAnswerValidation) {
+                                           event24UserAnswerValidation: Event24UserAnswerValidation,
+                                           userAnswersCacheConnector: UserAnswersCacheConnector) {
 
   def validate(eventType: EventType, index: Index = Index(0))
               (implicit hc: HeaderCarrier, executor: ExecutionContext, request: DataRequest[AnyContent]): Future[Result] = {
+    def setMemberAsCompiled(result: Result): Future[Result] = {
+      val ua = request.userAnswers.setOrException(MemberCompiled(eventType, index), true)
+      userAnswersCacheConnector.save(request.pstr, eventType, ua).map { _ =>
+        result
+      }
+    }
     eventType match {
-      case Event1 => event1UserAnswerValidation.validateAnswers(index)
-      case Event2 => event2UserAnswerValidation.validateAnswers(index)
-      case Event3 => event3UserAnswerValidation.validateAnswers(index)
-      case Event4 => event4UserAnswerValidation.validateAnswers(index)
-      case Event5 => event5UserAnswerValidation.validateAnswers(index)
-      case Event6 => event6UserAnswerValidation.validateAnswers(index)
-      case Event7 => event7UserAnswerValidation.validateAnswers(index)
-      case Event8 => event8UserAnswerValidation.validateAnswers(index)
-      case Event8A => event8AUserAnswerValidation.validateAnswers(index)
+      case Event1 => event1UserAnswerValidation.validateAnswers(index).flatMap(setMemberAsCompiled)
+      case Event2 => event2UserAnswerValidation.validateAnswers(index).flatMap(setMemberAsCompiled)
+      case Event3 => event3UserAnswerValidation.validateAnswers(index).flatMap(setMemberAsCompiled)
+      case Event4 => event4UserAnswerValidation.validateAnswers(index).flatMap(setMemberAsCompiled)
+      case Event5 => event5UserAnswerValidation.validateAnswers(index).flatMap(setMemberAsCompiled)
+      case Event6 => event6UserAnswerValidation.validateAnswers(index).flatMap(setMemberAsCompiled)
+      case Event7 => event7UserAnswerValidation.validateAnswers(index).flatMap(setMemberAsCompiled)
+      case Event8 => event8UserAnswerValidation.validateAnswers(index).flatMap(setMemberAsCompiled)
+      case Event8A => event8AUserAnswerValidation.validateAnswers(index).flatMap(setMemberAsCompiled)
       case Event10 => event10UserAnswerValidation.validateAnswers
       case Event11 => event11UserAnswerValidation.validateAnswers
       case Event12 => event12UserAnswerValidation.validateAnswers
@@ -85,9 +94,9 @@ case class UserAnswersValidation @Inject()(compileService: CompileService,
       case Event14 => event14UserAnswerValidation.validateAnswers
       case Event19 => event19UserAnswerValidation.validateAnswers
       case Event20 => event20UserAnswerValidation.validateAnswers
-      case Event22 => events22and23UserAnswerValidation.validateAnswers(index, Event22)
-      case Event23 => events22and23UserAnswerValidation.validateAnswers(index, Event23)
-      case _ => event24UserAnswerValidation.validateAnswers(index)
+      case Event22 => events22and23UserAnswerValidation.validateAnswers(index, Event22).flatMap(setMemberAsCompiled)
+      case Event23 => events22and23UserAnswerValidation.validateAnswers(index, Event23).flatMap(setMemberAsCompiled)
+      case _ => event24UserAnswerValidation.validateAnswers(index).flatMap(setMemberAsCompiled)
     }
   }
 }

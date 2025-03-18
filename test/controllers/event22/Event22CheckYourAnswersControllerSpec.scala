@@ -17,6 +17,7 @@
 package controllers.event22
 
 import base.SpecBase
+import connectors.UserAnswersCacheConnector
 import data.SampleData.{erOverviewSeq, sampleMemberJourneyDataEvent22and23, sampleMemberJourneyDataEvent22and23WithMissingAmount}
 import models.enumeration.EventType.Event22
 import models.enumeration.VersionStatus.Submitted
@@ -45,14 +46,18 @@ class Event22CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
 
   private val mockCompileService = mock[CompileService]
 
-  private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
-    bind[CompileService].toInstance(mockCompileService)
-  )
-
   import Event22CheckYourAnswersControllerSpec._
+
+  private val mockUserCacheConnector = mock[UserAnswersCacheConnector]
+
+  private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
+    bind[CompileService].toInstance(mockCompileService),
+    bind[UserAnswersCacheConnector].toInstance(mockUserCacheConnector)
+  )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
+    when(mockUserCacheConnector.save(any(),any(), any())(any(),any(), any())).thenReturn(Future.successful())
     reset(mockCompileService)
   }
 

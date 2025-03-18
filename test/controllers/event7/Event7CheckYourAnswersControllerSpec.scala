@@ -17,6 +17,7 @@
 package controllers.event7
 
 import base.SpecBase
+import connectors.UserAnswersCacheConnector
 import data.SampleData.{erOverviewSeq, sampleMemberJourneyDataEvent7}
 import models.common.MembersDetails
 import models.enumeration.EventType.Event7
@@ -50,14 +51,18 @@ class Event7CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
 
   private val mockCompileService = mock[CompileService]
 
-  private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
-    bind[CompileService].toInstance(mockCompileService)
-  )
-
   import Event7CheckYourAnswersControllerSpec._
+
+  private val mockUserCacheConnector = mock[UserAnswersCacheConnector]
+
+  private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
+    bind[CompileService].toInstance(mockCompileService),
+    bind[UserAnswersCacheConnector].toInstance(mockUserCacheConnector)
+  )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
+    when(mockUserCacheConnector.save(any(),any(), any())(any(),any(), any())).thenReturn(Future.successful())
     reset(mockCompileService)
   }
 
