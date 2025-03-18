@@ -65,6 +65,7 @@ class ChooseAddressController @Inject()(val controllerComponents: MessagesContro
     (identify andThen getData(addressJourneyType.eventType) andThen requireData) { implicit request =>
       request.userAnswers.get(EnterPostcodeRetrievedPage(addressJourneyType, index)) match {
         case Some(addresses) =>
+          val chosenAddress = request.userAnswers.get(ManualAddressPage(addressJourneyType, index, false))
           val sortedAddresses = getSortedAddresses(addresses)
           val form = formProvider(sortedAddresses)
           val page = ChooseAddressPage(addressJourneyType, index)
@@ -72,7 +73,8 @@ class ChooseAddressController @Inject()(val controllerComponents: MessagesContro
             addressJourneyType.title(page),
             addressJourneyType.heading(page, index),
             sortedAddresses,
-            index
+            index,
+            chosenAddress.map(_.toTolerantAddress)
           ))
         case _ => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad(None).url)
       }
@@ -84,6 +86,7 @@ class ChooseAddressController @Inject()(val controllerComponents: MessagesContro
         val page = ChooseAddressPage(addressJourneyType, index)
         request.userAnswers.get(EnterPostcodeRetrievedPage(addressJourneyType, index)) match {
           case Some(addresses) =>
+            val chosenAddress = request.userAnswers.get(ManualAddressPage(addressJourneyType, index, false))
             val sortedAddresses = getSortedAddresses(addresses)
             val form = formProvider(sortedAddresses)
             form.bindFromRequest().fold(
@@ -97,7 +100,8 @@ class ChooseAddressController @Inject()(val controllerComponents: MessagesContro
                       addressJourneyType.title(page),
                       addressJourneyType.heading(page, index),
                       sortedAddresses,
-                      index
+                      index,
+                      chosenAddress.map(_.toTolerantAddress)
                     )
                   )
                 )

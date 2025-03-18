@@ -38,18 +38,19 @@ trait RadiosFluency {
       apply(
         field    = field,
         items    = items,
-        fieldset = FieldsetViewModel(legend)
+        fieldset = FieldsetViewModel(legend),
       )
 
     def apply(
                field: Field,
                items: Seq[RadioItem],
-               fieldset: Fieldset
+               fieldset: Fieldset,
+               overrideChecked: Boolean = true
              )(implicit messages: Messages): Radios =
       Radios(
         fieldset     = Some(fieldset),
         name         = field.name,
-        items        = items map (item => item copy (checked = field.value.isDefined && field.value == item.value)),
+        items        = if(overrideChecked) {items map (item => item copy (checked = field.value.isDefined && field.value == item.value))} else items,
         errorMessage = errorMessage(field)
       )
 

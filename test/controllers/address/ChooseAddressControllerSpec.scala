@@ -79,7 +79,8 @@ class ChooseAddressControllerSpec extends SpecBase with BeforeAndAfterEach with 
           view.render(form, waypoints, Event1EmployerAddressJourney,
             messages("chooseAddress.title", "the company"),
             messages("chooseAddress.heading", companyDetails.companyName),
-            seqTolerantAddresses, index = 0, request, messages(application)).toString
+            seqTolerantAddresses, index = 0, None, request, messages(application),
+            ).toString
       }
     }
 
