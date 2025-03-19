@@ -51,7 +51,7 @@ class Event20ACheckYourAnswersController @Inject()(
     (identify andThen getData(Event20A) andThen requireData) { implicit request =>
       val thisPage = Event20ACheckYourAnswersPage()
       val waypoints = EmptyWaypoints
-      val continueUrl = userAnswersValidation.validateAnswers
+      val continueUrl = userAnswersValidation.validateAnswers()
       Ok(view(SummaryListViewModel(rows = buildEvent20ACYARows(waypoints, thisPage, request.userAnswers)), continueUrl))
     }
 

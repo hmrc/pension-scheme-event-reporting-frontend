@@ -48,16 +48,16 @@ class TypeOfProtectionGroup1Controller @Inject()(
   def onPageLoad(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType) andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(TypeOfProtectionGroup1Page(index)).fold(form)(form.fill)
-      val protectionPageVal = request.userAnswers.get(TypeOfProtectionGroup2Page(index)).getOrElse("")
-      Ok(view(preparedForm, protectionPageVal.toString, waypoints, index))
+      val protectionPageVal = request.userAnswers.get(TypeOfProtectionGroup2Page(index))
+      Ok(view(preparedForm, protectionPageVal.map(_.toString).getOrElse(""), waypoints, index))
   }
 
   def onSubmit(waypoints: Waypoints, index: Index): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors => {
-          val protectionPageVal = request.userAnswers.fold(UserAnswers())(identity).get(TypeOfProtectionGroup2Page(index)).getOrElse("")
-          Future.successful(BadRequest(view(formWithErrors, protectionPageVal.toString, waypoints, index)))
+          val protectionPageVal = request.userAnswers.fold(UserAnswers())(identity).get(TypeOfProtectionGroup2Page(index))
+          Future.successful(BadRequest(view(formWithErrors, protectionPageVal.map(_.toString).getOrElse(""), waypoints, index)))
         },
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)

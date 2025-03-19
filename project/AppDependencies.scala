@@ -17,15 +17,15 @@ object AppDependencies {
   )
 
   val test = Seq(
-    "uk.gov.hmrc"             %% "bootstrap-test-play-30"  % bootstrapVersion,
-    "org.scalatest"           %% "scalatest"               % "3.2.19",
-    "org.scalatestplus"       %% "scalacheck-1-17"         % "3.2.18.0",
-    "org.scalatestplus"       %% "mockito-4-6"             % "3.2.15.0",
-    "org.scalatestplus.play"  %% "scalatestplus-play"      % "7.0.1",
-    "org.pegdown"             %  "pegdown"                 % "1.6.0",
-    "com.vladsch.flexmark"    %  "flexmark-all"            % "0.64.8",
-    "io.github.wolfendale"    %% "scalacheck-gen-regexp"   % "1.1.0"
-  ).map(_ % "test, it")
+    "uk.gov.hmrc"             %% "bootstrap-test-play-30"  % bootstrapVersion % Test,
+    "org.scalatest"           %% "scalatest"               % "3.2.19" % Test,
+    "org.scalatestplus"       %% "scalacheck-1-17"         % "3.2.18.0" % Test,
+    "org.scalatestplus"       %% "mockito-4-6"             % "3.2.15.0" % Test,
+    "org.scalatestplus.play"  %% "scalatestplus-play"      % "7.0.1" % Test,
+    "org.pegdown"             %  "pegdown"                 % "1.6.0" % Test,
+    "com.vladsch.flexmark"    %  "flexmark-all"            % "0.64.8" % Test,
+    "io.github.wolfendale"    %% "scalacheck-gen-regexp"   % "1.1.0" % Test
+  )
 
   def apply(): Seq[ModuleID] = compile ++ test
 }

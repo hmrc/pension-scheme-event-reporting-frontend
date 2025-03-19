@@ -64,7 +64,7 @@ class Event8ACheckYourAnswersController @Inject()(
       )
 
       requiredData.collectFirst {
-        case (page, None) => page
+        case (missingPage, None) => missingPage
       }
     }
 
@@ -86,7 +86,7 @@ class Event8ACheckYourAnswersController @Inject()(
     )
 
     val page = requiredData.collectFirst {
-      case (page, None) => page
+      case (missingPage, None) => missingPage
     }
 
     val finalPage = page match {

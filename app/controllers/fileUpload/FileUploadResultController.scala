@@ -169,7 +169,7 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
 
     val parserResultFuture = CSVParser.split(inputStream)(new FastJsonAccumulator() -> new ArrayBuffer[ValidationError]()) {
       case ((dataAccumulator, errorAccumulator), row, rowNumber) =>
-        validator.validate(rowNumber, row, dataAccumulator, errorAccumulator, taxYear)
+        validator.validate(rowNumber, row.toIndexedSeq, dataAccumulator, errorAccumulator, taxYear)
     }
 
     parserResultFuture.flatMap { case ((dataAccumulator, errorAccumulator), rowNumber) =>

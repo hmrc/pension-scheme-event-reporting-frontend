@@ -100,7 +100,7 @@ class UpscanInitiateConnector @Inject()(httpClientV2: HttpClientV2, appConfig: F
   private def initiate[T: Tag](url: URL, initialRequest: T, eventType: EventType)(
     implicit request: DataRequest[AnyContent], headerCarrier: HeaderCarrier, wts: Writes[T]): Future[UpscanInitiateResponse] = {
     // Define an implicit BodyWritable for any type T that has a Writes[T]
-    implicit def jsonBodyWritable[T](implicit writes: Writes[T]): BodyWritable[T] = {
+    implicit def jsonBodyWritable: BodyWritable[T] = {
       BodyWritable(a => InMemoryBody(ByteString.fromString(Json.stringify(Json.toJson(a)))), "application/json")
     }
     val startTime = System.currentTimeMillis
