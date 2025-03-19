@@ -18,13 +18,14 @@ package forms.event1
 
 import forms.mappings.Mappings
 import play.api.data.Form
+import play.api.i18n.Messages
 
 import javax.inject.Inject
 
 class IsUkFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Boolean] =
+  def apply(name: String)(implicit messages: Messages): Form[Boolean] =
     Form(
-      "value" -> boolean("isUk.error.required", invalidKey = "isUk.error.required")
+      "value" -> boolean(messages("isUk.error.required", name), invalidKey = "isUk.error.required")
     )
 }

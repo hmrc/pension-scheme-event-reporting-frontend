@@ -47,7 +47,7 @@ class IsUkController @Inject()(val controllerComponents: MessagesControllerCompo
       val name = getName(addressJourneyType, index, request)
       Ok(
         view(
-          request.userAnswers.get(IsUkPage(addressJourneyType, index)).fold(formProvider())(formProvider().fill),
+          request.userAnswers.get(IsUkPage(addressJourneyType, index)).fold(formProvider(name))(formProvider(name).fill),
           addressJourneyType,
           waypoints,
           index,
@@ -58,7 +58,7 @@ class IsUkController @Inject()(val controllerComponents: MessagesControllerCompo
 
   private def getName(addressJourneyType: AddressJourneyType, index: Index, request: DataRequest[AnyContent]) =
     if(addressJourneyType.nodeName == "employerResidentialAddress") {
-      messagesApi.preferred(request)("residentialProperty")
+      messagesApi.preferred(request)("entityType.theResidentialProperty")
     } else {
       retrieveNameManual(request, index)
     }
@@ -72,7 +72,7 @@ class IsUkController @Inject()(val controllerComponents: MessagesControllerCompo
 
         val name = getName(addressJourneyType, index, request)
 
-        formProvider().bindFromRequest().fold(
+        formProvider(name).bindFromRequest().fold(
           formWithErrors => Future.successful(
             BadRequest(
               view(
