@@ -60,7 +60,7 @@ class TypeOfProtectionControllerSpec extends SpecBase with BeforeAndAfterEach wi
   )
 
   override def beforeEach(): Unit = {
-    super.beforeEach
+    super.beforeEach()
     reset(mockUserAnswersCacheConnector)
   }
 

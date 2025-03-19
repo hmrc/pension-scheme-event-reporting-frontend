@@ -53,7 +53,7 @@ class TypeOfProtectionGroup2ControllerSpec extends SpecBase with BeforeAndAfterE
   )
 
   override def beforeEach(): Unit = {
-    super.beforeEach
+    super.beforeEach()
     reset(mockUserAnswersCacheConnector)
   }
 

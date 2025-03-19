@@ -70,7 +70,7 @@ class PaymentDetailsControllerSpec extends SpecBase with BeforeAndAfterEach with
   private val validValue = PaymentDetails(validValueAmount, LocalDate.of(validValueDateYear, validValueDateMonth, validValueDateDay))
 
   override def beforeEach(): Unit = {
-    super.beforeEach
+    super.beforeEach()
     reset(mockUserAnswersCacheConnector)
   }
 

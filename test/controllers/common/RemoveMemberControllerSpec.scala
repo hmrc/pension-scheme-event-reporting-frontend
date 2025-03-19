@@ -66,7 +66,7 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach {
   private def postRoute: String = routes.RemoveMemberController.onSubmit(waypoints, Event5, 0).url
 
   override def beforeEach(): Unit = {
-    super.beforeEach
+    super.beforeEach()
     reset(mockEventReportingConnector)
     reset(mockCompileService)
   }

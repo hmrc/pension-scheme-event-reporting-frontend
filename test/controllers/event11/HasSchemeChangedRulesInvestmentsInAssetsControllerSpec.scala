@@ -51,7 +51,7 @@ class HasSchemeChangedRulesInvestmentsInAssetsControllerSpec extends SpecBase wi
   )
 
   override def beforeEach(): Unit = {
-    super.beforeEach
+    super.beforeEach()
     reset(mockUserAnswersCacheConnector)
   }
 

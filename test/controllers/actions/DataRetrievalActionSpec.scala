@@ -48,7 +48,7 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
   }
 
   override def beforeEach(): Unit = {
-    super.beforeEach
+    super.beforeEach()
     reset(userAnswersCacheConnector)
   }
 

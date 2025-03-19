@@ -51,7 +51,7 @@ class SchemeStructureControllerSpec extends SpecBase with BeforeAndAfterEach wit
   private def postRoute: String = controllers.event13.routes.SchemeStructureController.onSubmit(waypoints).url
 
   override def beforeEach(): Unit = {
-    super.beforeEach
+    super.beforeEach()
     reset(mockUserAnswersCacheConnector)
   }
 

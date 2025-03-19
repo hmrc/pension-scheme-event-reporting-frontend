@@ -62,7 +62,7 @@ class DatePaidControllerSpec extends SpecBase with BeforeAndAfterEach {
   private val validAnswer = LocalDate.of(2022, 2, 12)
 
   override def beforeEach(): Unit = {
-    super.beforeEach
+    super.beforeEach()
     reset(mockUserAnswersCacheConnector)
   }
 

@@ -55,7 +55,7 @@ class HowManySchemeMembersControllerSpec extends SpecBase with BeforeAndAfterEac
   )
 
   override def beforeEach(): Unit = {
-    super.beforeEach
+    super.beforeEach()
     reset(mockUserAnswersCacheConnector)
   }
 

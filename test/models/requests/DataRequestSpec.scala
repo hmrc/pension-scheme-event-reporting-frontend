@@ -64,7 +64,7 @@ class DataRequestSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
 
       val dataReqObj = DataRequest("pstr", "schemeName", "url", FakeRequest(Call("GET", "/")), LoggedInUser("", Administrator, ""), uA, "srn")
 
-      dataReqObj.readOnly mustBe true
+      dataReqObj.readOnly() mustBe true
     }
 
     "must return false if version selected is equal to current report version" in {
@@ -74,7 +74,7 @@ class DataRequestSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
 
       val dataReqObj = DataRequest("pstr", "schemeName", "url", FakeRequest(Call("GET", "/")), LoggedInUser("", Administrator, ""), uA, "srn")
 
-      dataReqObj.readOnly mustBe false
+      dataReqObj.readOnly() mustBe false
     }
 
   }

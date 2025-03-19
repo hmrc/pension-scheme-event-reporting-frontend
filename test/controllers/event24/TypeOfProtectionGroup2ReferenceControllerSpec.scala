@@ -53,7 +53,7 @@ class TypeOfProtectionGroup2ReferenceControllerSpec extends SpecBase with Before
   private val validValue = "abc123DEF"
 
   override def beforeEach(): Unit = {
-    super.beforeEach
+    super.beforeEach()
     reset(mockUserAnswersCacheConnector)
   }
 

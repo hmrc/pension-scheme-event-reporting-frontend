@@ -51,7 +51,7 @@ class OverAllowanceAndDeathBenefitControllerSpec extends SpecBase with BeforeAnd
   )
 
   override def beforeEach(): Unit = {
-    super.beforeEach
+    super.beforeEach()
     reset(mockUserAnswersCacheConnector)
   }
 

@@ -56,7 +56,7 @@ class ManualOrUploadControllerSpec extends SpecBase with BeforeAndAfterEach with
   private def postRoute(eventType: EventType): String = routes.ManualOrUploadController.onSubmit(waypoints, eventType, 0).url
 
   override def beforeEach(): Unit = {
-    super.beforeEach
+    super.beforeEach()
     reset(mockUserAnswersCacheConnector)
   }
 

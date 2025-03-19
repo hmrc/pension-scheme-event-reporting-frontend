@@ -55,7 +55,7 @@ class PaymentTypeControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
   )
 
   override def beforeEach(): Unit = {
-    super.beforeEach
+    super.beforeEach()
     reset(mockUserAnswersCacheConnector)
   }
 

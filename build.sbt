@@ -54,12 +54,12 @@ lazy val root = (project in file("."))
     scalacOptions ++= Seq(
       "-feature",
       "-deprecation",
-      "-rootdir",
+      "-quickfix:any",
       baseDirectory.value.getCanonicalPath,
-      "-Wconf:src=target/.*:s"
+      "-Wconf:src=target/.*:s",
+      "-Wconf:src=routes/.*:s",
+      "-Wconf:cat=unused-imports&src=html/.*:s"
     ),
-    scalacOptions += "-Wconf:src=routes/.*:s",
-    scalacOptions += "-Wconf:cat=unused-imports&src=html/.*:s",
     libraryDependencies ++= AppDependencies(),
     retrieveManaged := true,
     resolvers ++= Seq(Resolver.jcenterRepo),

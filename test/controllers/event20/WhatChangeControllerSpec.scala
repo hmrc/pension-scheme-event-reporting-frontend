@@ -53,7 +53,7 @@ class WhatChangeControllerSpec extends SpecBase with BeforeAndAfterEach with Moc
   )
 
   override def beforeEach(): Unit = {
-    super.beforeEach
+    super.beforeEach()
     reset(mockUserAnswersCacheConnector)
   }
 
