@@ -39,7 +39,7 @@ case class PaymentNaturePage(index: Int) extends QuestionPage[PaymentNature] {
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     answers.get(PaymentNaturePage(index)) match {
       case Some(LoansExceeding50PercentOfFundValue) => LoanDetailsPage(index)
-      case Some(ResidentialProperty) => pages.address.EnterPostcodePage(Event1EmployerPropertyAddressJourney, index)
+      case Some(ResidentialProperty) => pages.address.IsUkPage(Event1EmployerPropertyAddressJourney, index)
       case Some(TangibleMoveableProperty) => EmployerTangibleMoveablePropertyPage(index)
       case Some(CourtOrder) => UnauthorisedPaymentRecipientNamePage(index)
       case Some(EmployerOther) => EmployerPaymentNatureDescriptionPage(index)
@@ -50,7 +50,7 @@ case class PaymentNaturePage(index: Int) extends QuestionPage[PaymentNature] {
   override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page = {
     updatedAnswers.get(PaymentNaturePage(index)) match {
       case Some(LoansExceeding50PercentOfFundValue) => LoanDetailsPage(index)
-      case Some(ResidentialProperty) => pages.address.EnterPostcodePage(Event1EmployerPropertyAddressJourney, index)
+      case Some(ResidentialProperty) => pages.address.IsUkPage(Event1EmployerPropertyAddressJourney, index)
       case Some(TangibleMoveableProperty) => EmployerTangibleMoveablePropertyPage(index)
       case Some(CourtOrder) => UnauthorisedPaymentRecipientNamePage(index)
       case Some(EmployerOther) => EmployerPaymentNatureDescriptionPage(index)

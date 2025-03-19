@@ -199,8 +199,8 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
     startingFrom(CompanyDetailsPage(0))
       .run(
         submitAnswer(CompanyDetailsPage(0), companyDetails),
-        goTo(ManualAddressPage(Event1EmployerAddressJourney, 0)),
-        submitAnswer(ManualAddressPage(Event1EmployerAddressJourney, 0), seqTolerantAddresses.head.toAddress.get),
+        goTo(ManualAddressPage(Event1EmployerAddressJourney, 0, true)),
+        submitAnswer(ManualAddressPage(Event1EmployerAddressJourney, 0, true), seqTolerantAddresses.head.toAddress.get),
         pageMustBe(employer.PaymentNaturePage(0))
       )
 
@@ -210,13 +210,13 @@ class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerato
     startingFrom(PaymentNaturePage(0))
       .run(
         submitAnswer(PaymentNaturePage(0), ResidentialPropertyHeld),
-        pageMustBe(pages.address.EnterPostcodePage(Event1MemberPropertyAddressJourney, 0))
+        pageMustBe(pages.address.IsUkPage(Event1MemberPropertyAddressJourney, 0))
       )
 
     startingFrom(pages.event1.employer.PaymentNaturePage(0))
       .run(
         submitAnswer(pages.event1.employer.PaymentNaturePage(0), ResidentialProperty),
-        pageMustBe(pages.address.EnterPostcodePage(Event1EmployerPropertyAddressJourney, 0))
+        pageMustBe(pages.address.IsUkPage(Event1EmployerPropertyAddressJourney, 0))
       )
   }
 

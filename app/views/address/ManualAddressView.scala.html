@@ -30,13 +30,13 @@
     govukSelect: GovukSelect
 )
 
-@(form: Form[_], waypoints: Waypoints, addressJourneyType: AddressJourneyType, pageTitle: String, pageHeading: String, options: Seq[InputOption], index: Index)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, addressJourneyType: AddressJourneyType, pageTitle: String, pageHeading: String, options: Seq[InputOption], index: Index, isUk: Boolean)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
 @selectDefaultCountry = @{if(form("country").value.isEmpty) true else false}
 
 @layout(pageTitle = title(form, pageTitle)) {
 
-    @formHelper(action = routes.ManualAddressController.onSubmit(waypoints, addressJourneyType, index)) {
+    @formHelper(action = routes.ManualAddressController.onSubmit(waypoints, addressJourneyType, index, isUk)) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
@@ -90,22 +90,35 @@
         )
 
         <div class="govuk-!-width-two-thirds">
-            @govukSelect(Select(
-                id = "country",
-                name = "country",
-                classes = "govuk-!-width-two-thirds country",
-                items = Seq(SelectItem(value = Some(""), selected = selectDefaultCountry)) ++
-                options.map(valueOption =>
-                    SelectItem(
-                        value = Some(valueOption.value),
-                        text = valueOption.label
+            @if(isUk) {
+                <input name="country" value="GB" hidden/>
+                @govukInput(
+                    Input(
+                        id = "country-disabled",
+                        name         = "country-disabled",
+                        value        = Some("United Kingdom"),
+                        label        = Label(content = Text(messages("address.country"))),
+                        disabled = Some(true)
                     )
-                ),
-                label = Label(
-                    content = Text(messages("address.country"))
-                ),
-                attributes = Map("autocomplete" -> "country-name")
-            ).withFormField(form("country")).asAccessibleAutocomplete())
+                )
+            } else {
+                @govukSelect(Select(
+                    id = "country",
+                    name = "country",
+                    classes = "govuk-!-width-two-thirds country",
+                    items = Seq(SelectItem(value = Some(""), selected = selectDefaultCountry)) ++
+                            options.map(valueOption =>
+                                SelectItem(
+                                    value = Some(valueOption.value),
+                                    text = valueOption.label
+                                )
+                            ),
+                    label = Label(
+                        content = Text(messages("address.country"))
+                    ),
+                    attributes = Map("autocomplete" -> "country-name")
+                ).withFormField(form("country")).asAccessibleAutocomplete())
+            }
         </div>
 
         @govukButton(

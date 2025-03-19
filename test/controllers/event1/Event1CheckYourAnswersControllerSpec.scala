@@ -469,7 +469,7 @@ object Event1CheckYourAnswersControllerSpec {
     fakeSummaryListRowWithHtmlContent(
       "companyDetails.CYA.companyAddress",
       """<span class="govuk-!-display-block">addr11</span><span class="govuk-!-display-block">addr12</span><span class="govuk-!-display-block">addr13</span><span class="govuk-!-display-block">addr14</span><span class="govuk-!-display-block">zz11zz</span><span class="govuk-!-display-block">United Kingdom</span>""".stripMargin,
-      "/manage-pension-scheme-event-report/report/1/event-1-company-postcode?waypoints=event-1-check-answers-1"
+      "/manage-pension-scheme-event-report/report/1/event-1-is-uk-company?waypoints=event-1-check-answers-1"
     ),
     fakeSummaryListRowWithHtmlContent(
       "paymentNature.checkYourAnswersLabel",

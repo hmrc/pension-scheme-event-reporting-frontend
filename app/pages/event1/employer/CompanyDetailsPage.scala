@@ -37,7 +37,7 @@ case class CompanyDetailsPage(index: Int) extends QuestionPage[CompanyDetails] {
     routes.CompanyDetailsController.onPageLoad(waypoints, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    pages.address.EnterPostcodePage(Event1EmployerAddressJourney, index)
+    pages.address.IsUkPage(Event1EmployerAddressJourney, index)
 
   override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, originalAnswers: UserAnswers, updatedAnswers: UserAnswers): Page =
     Event1CheckYourAnswersPage(index)

@@ -24,7 +24,7 @@ import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
-import pages.address.{EnterPostcodePage, ManualAddressPage}
+import pages.address.{IsUkPage, ManualAddressPage}
 import pages.event1.Event1CheckYourAnswersPage
 import pages.{CheckAnswersPage, EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
@@ -65,7 +65,7 @@ class ChooseAddressSummarySpec extends AnyFreeSpec with Matchers with OptionValu
     "must display correct information" in {
 
       val addressJourneyType: AddressJourneyType = Event1EmployerAddressJourney
-      val answer = UserAnswers().setOrException(ManualAddressPage(addressJourneyType, 0), employerAddress)
+      val answer = UserAnswers().setOrException(ManualAddressPage(addressJourneyType, 0, true), employerAddress)
       val waypoints: Waypoints = EmptyWaypoints
       val sourcePage: CheckAnswersPage = Event1CheckYourAnswersPage(0)
       val isReadOnly = false
@@ -94,7 +94,7 @@ class ChooseAddressSummarySpec extends AnyFreeSpec with Matchers with OptionValu
           value = value,
           actions = if (isReadOnly) None else {
             Some(Actions(items = Seq(
-              ActionItemViewModel("site.change", EnterPostcodePage(addressJourneyType, 0).changeLink(waypoints, sourcePage).url)
+              ActionItemViewModel("site.change", IsUkPage(addressJourneyType, 0).changeLink(waypoints, sourcePage).url)
                 .withVisuallyHiddenText(messages(visuallyHiddenTextKey))
             )))
           }

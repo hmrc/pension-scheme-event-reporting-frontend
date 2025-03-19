@@ -538,7 +538,7 @@ class Event1ValidatorSpec extends BulkUploadSpec[Event1Validator] with BeforeAnd
         ValidationError(3, 20, messages("address.addressLine2.error.invalid", fullName), "addressLine2", ArraySeq("^[A-Za-z0-9 &!'‘’(),./—–‐-]{1,35}$")),
         ValidationError(3, 20, messages("address.townOrCity.error.invalid", fullName), "townOrCity", ArraySeq("^[A-Za-z0-9 &!'‘’(),./—–‐-]{1,35}$")),
         ValidationError(3, 20, messages("address.county.error.invalid", fullName), "county", ArraySeq("^[A-Za-z0-9 &!'‘’(),./—–‐-]{1,35}$")),
-        ValidationError(3, 20, messages("enterPostcode.error.invalid", fullName), "postCode"),
+        ValidationError(3, 20, messages("address.postCode.error.invalid", fullName), "postCode"),
         ValidationError(4, 20, messages("address.country.error.required", fullName), "country")
       )
     }

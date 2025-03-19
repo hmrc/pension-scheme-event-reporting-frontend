@@ -20,10 +20,10 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.address.ManualAddressFormProvider
 import models.Index
-import models.address.Address
+import models.address.{Address, TolerantAddress}
 import models.enumeration.AddressJourneyType
 import pages.Waypoints
-import pages.address.{EnterPostcodePage, ManualAddressPage}
+import pages.address.{EnterPostcodePage, ManualAddressPage, UserEnteredAddressPage}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -45,34 +45,38 @@ class ManualAddressController @Inject()(val controllerComponents: MessagesContro
                                         val countryOptions: CountryOptions
                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(waypoints: Waypoints, addressJourneyType: AddressJourneyType, index: Index): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, addressJourneyType: AddressJourneyType, index: Index, isUk: Boolean): Action[AnyContent] =
     (identify andThen getData(addressJourneyType.eventType) andThen requireData) { implicit request =>
       val form: Form[Address] = formProvider(retrieveNameManual(request, index))
-      val page = ManualAddressPage(addressJourneyType, index)
-      val preparedForm = request.userAnswers.get(page) match {
-        case None => request.userAnswers.get(EnterPostcodePage(addressJourneyType, index)) match {
-          case Some(value) => form.fill(value.head.toPrepopAddress)
-          case None => form
-        }
-        case Some(value) => form.fill(value)
-      }
+      val manualPage = ManualAddressPage(addressJourneyType, index, isUk)
+      val postCode = request.userAnswers.get(EnterPostcodePage(addressJourneyType, index))
+      val address = request.userAnswers.get(UserEnteredAddressPage(addressJourneyType, index))
+
+      val dataToFill = address.map { address =>
+        val a = address.copy(postcode = postCode)
+        if(isUk) a.copy(country = "GB") else a
+      }.getOrElse(TolerantAddress(None, None, None, None, postCode, if(isUk) Some("GB") else None).toPrepopAddress)
+
+      val preparedForm = form.fill(dataToFill)
+
       Ok(
         view(
           preparedForm,
           waypoints,
           addressJourneyType,
-          addressJourneyType.title(page),
-          addressJourneyType.heading(page, index),
+          addressJourneyType.title(manualPage),
+          addressJourneyType.heading(manualPage, index),
           countryOptions.options,
-          index)
+          index,
+          isUk)
       )
     }
 
-  def onSubmit(waypoints: Waypoints, addressJourneyType: AddressJourneyType, index: Index): Action[AnyContent] =
+  def onSubmit(waypoints: Waypoints, addressJourneyType: AddressJourneyType, index: Index, isUk: Boolean): Action[AnyContent] =
     (identify andThen getData(addressJourneyType.eventType) andThen requireData).async {
       implicit request =>
         val form: Form[Address] = formProvider(retrieveNameManual(request, index))
-        val page = ManualAddressPage(addressJourneyType, index)
+        val page = ManualAddressPage(addressJourneyType, index, isUk)
         form.bindFromRequest().fold(
           formWithErrors => {
             Future.successful(
@@ -83,7 +87,8 @@ class ManualAddressController @Inject()(val controllerComponents: MessagesContro
                   addressJourneyType,
                   addressJourneyType.title(page),
                   addressJourneyType.heading(page, index), countryOptions.options,
-                  index
+                  index,
+                  isUk
                 )
               )
             )
@@ -91,7 +96,10 @@ class ManualAddressController @Inject()(val controllerComponents: MessagesContro
           value => {
             val originalUserAnswers = request.userAnswers
             val updatedAnswers = originalUserAnswers.setOrException(page, value)
-            userAnswersCacheConnector.save(request.pstr, addressJourneyType.eventType, updatedAnswers).map { _ =>
+              .setOrException(UserEnteredAddressPage(addressJourneyType, index), value)
+            val uaWithPostcode = value.postcode.map(postCode => updatedAnswers.setOrException(EnterPostcodePage(addressJourneyType, index), postCode))
+              .getOrElse(updatedAnswers)
+            userAnswersCacheConnector.save(request.pstr, addressJourneyType.eventType, uaWithPostcode).map { _ =>
               Redirect(page.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
             }
           }

@@ -424,7 +424,7 @@ class Event1Validator @Inject()(
               Seq(k, s).combineAll
             case "residentialPropertyHeld" =>
               val u = resultFromFormValidationResult[Address](
-                addressValidation(index, columns, fieldNoResidentialAddress, isMemberJourney = true, columns = columns), createCommitItem(index, ManualAddressPage(Event1MemberPropertyAddressJourney, _)))
+                addressValidation(index, columns, fieldNoResidentialAddress, isMemberJourney = true, columns = columns), createCommitItem(index, ManualAddressPage(Event1MemberPropertyAddressJourney, _, false)))
               Seq(k, u).combineAll
             case "tangibleMoveablePropertyHeld" =>
               val v = resultFromFormValidationResult[String](
@@ -466,7 +466,7 @@ class Event1Validator @Inject()(
               Seq(k, p).combineAll
             case "residentialProperty" =>
               val u = resultFromFormValidationResult[Address](
-                addressValidation(index, columns, fieldNoResidentialAddress), createCommitItem(index, ManualAddressPage(Event1EmployerPropertyAddressJourney, _)))
+                addressValidation(index, columns, fieldNoResidentialAddress), createCommitItem(index, ManualAddressPage(Event1EmployerPropertyAddressJourney, _, false)))
               Seq(k, u).combineAll
             case "tangibleMoveableProperty" =>
               val v = resultFromFormValidationResult[String](
@@ -556,7 +556,7 @@ class Event1Validator @Inject()(
     )
 
     val j = resultFromFormValidationResult[Address](
-      addressValidation(index, columns, fieldNoCompanyAddress), createCommitItem(index, ManualAddressPage(Event1EmployerAddressJourney, _))
+      addressValidation(index, columns, fieldNoCompanyAddress), createCommitItem(index, ManualAddressPage(Event1EmployerAddressJourney, _, false))
     )
 
     val paymentNature = validatePaymentNatureEmployerJourney(index, columns)

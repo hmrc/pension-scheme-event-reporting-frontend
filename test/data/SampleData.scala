@@ -229,7 +229,7 @@ object SampleData extends SpecBase {
     .setOrException(ManualOrUploadPage(Event1, 0), Manual)
     .setOrException(WhoReceivedUnauthPaymentPage(0), Employer)
     .setOrException(CompanyDetailsPage(0), companyDetails)
-    .setOrException(ManualAddressPage(Event1EmployerAddressJourney, 0), employerAddress)
+    .setOrException(ManualAddressPage(Event1EmployerAddressJourney, 0, true), employerAddress)
     .setOrException(EmployerPaymentNaturePage(0), TangibleMoveableProperty)
     .setOrException(EmployerTangibleMoveablePropertyPage(0), "Another test description")
     .setOrException(PaymentValueAndDatePage(0), paymentDetails)

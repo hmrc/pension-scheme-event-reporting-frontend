@@ -20,16 +20,19 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import forms.address.ChooseAddressFormProvider
 import models.Index
+import models.address.TolerantAddress
 import models.enumeration.AddressJourneyType
 import pages.Waypoints
-import pages.address.{ChooseAddressPage, EnterPostcodePage, ManualAddressPage}
+import pages.address.{ChooseAddressPage, EnterPostcodeRetrievedPage, ManualAddressPage}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.CountryOptions
 import views.html.address.ChooseAddressView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class ChooseAddressController @Inject()(val controllerComponents: MessagesControllerComponents,
                                         identify: IdentifierAction,
@@ -37,22 +40,41 @@ class ChooseAddressController @Inject()(val controllerComponents: MessagesContro
                                         requireData: DataRequiredAction,
                                         userAnswersCacheConnector: UserAnswersCacheConnector,
                                         formProvider: ChooseAddressFormProvider,
-                                        view: ChooseAddressView
+                                        view: ChooseAddressView,
+                                        countryOptions: CountryOptions
                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+
+
+  private def getSortedAddresses(addresses:Seq[TolerantAddress]) = {
+    addresses.distinct.sortWith { case (a1, a2) =>
+      def number(address: TolerantAddress) = address.addressLine1.flatMap { a =>
+        Try(a.split(" ").head.toInt).toOption
+      }
+
+      number(a1) -> number(a2) match {
+        case (Some(a1n), Some(a2n)) => a1n < a2n
+        case (None, Some(a2n)) => false
+        case (Some(a1n), None) => true
+        case (None, None) => a1.toPrepopAddress.lines(countryOptions).mkString(" ") < a2.toPrepopAddress.lines(countryOptions).mkString(" ")
+      }
+    }
+  }
 
 
   def onPageLoad(waypoints: Waypoints, addressJourneyType: AddressJourneyType, index: Index): Action[AnyContent] =
     (identify andThen getData(addressJourneyType.eventType) andThen requireData) { implicit request =>
-      request.userAnswers.get(EnterPostcodePage(addressJourneyType, index)) match {
+      request.userAnswers.get(EnterPostcodeRetrievedPage(addressJourneyType, index)) match {
         case Some(addresses) =>
-          val sortedAddresses = addresses.distinct.sortBy(_.addressLine1)
+          val chosenAddress = request.userAnswers.get(ManualAddressPage(addressJourneyType, index, false))
+          val sortedAddresses = getSortedAddresses(addresses)
           val form = formProvider(sortedAddresses)
           val page = ChooseAddressPage(addressJourneyType, index)
           Ok(view(form, waypoints, addressJourneyType,
             addressJourneyType.title(page),
             addressJourneyType.heading(page, index),
             sortedAddresses,
-            index
+            index,
+            chosenAddress.map(_.toTolerantAddress)
           ))
         case _ => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad(None).url)
       }
@@ -62,9 +84,10 @@ class ChooseAddressController @Inject()(val controllerComponents: MessagesContro
     (identify andThen getData(addressJourneyType.eventType) andThen requireData).async {
       implicit request =>
         val page = ChooseAddressPage(addressJourneyType, index)
-        request.userAnswers.get(EnterPostcodePage(addressJourneyType, index)) match {
+        request.userAnswers.get(EnterPostcodeRetrievedPage(addressJourneyType, index)) match {
           case Some(addresses) =>
-            val sortedAddresses = addresses.distinct.sortBy(_.addressLine1)
+            val chosenAddress = request.userAnswers.get(ManualAddressPage(addressJourneyType, index, false))
+            val sortedAddresses = getSortedAddresses(addresses)
             val form = formProvider(sortedAddresses)
             form.bindFromRequest().fold(
               formWithErrors => {
@@ -77,16 +100,17 @@ class ChooseAddressController @Inject()(val controllerComponents: MessagesContro
                       addressJourneyType.title(page),
                       addressJourneyType.heading(page, index),
                       sortedAddresses,
-                      index
+                      index,
+                      chosenAddress.map(_.toTolerantAddress)
                     )
                   )
                 )
               },
               value => {
                 val originalUserAnswers = request.userAnswers
-                addresses(value).toAddress match {
+                getSortedAddresses(addresses)(value).toAddress match {
                   case Some(address) =>
-                    val updatedAnswers = originalUserAnswers.setOrException(ManualAddressPage(addressJourneyType, index), address)
+                    val updatedAnswers = originalUserAnswers.setOrException(ManualAddressPage(addressJourneyType, index, true), address)
                     userAnswersCacheConnector.save(request.pstr, addressJourneyType.eventType, updatedAnswers).map { _ =>
                       Redirect(page.navigate(waypoints, originalUserAnswers, updatedAnswers).route)
                     }

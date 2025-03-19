@@ -16,24 +16,19 @@
 
 package pages.address
 
-import controllers.address.routes
-import models.UserAnswers
+import models.address.Address
 import models.enumeration.AddressJourneyType
 import pages.common.MembersOrEmployersPage
-import pages.{Page, QuestionPage, Waypoints}
+import pages.{QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class EnterPostcodePage(addressJourneyType: AddressJourneyType, index: Int) extends QuestionPage[String] {
+case class UserEnteredAddressPage(addressJourneyType: AddressJourneyType, index: Int) extends QuestionPage[Address] {
 
-  override def path: JsPath = MembersOrEmployersPage(addressJourneyType.eventType)(index) \ addressJourneyType.nodeName \ toString
+  override def path: JsPath =
+    MembersOrEmployersPage(addressJourneyType.eventType)(index) \ addressJourneyType.nodeName \ toString
 
-  override def toString: String = "enterPostcode"
+  override def toString: String = "userEnteredAddress"
 
-  override def route(waypoints: Waypoints): Call =
-    routes.EnterPostcodeController.onPageLoad(waypoints, addressJourneyType, index)
-
-  final override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
-    ChooseAddressPage(addressJourneyType, index)
-  }
+  override def route(waypoints: Waypoints): Call = ???
 }

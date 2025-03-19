@@ -42,6 +42,9 @@ case class Address(addressLine1: String,
       Some(countryOptions.getCountryNameFromCode(this))
     ).flatten(s => s)
   }
+  def toTolerantAddress: TolerantAddress = {
+    TolerantAddress(Some(addressLine1), addressLine2, Some(townOrCity), county, postcode, Some(country))
+  }
 }
 
 object Address {

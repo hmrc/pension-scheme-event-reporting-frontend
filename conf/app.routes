@@ -146,8 +146,14 @@ POST        /report/:index/event-1-company-postcode                           co
 GET         /report/:index/event-1-company-address                            controllers.address.ChooseAddressController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1EmployerAddressJourney, index: Index)
 POST        /report/:index/event-1-company-address                            controllers.address.ChooseAddressController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1EmployerAddressJourney, index: Index)
 
-GET         /report/:index/event-1-company-manual-address                     controllers.address.ManualAddressController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1EmployerAddressJourney, index: Index)
-POST        /report/:index/event-1-company-manual-address                     controllers.address.ManualAddressController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1EmployerAddressJourney, index: Index)
+GET         /report/:index/event-1-is-uk-company                      controllers.address.IsUkController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1EmployerAddressJourney, index: Index)
+POST        /report/:index/event-1-is-uk-company                      controllers.address.IsUkController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1EmployerAddressJourney, index: Index)
+
+GET         /report/:index/event-1-company-manual-address                     controllers.address.ManualAddressController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1EmployerAddressJourney, index: Index, isUk: Boolean = false)
+POST        /report/:index/event-1-company-manual-address                     controllers.address.ManualAddressController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1EmployerAddressJourney, index: Index, isUk: Boolean = false)
+
+GET         /report/:index/event-1-company-manual-address-uk                     controllers.address.ManualAddressController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1EmployerAddressJourney, index: Index, isUk: Boolean = true)
+POST        /report/:index/event-1-company-manual-address-uk                     controllers.address.ManualAddressController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1EmployerAddressJourney, index: Index, isUk: Boolean = true)
 
 GET         /report/:index/event-1-employer-payment-nature                    controllers.event1.employer.PaymentNatureController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 POST        /report/:index/event-1-employer-payment-nature                    controllers.event1.employer.PaymentNatureController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
@@ -158,14 +164,23 @@ POST        /report/:index/event-1-error-payment                              co
 GET         /report/:index/event-1-benefits-paid-early                        controllers.event1.member.BenefitsPaidEarlyController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 POST        /report/:index/event-1-benefits-paid-early                        controllers.event1.member.BenefitsPaidEarlyController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 
+GET         /report/:index/event-1-is-uk-member-property                      controllers.address.IsUkController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1MemberPropertyAddressJourney, index: Index)
+POST        /report/:index/event-1-is-uk-member-property                      controllers.address.IsUkController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1MemberPropertyAddressJourney, index: Index)
+
+GET         /report/:index/event-1-is-uk-employer-property                      controllers.address.IsUkController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1EmployerPropertyAddressJourney, index: Index)
+POST        /report/:index/event-1-is-uk-employer-property                      controllers.address.IsUkController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1EmployerPropertyAddressJourney, index: Index)
+
 GET         /report/:index/event-1-member-property-postcode                   controllers.address.EnterPostcodeController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1MemberPropertyAddressJourney, index: Index)
 POST        /report/:index/event-1-member-property-postcode                   controllers.address.EnterPostcodeController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1MemberPropertyAddressJourney, index: Index)
 
 GET         /report/:index/event-1-member-property-address                    controllers.address.ChooseAddressController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1MemberPropertyAddressJourney, index: Index)
 POST        /report/:index/event-1-member-property-address                    controllers.address.ChooseAddressController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1MemberPropertyAddressJourney, index: Index)
 
-GET         /report/:index/event-1-member-property-manual-address             controllers.address.ManualAddressController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1MemberPropertyAddressJourney, index: Index)
-POST        /report/:index/event-1-member-property-manual-address             controllers.address.ManualAddressController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1MemberPropertyAddressJourney, index: Index)
+GET         /report/:index/event-1-member-property-manual-address             controllers.address.ManualAddressController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1MemberPropertyAddressJourney, index: Index, isUk: Boolean = false)
+POST        /report/:index/event-1-member-property-manual-address             controllers.address.ManualAddressController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1MemberPropertyAddressJourney, index: Index, isUk: Boolean = false)
+
+GET         /report/:index/event-1-member-property-manual-address-uk             controllers.address.ManualAddressController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1MemberPropertyAddressJourney, index: Index, isUk: Boolean = true)
+POST        /report/:index/event-1-member-property-manual-address-uk             controllers.address.ManualAddressController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1MemberPropertyAddressJourney, index: Index, isUk: Boolean = true)
 
 GET         /report/:index/event-1-employer-recipient-name                    controllers.event1.employer.UnauthorisedPaymentRecipientNameController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 POST        /report/:index/event-1-employer-recipient-name                    controllers.event1.employer.UnauthorisedPaymentRecipientNameController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
@@ -176,8 +191,11 @@ POST        /report/:index/event-1-employer-property-postcode                 co
 GET         /report/:index/event-1-employer-property-address                  controllers.address.ChooseAddressController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1EmployerPropertyAddressJourney, index: Index)
 POST        /report/:index/event-1-employer-property-address                  controllers.address.ChooseAddressController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1EmployerPropertyAddressJourney, index: Index)
 
-GET         /report/:index/event-1-employer-property-manual-address           controllers.address.ManualAddressController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1EmployerPropertyAddressJourney, index: Index)
-POST        /report/:index/event-1-employer-property-manual-address           controllers.address.ManualAddressController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1EmployerPropertyAddressJourney, index: Index)
+GET         /report/:index/event-1-employer-property-manual-address           controllers.address.ManualAddressController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1EmployerPropertyAddressJourney, index: Index, isUk: Boolean = false)
+POST        /report/:index/event-1-employer-property-manual-address           controllers.address.ManualAddressController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1EmployerPropertyAddressJourney, index: Index, isUk: Boolean = false)
+
+GET         /report/:index/event-1-employer-property-manual-address-uk           controllers.address.ManualAddressController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1EmployerPropertyAddressJourney, index: Index, isUk: Boolean = true)
+POST        /report/:index/event-1-employer-property-manual-address-uk           controllers.address.ManualAddressController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, addressJourneyType: AddressJourneyType = Event1EmployerPropertyAddressJourney, index: Index, isUk: Boolean = true)
 
 GET         /report/:index/event-1-overpayment-details                        controllers.event1.member.ReasonForTheOverpaymentOrWriteOffController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
 POST        /report/:index/event-1-overpayment-details                        controllers.event1.member.ReasonForTheOverpaymentOrWriteOffController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, index: Index)
