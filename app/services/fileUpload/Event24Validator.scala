@@ -455,7 +455,7 @@ class Event24Validator @Inject()(
 
     val g = resultFromFormValidationResult[String](
       protectionGroup2ReferenceValidation(index, columns),
-      createCommitItem(index, TypeOfProtectionGroup2ReferencePage.apply(_))
+      createCommitItem(index, TypeOfProtectionGroup2ReferencePage)
     )
 
     val typeOfProtectionGroup1 = validateTypeOfProtectionGroup1(index, columns)

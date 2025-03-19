@@ -19,12 +19,6 @@ package models.address
 import play.api.libs.json._
 import utils.CountryOptions
 
-case class AddressRecord(address: Address)
-
-object AddressRecord {
-  implicit val addressRecordFormat: Format[AddressRecord] = Json.format[AddressRecord]
-}
-
 case class Address(addressLine1: String,
                    addressLine2: Option[String],
                    townOrCity: String,
