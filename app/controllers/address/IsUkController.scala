@@ -39,7 +39,7 @@ class IsUkController @Inject()(val controllerComponents: MessagesControllerCompo
                                requireData: DataRequiredAction,
                                userAnswersCacheConnector: UserAnswersCacheConnector,
                                formProvider: IsUkFormProvider,
-                               view: IsUkVIew,
+                               view: IsUkVIew
                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(waypoints: Waypoints, addressJourneyType: AddressJourneyType, index: Index): Action[AnyContent] =
