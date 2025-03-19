@@ -117,8 +117,24 @@ private object EventSelectionPageUtility {
       case _ => false
     }
 
+    val memberCompiled: Int => Boolean = (int: Int) => maybeEventType match {
+      case Some(eventType) =>
+        val hasMemberStatus = {
+          val path = eventType match {
+            case EventType.Event1 => MembersOrEmployersPage(eventType)(int) \ "memberStatus"
+            case _ => MembersPage(eventType)(int) \ "memberStatus"
+          }
+          userAnswers.get(path).map(_ => true).getOrElse(false)
+        }
+        val hasBeenCompiledInSession = userAnswers.get(MemberCompiled(eventType, int)).getOrElse(false)
+        hasMemberStatus || hasBeenCompiledInSession
+      case None => false
+    }
+
+
     val indicesForIncompleteJourneys = rangeAsList.collect {
       case i if !finalPageInMemberBasedJourney(i) => getIndex(i)
+      case i if !memberCompiled(i) => getIndex(i)
     }
 
     if (indicesForIncompleteJourneys.nonEmpty) {

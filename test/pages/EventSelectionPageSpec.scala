@@ -64,6 +64,7 @@ class EventSelectionPageSpec extends PageBehaviours {
         .setOrException(EventSelectionPage, models.EventSelection.Event1)
         .setOrException(MembersDetailsPage(Event1, 0), SampleData.memberDetails)
         .setOrException(PaymentValueAndDatePage(0), SampleData.paymentDetails)
+        .setOrException(MemberCompiled(Event1, 0), true)
 
       EventSelectionPage.nextPageNormalMode(EmptyWaypoints, ua).route(EmptyWaypoints) mustBe
         ManualOrUploadPage(Event1, 1).route(EmptyWaypoints)
@@ -77,6 +78,7 @@ class EventSelectionPageSpec extends PageBehaviours {
         .setOrException(MembersDetailsPage(Event2, 0, 1), SampleData.memberDetails)
         .setOrException(MembersDetailsPage(Event2, 0, 2), SampleData.memberDetails2)
         .setOrException(DatePaidPage(0, Event2), SampleData.datePaid)
+        .setOrException(MemberCompiled(Event2, 0), true)
 
       EventSelectionPage.nextPageNormalMode(EmptyWaypoints, ua).route(EmptyWaypoints) mustBe
         event2.WhatYouWillNeedPage(1).route(EmptyWaypoints)
@@ -89,6 +91,7 @@ class EventSelectionPageSpec extends PageBehaviours {
         .setOrException(EventSelectionPage, eventSelection)
         .setOrException(MembersDetailsPage(eventType, 0), SampleData.memberDetails)
         .setOrException(PaymentDetailsPage(eventType, 0), SampleData.paymentDetailsCommon)
+        .setOrException(MemberCompiled(eventType, 0), true)
 
       EventSelectionPage.nextPageNormalMode(EmptyWaypoints, ua).route(EmptyWaypoints) mustBe
         WhatYouWillNeedPage(eventType, 1).route(EmptyWaypoints)
@@ -101,6 +104,7 @@ class EventSelectionPageSpec extends PageBehaviours {
         .setOrException(EventSelectionPage, models.EventSelection.Event6)
         .setOrException(MembersDetailsPage(Event6, 0), SampleData.memberDetails)
         .setOrException(AmountCrystallisedAndDatePage(Event6, 0), SampleData.crystallisedDetails)
+        .setOrException(MemberCompiled(Event6, 0), true)
 
       EventSelectionPage.nextPageNormalMode(EmptyWaypoints, ua).route(EmptyWaypoints) mustBe
         ManualOrUploadPage(Event6, 1).route(EmptyWaypoints)
@@ -113,6 +117,7 @@ class EventSelectionPageSpec extends PageBehaviours {
         .setOrException(EventSelectionPage, models.EventSelection.Event7)
         .setOrException(MembersDetailsPage(Event7, 0), SampleData.memberDetails)
         .setOrException(PaymentDatePage(0), SampleData.event7PaymentDate)
+        .setOrException(MemberCompiled(Event7, 0), true)
 
       EventSelectionPage.nextPageNormalMode(EmptyWaypoints, ua).route(EmptyWaypoints) mustBe
         WhatYouWillNeedPage(Event7, 1).route(EmptyWaypoints)
@@ -125,6 +130,7 @@ class EventSelectionPageSpec extends PageBehaviours {
         .setOrException(EventSelectionPage, eventSelection)
         .setOrException(MembersDetailsPage(eventType, 0), SampleData.memberDetails)
         .setOrException(LumpSumAmountAndDatePage(eventType, 0), SampleData.lumpSumDetails)
+        .setOrException(MemberCompiled(eventType, 0), true)
 
       EventSelectionPage.nextPageNormalMode(EmptyWaypoints, ua).route(EmptyWaypoints) mustBe
         WhatYouWillNeedPage(eventType, 1).route(EmptyWaypoints)
@@ -137,6 +143,7 @@ class EventSelectionPageSpec extends PageBehaviours {
         .setOrException(EventSelectionPage, eventSelection)
         .setOrException(MembersDetailsPage(eventType, 0), SampleData.memberDetails)
         .setOrException(TotalPensionAmountsPage(eventType, 0), SampleData.totalPaymentAmountEvent22and23)
+        .setOrException(MemberCompiled(eventType, 0), true)
 
       EventSelectionPage.nextPageNormalMode(EmptyWaypoints, ua).route(EmptyWaypoints) mustBe
         ManualOrUploadPage(eventType, 1).route(EmptyWaypoints)
