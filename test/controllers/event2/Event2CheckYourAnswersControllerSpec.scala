@@ -17,6 +17,7 @@
 package controllers.event2
 
 import base.SpecBase
+import connectors.UserAnswersCacheConnector
 import data.SampleData.{erOverviewSeq, sampleMemberJourneyDataEvent2}
 import models.common.MembersDetails
 import models.enumeration.EventType.Event2
@@ -49,16 +50,18 @@ import scala.concurrent.Future
 
 class Event2CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency with BeforeAndAfterEach {
 
+  import Event2CheckYourAnswersControllerSpec._
   private val mockCompileService = mock[CompileService]
+  private val mockUserCacheConnector = mock[UserAnswersCacheConnector]
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
-    bind[CompileService].toInstance(mockCompileService)
+    bind[CompileService].toInstance(mockCompileService),
+    bind[UserAnswersCacheConnector].toInstance(mockUserCacheConnector)
   )
-
-  import Event2CheckYourAnswersControllerSpec._
 
   override def beforeEach(): Unit = {
     super.beforeEach()
+    when(mockUserCacheConnector.save(any(),any(), any())(any(),any(), any())).thenReturn(Future.successful())
     reset(mockCompileService)
   }
 

@@ -17,6 +17,7 @@
 package controllers.event3
 
 import base.SpecBase
+import connectors.UserAnswersCacheConnector
 import data.SampleData.{erOverviewSeq, sampleMemberJourneyDataEvent3and4and5}
 import models.common.{MembersDetails, PaymentDetails}
 import models.{MemberSummaryPath, TaxYear, VersionInfo}
@@ -47,17 +48,19 @@ import java.time.LocalDate
 import scala.concurrent.Future
 
 class Event3CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency with BeforeAndAfterEach {
+  import Event3CheckYourAnswersControllerSpec._
 
   private val mockCompileService = mock[CompileService]
+  private val mockUserCacheConnector = mock[UserAnswersCacheConnector]
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
-    bind[CompileService].toInstance(mockCompileService)
+    bind[CompileService].toInstance(mockCompileService),
+    bind[UserAnswersCacheConnector].toInstance(mockUserCacheConnector)
   )
-
-  import Event3CheckYourAnswersControllerSpec._
 
   override def beforeEach(): Unit = {
     super.beforeEach()
+    when(mockUserCacheConnector.save(any(),any(), any())(any(),any(), any())).thenReturn(Future.successful())
     reset(mockCompileService)
   }
 
