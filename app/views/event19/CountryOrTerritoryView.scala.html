@@ -28,6 +28,8 @@
 
 @(form: Form[_], waypoints: Waypoints, options: Seq[InputOption])(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
+@selectDefaultCountry = @{if(form("country").value.isEmpty) true else false}
+
 @layout(pageTitle = title(form, messages("event19.countryOrTerritory.title"))) {
 
     @formHelper(action = controllers.event19.routes.CountryOrTerritoryController.onSubmit(waypoints)) {
@@ -43,7 +45,7 @@
                 id = "country",
                 name = "country",
                 classes = "govuk-!-width-two-thirds",
-                items = Seq(SelectItem(value = Some(""))) ++
+                items = Seq(SelectItem(value = Some(""), selected = selectDefaultCountry)) ++
                 options.map(valueOption =>
                     SelectItem(
                         value = Some(valueOption.value),
@@ -52,8 +54,9 @@
                 ),
                 label = Label(
                 content = Text(messages("event19.countryOrTerritory.change.checkYourAnswersLabel"))
-                )
-            ).withFormField(form("country")))
+                ),
+                attributes = Map("autocomplete" -> "country-name")
+            ).withFormField(form("country")).asAccessibleAutocomplete())
         </div>
 
         @govukButton(

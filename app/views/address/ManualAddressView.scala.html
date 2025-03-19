@@ -18,7 +18,6 @@
 
 @import viewmodels.InputWidth._
 @import models.enumeration.AddressJourneyType
-@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import utils.InputOption
 
@@ -32,6 +31,8 @@
 )
 
 @(form: Form[_], waypoints: Waypoints, addressJourneyType: AddressJourneyType, pageTitle: String, pageHeading: String, options: Seq[InputOption], index: Index)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+
+@selectDefaultCountry = @{if(form("country").value.isEmpty) true else false}
 
 @layout(pageTitle = title(form, pageTitle)) {
 
@@ -93,7 +94,7 @@
                 id = "country",
                 name = "country",
                 classes = "govuk-!-width-two-thirds country",
-                items = Seq(SelectItem(value = Some(""))) ++
+                items = Seq(SelectItem(value = Some(""), selected = selectDefaultCountry)) ++
                 options.map(valueOption =>
                     SelectItem(
                         value = Some(valueOption.value),
@@ -102,8 +103,9 @@
                 ),
                 label = Label(
                     content = Text(messages("address.country"))
-                )
-            ).withFormField(form("country")))
+                ),
+                attributes = Map("autocomplete" -> "country-name")
+            ).withFormField(form("country")).asAccessibleAutocomplete())
         </div>
 
         @govukButton(
