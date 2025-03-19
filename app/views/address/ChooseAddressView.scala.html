@@ -28,9 +28,6 @@
 
 @(form: Form[_], waypoints: Waypoints, addressJourneyType: AddressJourneyType, pageTitle: String, pageHeading: String, addresses: Seq[TolerantAddress], index: Index, chosenAddress: Option[TolerantAddress])(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
 
-@{println(chosenAddress.map { _ == addresses(0) })
-println(addresses)}
-
 @layout(pageTitle = title(form, pageTitle)) {
 
     @formHelper(action = routes.ChooseAddressController.onSubmit(waypoints, addressJourneyType, index), Symbol("autoComplete") -> "off") {

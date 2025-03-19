@@ -38,7 +38,7 @@ trait RadiosFluency {
       apply(
         field    = field,
         items    = items,
-        fieldset = FieldsetViewModel(legend),
+        fieldset = FieldsetViewModel(legend)
       )
 
     def apply(
