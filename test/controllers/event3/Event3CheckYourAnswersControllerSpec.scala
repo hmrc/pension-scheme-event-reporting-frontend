@@ -60,7 +60,7 @@ class Event3CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockUserCacheConnector.save(any(),any(), any())(any(),any(), any())).thenReturn(Future.successful())
+    when(mockUserCacheConnector.save(any(),any(), any())(any(),any(), any())).thenReturn(Future.successful(()))
     reset(mockCompileService)
   }
 
@@ -190,7 +190,7 @@ class Event3CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
 
     "must redirect to the correct page onClick if all answers are present" in {
       when(mockCompileService.compileEvent(any(), any(), any(), any())(any(), any()))
-        .thenReturn(Future.successful())
+        .thenReturn(Future.successful(()))
 
       val event3Answers = emptyUserAnswers.set(MembersDetailsPage(Event3, 0), MembersDetails("Jane", "Doe", "AB123456D")).get
         .set(ReasonForBenefitsPage(0), ReasonForBenefits.IllHealth).get
@@ -210,7 +210,7 @@ class Event3CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
     }
     "must redirect to the correct page onClick if an answer is missing" in {
       when(mockCompileService.compileEvent(any(), any(), any(), any())(any(), any()))
-        .thenReturn(Future.successful())
+        .thenReturn(Future.successful(()))
 
       val event3Answers = emptyUserAnswers.set(MembersDetailsPage(Event3, 0), MembersDetails("Jane", "Doe", "AB123456D")).get
         .set(PaymentDetailsPage(Event3, 0), PaymentDetails(BigDecimal(123), LocalDate.of(2024, 2, 24))).get

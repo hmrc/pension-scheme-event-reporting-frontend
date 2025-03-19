@@ -37,7 +37,7 @@ class BulkUploadSpec[VALIDATOR <: Validator](taxYear: Int = 2022)(implicit ct: C
   def validate(data: String)(implicit messages: Messages): ((FastJsonAccumulator, ArrayBuffer[ValidationError]), Int) = {
     val inputStream = new ByteArrayInputStream(data.getBytes("UTF-8"))
     val result = CSVParser.split(inputStream)(new FastJsonAccumulator() -> new ArrayBuffer[ValidationError]()) { case ((dataAccumulator, errorAccumulator), row, rowNumber) =>
-      validator.validate(rowNumber, row, dataAccumulator, errorAccumulator, taxYear)
+      validator.validate(rowNumber, row.toIndexedSeq, dataAccumulator, errorAccumulator, taxYear)
     }
     Await.result(result, 5.seconds)
   }

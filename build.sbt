@@ -54,7 +54,7 @@ lazy val root = (project in file("."))
     scalacOptions ++= Seq(
       "-feature",
       "-deprecation",
-      "-quickfix:any",
+      "-rootdir",
       baseDirectory.value.getCanonicalPath,
       "-Wconf:src=target/.*:s",
       "-Wconf:src=routes/.*:s",

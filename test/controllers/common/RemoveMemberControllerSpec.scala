@@ -159,10 +159,10 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach {
     }
 
     "must save the answer and redirect to the next page when valid data is submitted  for event 1" in {
-      when(mockEventReportingConnector.deleteMember(any(), any(), any(), any())(any(), any())).thenReturn(Future.successful())
+      when(mockEventReportingConnector.deleteMember(any(), any(), any(), any())(any(), any())).thenReturn(Future.successful(()))
 
       when(mockCompileService.deleteMember(any(), any(), any(), any(), any())(any(), any()))
-        .thenReturn(Future.successful())
+        .thenReturn(Future.successful(()))
 
       val application = applicationBuilder(userAnswers = Some(sampleMemberJourneyDataEvent1), extraModules).build()
       running(application) {
@@ -176,10 +176,10 @@ class RemoveMemberControllerSpec extends SpecBase with BeforeAndAfterEach {
     }
 
     "must save the answer and redirect to the next page when valid data is submitted in an event that isn't event 1" in {
-      when(mockEventReportingConnector.deleteMember(any(), any(), any(), any())(any(), any())).thenReturn(Future.successful())
+      when(mockEventReportingConnector.deleteMember(any(), any(), any(), any())(any(), any())).thenReturn(Future.successful(()))
 
       when(mockCompileService.deleteMember(any(), any(), any(), any(), any())(any(), any()))
-        .thenReturn(Future.successful())
+        .thenReturn(Future.successful(()))
 
       val application = applicationBuilder(userAnswers = Some(sampleMemberJourneyDataEvent3and4and5(Event5)), extraModules).build()
       running(application) {
