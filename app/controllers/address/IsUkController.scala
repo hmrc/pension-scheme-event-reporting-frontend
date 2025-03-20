@@ -57,7 +57,7 @@ class IsUkController @Inject()(val controllerComponents: MessagesControllerCompo
     }
 
   private def getName(addressJourneyType: AddressJourneyType, index: Index, request: DataRequest[AnyContent]) =
-    if(addressJourneyType.nodeName == "employerResidentialAddress") {
+    if(addressJourneyType.nodeName == "employerResidentialAddress" || addressJourneyType.nodeName == "memberResidentialAddress") {
       messagesApi.preferred(request)("entityType.theResidentialProperty")
     } else {
       retrieveNameManual(request, index)
