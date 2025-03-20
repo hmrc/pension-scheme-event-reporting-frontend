@@ -50,7 +50,7 @@ class WhatYouWillNeedControllerSpec extends SpecBase {
         val view = application.injector.instanceOf[WhatYouWillNeedView]
 
         status(result) mustEqual OK
-        contentAsString(result).removeAllNonces()mustEqual
+        contentAsString(result).removeAllNonces() mustEqual
           view(eventType, controllers.common.routes.MembersDetailsController.onPageLoad(waypoints, eventType,
             0, memberPageNo = 0).url)(request, messages(application)).toString
       }
