@@ -22,6 +22,7 @@ import forms.address.ManualAddressFormProvider
 import models.Index
 import models.address.{Address, TolerantAddress}
 import models.enumeration.AddressJourneyType
+import models.requests.DataRequest
 import pages.Waypoints
 import pages.address.{EnterPostcodePage, ManualAddressPage, UserEnteredAddressPage}
 import play.api.data.Form
@@ -45,9 +46,16 @@ class ManualAddressController @Inject()(val controllerComponents: MessagesContro
                                         val countryOptions: CountryOptions
                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
+  private def getName(addressJourneyType: AddressJourneyType, index: Index, request: DataRequest[AnyContent]) =
+    if(addressJourneyType.nodeName == "employerResidentialAddress" || addressJourneyType.nodeName == "memberResidentialAddress") {
+      messagesApi.preferred(request)("entityType.theResidentialProperty")
+    } else {
+      retrieveNameManual(request, index)
+    }
+
   def onPageLoad(waypoints: Waypoints, addressJourneyType: AddressJourneyType, index: Index, isUk: Boolean): Action[AnyContent] =
     (identify andThen getData(addressJourneyType.eventType) andThen requireData) { implicit request =>
-      val form: Form[Address] = formProvider(retrieveNameManual(request, index))
+      val form: Form[Address] = formProvider(getName(addressJourneyType, index, request))
       val manualPage = ManualAddressPage(addressJourneyType, index, isUk)
       val postCode = request.userAnswers.get(EnterPostcodePage(addressJourneyType, index))
       val address = request.userAnswers.get(UserEnteredAddressPage(addressJourneyType, index))
@@ -75,7 +83,7 @@ class ManualAddressController @Inject()(val controllerComponents: MessagesContro
   def onSubmit(waypoints: Waypoints, addressJourneyType: AddressJourneyType, index: Index, isUk: Boolean): Action[AnyContent] =
     (identify andThen getData(addressJourneyType.eventType) andThen requireData).async {
       implicit request =>
-        val form: Form[Address] = formProvider(retrieveNameManual(request, index))
+        val form: Form[Address] = formProvider(getName(addressJourneyType, index, request))
         val page = ManualAddressPage(addressJourneyType, index, isUk)
         form.bindFromRequest().fold(
           formWithErrors => {
