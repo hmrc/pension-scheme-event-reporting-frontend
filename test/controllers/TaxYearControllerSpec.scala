@@ -98,7 +98,7 @@ class TaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with Mockit
 
   private val eventReportingUrl = "/manage-pension-scheme-event-report/87219363YN/event-reporting"
   override def beforeEach(): Unit = {
-    super.beforeEach
+    super.beforeEach()
     reset(mockUserAnswersCacheConnector)
   }
 

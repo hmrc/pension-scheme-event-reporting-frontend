@@ -14,44 +14,47 @@
  * limitations under the License.
  */
 
-package controllers.event14
+package controllers.address
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector
-import forms.event14.HowManySchemeMembersFormProvider
-import models.event14.HowManySchemeMembers
-import models.{TaxYear, UserAnswers}
+import forms.event1.IsUkFormProvider
+import models.UserAnswers
+import models.enumeration.AddressJourneyType.Event1EmployerAddressJourney
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.event14.HowManySchemeMembersPage
-import pages.{EmptyWaypoints, TaxYearPage}
+import org.scalatestplus.mockito.MockitoSugar
+import pages.EmptyWaypoints
+import pages.address.IsUkPage
+import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.event14.HowManySchemeMembersView
+import views.html.event1.IsUkVIew
 
 import scala.concurrent.Future
 
-class HowManySchemeMembersControllerSpec extends SpecBase with BeforeAndAfterEach {
+class IsUkControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
   private val waypoints = EmptyWaypoints
 
-  private val mockTaxYear = mock[TaxYear]
-  private val taxYearRange = "2022 to 2023"
-  private val formProvider = new HowManySchemeMembersFormProvider()
-  private val form = formProvider(messages("howManySchemeMembers.error.required", taxYearRange))
+  private val formProvider = new IsUkFormProvider()
+  private val name = "the entry"
+  private val form = formProvider(name)
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def getRoute: String = routes.HowManySchemeMembersController.onPageLoad(waypoints).url
-  private def postRoute: String = routes.HowManySchemeMembersController.onSubmit(waypoints).url
+  private val addressJourneyType = Event1EmployerAddressJourney
+  private def getRoute: String = controllers.address.routes.IsUkController.onPageLoad(waypoints, addressJourneyType, 0).url
+
+  private def postRoute: String = controllers.address.routes.IsUkController.onSubmit(waypoints, addressJourneyType, 0).url
+
+  def getView(application: Application) = application.injector.instanceOf[IsUkVIew]
 
   private val extraModules: Seq[GuiceableModule] = Seq[GuiceableModule](
-    bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector),
-    bind[TaxYear].toInstance(mockTaxYear)
+    bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector)
   )
 
   override def beforeEach(): Unit = {
@@ -59,41 +62,39 @@ class HowManySchemeMembersControllerSpec extends SpecBase with BeforeAndAfterEac
     reset(mockUserAnswersCacheConnector)
   }
 
-  "HowManySchemeMembers Controller" - {
+  "IsUkController" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[HowManySchemeMembersView]
+        val view = getView(application)
 
         status(result) mustEqual OK
-        contentAsString(result).removeAllNonces()mustEqual view(form, waypoints, taxYearRange)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(form, addressJourneyType, waypoints, 0, name)(request, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers()
-        .set(HowManySchemeMembersPage, HowManySchemeMembers.values.head).success.value
-        .set(TaxYearPage, TaxYear("2022")).success.value
+      val userAnswers = UserAnswers().set(IsUkPage(addressJourneyType, 0), true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, getRoute)
 
-        val view = application.injector.instanceOf[HowManySchemeMembersView]
+        val view = getView(application)
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result).removeAllNonces()mustEqual view(form.fill(HowManySchemeMembers.values.head), waypoints, taxYearRange)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces()mustEqual view(form.fill(true), addressJourneyType, waypoints, 0, name)(request, messages(application)).toString
       }
     }
 
@@ -102,39 +103,42 @@ class HowManySchemeMembersControllerSpec extends SpecBase with BeforeAndAfterEac
         .thenReturn(Future.successful(()))
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
+        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
           .build()
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", HowManySchemeMembers.values.head.toString))
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
-        val updatedAnswers = emptyUserAnswers.set(HowManySchemeMembersPage, HowManySchemeMembers.values.head).success.value
+        val updatedAnswers = emptyUserAnswers.set(IsUkPage(addressJourneyType, 0), true).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual HowManySchemeMembersPage.navigate(waypoints, emptyUserAnswers, updatedAnswers).url
+        redirectLocation(result).value mustEqual IsUkPage(addressJourneyType, 0).navigate(waypoints, emptyUserAnswers, updatedAnswers).url
         verify(mockUserAnswersCacheConnector, times(1)).save(any(), any(), any())(any(), any(), any())
       }
     }
 
     "must return bad request when invalid data is submitted" in {
+      when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
+        .thenReturn(Future.successful(()))
+
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules)
+        applicationBuilder(userAnswers = Some(emptyUserAnswers), extraModules)
           .build()
 
       running(application) {
         val request =
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(("value", "invalid"))
 
-        val view = application.injector.instanceOf[HowManySchemeMembersView]
+        val view = getView(application)
         val boundForm = form.bind(Map("value" -> "invalid"))
 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result).removeAllNonces()mustEqual view(boundForm, waypoints, taxYearRange)(request, messages(application)).toString
-        verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any(), any())
+        contentAsString(result).removeAllNonces()mustEqual view(boundForm, addressJourneyType, waypoints, 0, name)(request, messages(application)).toString
+        verify(mockUserAnswersCacheConnector, never).save(any(), any(), any())(any(), any(), any())
       }
     }
   }

@@ -58,7 +58,7 @@ class BecameDateControllerSpec extends SpecBase with BeforeAndAfterEach with Moc
   private val validAnswer = LocalDate.of(2022, 7, 12)
 
   override def beforeEach(): Unit = {
-    super.beforeEach
+    super.beforeEach()
     reset(mockUserAnswersCacheConnector)
   }
 

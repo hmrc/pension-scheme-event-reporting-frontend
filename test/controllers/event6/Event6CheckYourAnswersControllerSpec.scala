@@ -62,7 +62,7 @@ class Event6CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockUserCacheConnector.save(any(),any(), any())(any(),any(), any())).thenReturn(Future.successful())
+    when(mockUserCacheConnector.save(any(),any(), any())(any(),any(), any())).thenReturn(Future.successful(()))
     reset(mockCompileService)
   }
 
@@ -191,7 +191,7 @@ class Event6CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
 
     "must redirect to the correct page onClick if all answers present" in {
       when(mockCompileService.compileEvent(any(), any(), any(), any())(any(), any()))
-        .thenReturn(Future.successful())
+        .thenReturn(Future.successful(()))
 
       val event6Answers = emptyUserAnswers.set(MembersDetailsPage(Event6, 0), MembersDetails("Jane", "Doe", "AB123456B")).get
         .set(TypeOfProtectionPage(Event6, 0), TypeOfProtection.FixedProtection).get
@@ -213,7 +213,7 @@ class Event6CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
 
     "must redirect to the correct page onClick if an answers is missing" in {
       when(mockCompileService.compileEvent(any(), any(), any(), any())(any(), any()))
-        .thenReturn(Future.successful())
+        .thenReturn(Future.successful(()))
 
       val event6Answers = emptyUserAnswers.set(MembersDetailsPage(Event6, 0), MembersDetails("Jane", "Doe", "AB123456B")).get
         .set(InputProtectionTypePage(Event6, 0), "abcdef123").get

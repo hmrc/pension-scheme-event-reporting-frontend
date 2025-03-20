@@ -60,7 +60,7 @@ class TypeOfProtectionGroup1ReferenceControllerSpec extends SpecBase with Before
   val ua: UserAnswers = emptyUserAnswers.setOrException(TypeOfProtectionGroup1Page(0), protectionTypesAnswer)
 
   override def beforeEach(): Unit = {
-    super.beforeEach
+    super.beforeEach()
     reset(mockUserAnswersCacheConnector)
   }
 

@@ -61,7 +61,7 @@ class AmountPaidControllerSpec extends SpecBase with BeforeAndAfterEach {
   private val validValue: BigDecimal = 33.90
 
   override def beforeEach(): Unit = {
-    super.beforeEach
+    super.beforeEach()
     reset(mockUserAnswersCacheConnector)
   }
 

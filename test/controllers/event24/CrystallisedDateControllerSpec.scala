@@ -59,7 +59,7 @@ class CrystallisedDateControllerSpec extends SpecBase with BeforeAndAfterEach {
 
 
   override def beforeEach(): Unit = {
-    super.beforeEach
+    super.beforeEach()
     reset(mockUserAnswersCacheConnector)
   }
 

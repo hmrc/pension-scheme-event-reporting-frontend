@@ -58,7 +58,7 @@ class Event24CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockUserCacheConnector.save(any(),any(), any())(any(),any(), any())).thenReturn(Future.successful())
+    when(mockUserCacheConnector.save(any(),any(), any())(any(),any(), any())).thenReturn(Future.successful(()))
     reset(mockCompileService)
   }
 
@@ -124,7 +124,7 @@ class Event24CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
 
     "must redirect to the correct page onClick if all answers are present" in {
       when(mockCompileService.compileEvent(any(), any(), any(), any())(any(), any()))
-        .thenReturn(Future.successful())
+        .thenReturn(Future.successful(()))
 
       val event24Answers = emptyUserAnswers
         .set(MembersDetailsPage(Event24, 0), MembersDetails("Jane", "Doe", "AB123456A")).get
@@ -154,7 +154,7 @@ class Event24CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
     }
     "must redirect to the correct page onClick if an answers is missing" in {
       when(mockCompileService.compileEvent(any(), any(), any(), any())(any(), any()))
-        .thenReturn(Future.successful())
+        .thenReturn(Future.successful(()))
 
       val event24Answers = emptyUserAnswers
         .set(MembersDetailsPage(Event24, 0), MembersDetails("Jane", "Doe", "AB123456A")).get

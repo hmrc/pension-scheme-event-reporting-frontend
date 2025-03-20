@@ -219,7 +219,7 @@ class Event24Validator @Inject()(
         val refTypesForm = form.bind(Field.seqToMap(fields))
         val selectedProtectionTypes: Array[String] = chargeFields(fieldNoProtectionTypeGroup1).filterNot(_.isWhitespace).split(",")
 
-        val requiredReferenceTypes: Seq[TypeOfProtectionGroup1] = selectedProtectionTypes.map { typeCode => {
+        val requiredReferenceTypes: Seq[TypeOfProtectionGroup1] = selectedProtectionTypes.toIndexedSeq.map { typeCode => {
           typeCode match {
             case "NON-RESIDENCE" => TypeOfProtectionGroup1.NonResidenceEnhancement
             case "CREDITS" => TypeOfProtectionGroup1.PensionCreditsPreCRE
@@ -455,7 +455,7 @@ class Event24Validator @Inject()(
 
     val g = resultFromFormValidationResult[String](
       protectionGroup2ReferenceValidation(index, columns),
-      createCommitItem(index, TypeOfProtectionGroup2ReferencePage.apply(_))
+      createCommitItem(index, TypeOfProtectionGroup2ReferencePage.apply)
     )
 
     val typeOfProtectionGroup1 = validateTypeOfProtectionGroup1(index, columns)

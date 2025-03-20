@@ -64,7 +64,7 @@ class Event8ACheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockUserCacheConnector.save(any(),any(), any())(any(),any(), any())).thenReturn(Future.successful())
+    when(mockUserCacheConnector.save(any(),any(), any())(any(),any(), any())).thenReturn(Future.successful(()))
     reset(mockCompileService)
   }
 
@@ -193,7 +193,7 @@ class Event8ACheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
 
     "must redirect to the correct page onClick if all answers are present" in {
       when(mockCompileService.compileEvent(any(), any(), any(), any())(any(), any()))
-        .thenReturn(Future.successful())
+        .thenReturn(Future.successful(()))
 
       val event8aAnswers = emptyUserAnswers.set(MembersDetailsPage(Event8A, 0), MembersDetails("Jane", "Doe", "AB123456B")).get
         .set(PaymentTypePage(Event8A, 0), PaymentType.PaymentOfAStandAloneLumpSum).get
@@ -216,7 +216,7 @@ class Event8ACheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
 
     "must redirect to the correct page onClick if an answer is missing" in {
       when(mockCompileService.compileEvent(any(), any(), any(), any())(any(), any()))
-        .thenReturn(Future.successful())
+        .thenReturn(Future.successful(()))
 
       val event8aAnswers = emptyUserAnswers.set(MembersDetailsPage(Event8A, 0), MembersDetails("Jane", "Doe", "AB123456B")).get
         .set(PaymentTypePage(Event8A, 0), PaymentType.PaymentOfAStandAloneLumpSum).get

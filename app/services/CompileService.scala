@@ -63,7 +63,7 @@ class CompileService @Inject()(
 
       def delay = appConfig.compileDelayInSeconds match {
         case v if v > 0 =>
-          val p = Promise[Unit]
+          val p = Promise[Unit]()
           actorSystem.scheduler.scheduleOnce(v.seconds)(p.success(()))
           p.future
         case _ => Future.unit
@@ -153,7 +153,7 @@ class CompileService @Inject()(
         case Some(true) => compileWithNewVersionInfo(vi)
         case Some(false) =>
           logger.warn(s"Data not modified for pstr: $pstr, event: ${eventType}, version: $vi")
-          Future.successful()
+          Future.successful(())
         case _ => throw new RuntimeException(s"Data Changed Checks failed for $pstr and $eventType")
       }
 

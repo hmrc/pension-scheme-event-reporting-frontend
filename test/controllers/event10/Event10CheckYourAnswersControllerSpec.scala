@@ -241,7 +241,7 @@ class Event10CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
 
     "must redirect to the correct page onClick when all answers are present" in {
       when(mockCompileService.compileEvent(any(), any(), any(), any())(any(), any()))
-        .thenReturn(Future.successful())
+        .thenReturn(Future.successful(()))
 
       val event10Answers = emptyUserAnswers.set(BecomeOrCeaseSchemePage, ItBecameAnInvestmentRegulatedPensionScheme).get
         .set(SchemeChangeDatePage, SchemeChangeDate(LocalDate.of(2024,4,4))).get
@@ -262,7 +262,7 @@ class Event10CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
 
     "must redirect to the correct page onClick when an answer is missing" in {
       when(mockCompileService.compileEvent(any(), any(), any(), any())(any(), any()))
-        .thenReturn(Future.successful())
+        .thenReturn(Future.successful(()))
 
       val event10Answers = emptyUserAnswers.set(BecomeOrCeaseSchemePage, ItBecameAnInvestmentRegulatedPensionScheme).get
         .set(ContractsOrPoliciesPage, true).get

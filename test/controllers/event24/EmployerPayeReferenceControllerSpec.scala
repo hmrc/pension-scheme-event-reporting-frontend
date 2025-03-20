@@ -53,7 +53,7 @@ class EmployerPayeReferenceControllerSpec extends SpecBase with BeforeAndAfterEa
   private val validValue = "123/AB456"
 
   override def beforeEach(): Unit = {
-    super.beforeEach
+    super.beforeEach()
     reset(mockUserAnswersCacheConnector)
   }
 

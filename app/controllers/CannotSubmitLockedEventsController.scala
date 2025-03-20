@@ -55,6 +55,7 @@ class CannotSubmitLockedEventsController @Inject()(
               Redirect(controllers.routes.WantToSubmitController.onPageLoad(waypoints))
             }
           }
+      case _ => throw new RuntimeException("Either tax year or version info is missing.")
     }
   }
 }

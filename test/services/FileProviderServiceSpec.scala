@@ -28,7 +28,7 @@ import java.io.File
 //noinspection ScalaStyle
 class FileProviderServiceSpec extends SpecBase with MockitoSugar {
 
-  private val environment: Environment = injector.instanceOf[Environment]
+  private val environment: Environment = injector().instanceOf[Environment]
   private val fileProviderService = new FileProviderService(environment)
 
   private val instructionsFileToCheckEvent1 = new File("./conf/fileDownload/instructions/instructions-event-1-unauthorised-payments.ods")

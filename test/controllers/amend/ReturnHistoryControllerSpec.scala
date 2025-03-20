@@ -78,7 +78,7 @@ class ReturnHistoryControllerSpec extends SpecBase with BeforeAndAfterEach {
     "must redirect to the correct page and save correct version in mongodb onClick " in {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
 
-      when(mockUACacheConnector.save(any(), any())(any(), any(), any())).thenReturn(Future.successful())
+      when(mockUACacheConnector.save(any(), any())(any(), any(), any())).thenReturn(Future.successful(()))
 
       when(mockErConnector.getListOfVersions(ArgumentMatchers.eq("87219363YN"), ArgumentMatchers.eq("2022-04-06"))(any(), any()))
         .thenReturn(Future.successful(Seq(versionsWithSubmitter, versionsWithCompiler)))

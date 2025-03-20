@@ -53,7 +53,7 @@ class SchemeStructureDescriptionControllerSpec extends SpecBase with BeforeAndAf
   private val validValue = "abc"
 
   override def beforeEach(): Unit = {
-    super.beforeEach
+    super.beforeEach()
     reset(mockUserAnswersCacheConnector)
   }
 

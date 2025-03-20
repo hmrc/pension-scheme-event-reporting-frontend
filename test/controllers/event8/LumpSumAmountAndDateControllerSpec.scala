@@ -67,7 +67,7 @@ class LumpSumAmountAndDateControllerSpec extends SpecBase with BeforeAndAfterEac
   import LumpSumAmountAndDateControllerSpec._
 
   override def beforeEach(): Unit = {
-    super.beforeEach
+    super.beforeEach()
     reset(mockUserAnswersCacheConnector)
   }
 

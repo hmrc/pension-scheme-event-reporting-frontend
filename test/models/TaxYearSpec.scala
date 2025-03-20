@@ -30,7 +30,7 @@ import java.time.LocalDate
 class TaxYearSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues with BeforeAndAfterEach {
 
   override def beforeEach(): Unit = {
-    super.beforeEach
+    super.beforeEach()
     DateHelper.setDate(Some(LocalDate.of(2024, 6, 1)))
   }
 

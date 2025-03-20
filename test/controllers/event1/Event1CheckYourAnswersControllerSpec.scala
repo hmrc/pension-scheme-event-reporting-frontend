@@ -63,7 +63,7 @@ class Event1CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockUserCacheConnector.save(any(),any(), any())(any(),any(), any())).thenReturn(Future.successful())
+    when(mockUserCacheConnector.save(any(),any(), any())(any(),any(), any())).thenReturn(Future.successful(()))
     reset(mockCompileService)
   }
 
@@ -263,7 +263,7 @@ class Event1CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
 
     "must redirect to the correct page onClick if all expected answers are present" in {
       when(mockCompileService.compileEvent(any(), any(), any(), any())(any(), any()))
-        .thenReturn(Future.successful())
+        .thenReturn(Future.successful(()))
 
       val event1Answers = emptyUserAnswers.set(WhoReceivedUnauthPaymentPage(0), WhoReceivedUnauthPayment.Member).get
         .set(MembersDetailsPage(Event1, 0), MembersDetails("Jane", "Doe", "AB 123456 A")).get
@@ -286,7 +286,7 @@ class Event1CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlue
     }
     "must redirect to the correct page onClick if an answer is missing" in {
       when(mockCompileService.compileEvent(any(), any(), any(), any())(any(), any()))
-        .thenReturn(Future.successful())
+        .thenReturn(Future.successful(()))
 
       val userAnswersWithVersionInfo = emptyUserAnswers.setOrException(VersionInfoPage, VersionInfo(1, Compiled))
       val application = applicationBuilder(userAnswers = Some(userAnswersWithVersionInfo), extraModules).build()

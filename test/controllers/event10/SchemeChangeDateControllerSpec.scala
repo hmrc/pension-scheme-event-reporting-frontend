@@ -61,7 +61,7 @@ class SchemeChangeDateControllerSpec extends SpecBase with BeforeAndAfterEach wi
   import SchemeChangeDateControllerSpec._
 
   override def beforeEach(): Unit = {
-    super.beforeEach
+    super.beforeEach()
     reset(mockUserAnswersCacheConnector)
   }
 
