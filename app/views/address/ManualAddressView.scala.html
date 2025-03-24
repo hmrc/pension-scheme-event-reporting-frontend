@@ -83,7 +83,7 @@
         @govukInput(
             InputViewModel(
                 field = form("postCode"),
-                label = LabelViewModel("address.postCode")
+                label = LabelViewModel(if(isUk) "address.postCode" else "address.postCode.optional")
             )
             .withWidth(OneQuarter)
             .withAutocomplete("postal-code")
