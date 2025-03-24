@@ -467,6 +467,7 @@ address.addressLine2 = Address Line 2 (optional)
 address.townOrCity = Town or City
 address.county = County (optional)
 address.postCode = Postcode
+address.postCode.optional = Postcode (optional)
 address.country = Country
 
 entityType.theCompany = the company
