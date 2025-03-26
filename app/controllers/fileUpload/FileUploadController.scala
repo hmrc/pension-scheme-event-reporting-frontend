@@ -47,7 +47,7 @@ class FileUploadController @Inject()(val controllerComponents: MessagesControlle
     andThen requireData).async { implicit request =>
     val successRedirectUrl = appConfig.successEndPointTarget(eventType)
     val validateRedirectUrl = appConfig.validateEndPointTarget(eventType)
-    upscanInitiateConnector.initiateV2(Some(successRedirectUrl), Some(validateRedirectUrl), eventType, request.srn).map { uir =>
+    upscanInitiateConnector.initiateV2(Some(successRedirectUrl), Some(validateRedirectUrl), eventType).map { uir =>
       Ok(view(waypoints, getEventTypeByName(eventType), eventType, Call("post", uir.postTarget), uir.formFields, collectErrors()))
     }
   }

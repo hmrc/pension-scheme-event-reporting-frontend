@@ -107,7 +107,7 @@ class UpscanInitiateConnectorSpec
             aResponse.withBody(response1).withStatus(OK)
           )
       )
-      connector.initiateV2(Some(successRedirectUrl), Some(errorRedirectUrl), EventType.Event22, srn)(dataRequest, hc) map { result =>
+      connector.initiateV2(Some(successRedirectUrl), Some(errorRedirectUrl), EventType.Event22)(dataRequest, hc) map { result =>
         verify(mockAuditService, never()).sendEvent(any())(any(), any())
         result.fileReference.reference mustEqual "11370e18-6e24-453e-b45a-76d3e32ea33d"
         result.formFields.get("success_action_redirect") mustEqual Some("https://myservice.com/nextPage")
@@ -128,7 +128,7 @@ class UpscanInitiateConnectorSpec
       )
 
       recoverToExceptionIf[UpstreamErrorResponse] {
-        connector.initiateV2(Some(successRedirectUrl), Some(errorRedirectUrl), EventType.Event22, srn)(dataRequest, hc)
+        connector.initiateV2(Some(successRedirectUrl), Some(errorRedirectUrl), EventType.Event22)(dataRequest, hc)
       } map { ex =>
         verify(mockAuditService, times(1)).sendEvent(captor.capture())(any(), any())
         ex.statusCode mustEqual Status.BAD_REQUEST
