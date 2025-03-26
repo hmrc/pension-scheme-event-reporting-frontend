@@ -33,13 +33,13 @@ class ParsingAndValidationOutcomeCacheConnector @Inject()(config: FrontendAppCon
 
   private val logger = Logger(classOf[ParsingAndValidationOutcomeCacheConnector])
 
-  private val url = url"${config.parsingAndValidationUrl}"
+  private def url(srn: String) = url"${config.parsingAndValidationUrl}/$srn"
 
-  def getOutcome(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[ParsingAndValidationOutcome]] = {
+  def getOutcome(srn: String)(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[ParsingAndValidationOutcome]] = {
 
     val headers: Seq[(String, String)] = Seq(("Content-Type", "application/json"))
 
-    http.get(url).setHeader(headers: _*).execute[HttpResponse]
+    http.get(url(srn)).setHeader(headers: _*).execute[HttpResponse]
       .recoverWith(mapExceptionsToStatus)
       .map { response =>
         response.status match {
@@ -50,10 +50,10 @@ class ParsingAndValidationOutcomeCacheConnector @Inject()(config: FrontendAppCon
       }
   }
 
-  def setOutcome(outcome: ParsingAndValidationOutcome)(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
+  def setOutcome(outcome: ParsingAndValidationOutcome, srn: String)(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
     val headers: Seq[(String, String)] = Seq(("Content-Type", "application/json"))
 
-    http.post(url)
+    http.post(url(srn))
       .withBody(Json.toJson(outcome))
       .setHeader(headers: _*)
       .execute[HttpResponse] andThen {
@@ -61,10 +61,10 @@ class ParsingAndValidationOutcomeCacheConnector @Inject()(config: FrontendAppCon
     } map { _ => () }
   }
 
-  def deleteOutcome(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
+  def deleteOutcome(srn: String)(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
     val headers: Seq[(String, String)] = Seq(("Content-Type", "application/json"))
 
-    http.delete(url).setHeader(headers: _*).execute[HttpResponse] andThen {
+    http.delete(url(srn)).setHeader(headers: _*).execute[HttpResponse] andThen {
       case Failure(t: Throwable) => logger.warn("Unable to delete parsing and validation outcome", t)
     } map { _ => () }
   }

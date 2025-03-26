@@ -115,7 +115,7 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
             if (value == FileUploadResult.Yes) {
               parsingAndValidationOutcomeCacheConnector
-                .deleteOutcome
+                .deleteOutcome(request.srn)
                 .flatMap(_ => asyncGetUpscanFileAndParse(eventType))
               redirectResultPage
             } else {
@@ -143,7 +143,7 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
       logger.error(errorMessage, e)
     }
     parsingAndValidationOutcomeCacheConnector.setOutcome(
-      ParsingAndValidationOutcome(status = GeneralError, fileName = fileName)
+      ParsingAndValidationOutcome(status = GeneralError, fileName = fileName), request.srn
     )
   }
 
@@ -196,7 +196,7 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
       compileEventResponse.flatMap { outcome =>
         val endTime = System.currentTimeMillis
         sendValidationAuditEvent(pstr = request.pstr, eventType = eventType, numberOfEntries = rowNumber - 1, fileValidationTimeInSeconds = (endTime - startTime) / 1000, parserResult = Invalid(errorAccumulator.toSeq))
-        parsingAndValidationOutcomeCacheConnector.setOutcome(outcome)
+        parsingAndValidationOutcomeCacheConnector.setOutcome(outcome, request.srn)
       }
     }
   }

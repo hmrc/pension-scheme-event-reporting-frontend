@@ -43,7 +43,7 @@ class ProcessingRequestController @Inject()(
 
   def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = identify.async {
     implicit request =>
-      parsingAndValidationOutcomeCacheConnector.getOutcome.flatMap {
+      parsingAndValidationOutcomeCacheConnector.getOutcome(request.srn).flatMap {
         case Some(ParsingAndValidationOutcome(Success, _, _)) =>
           Future.successful(Redirect(controllers.fileUpload.routes.FileUploadSuccessController.onPageLoad(waypoints, eventType)))
         case Some(ParsingAndValidationOutcome(IncorrectHeadersOrEmptyFile, _, _)) =>
@@ -62,7 +62,7 @@ class ProcessingRequestController @Inject()(
 
   def onPageLoadStatus(): Action[AnyContent] = identify.async {
     implicit request =>
-      val outcomes = parsingAndValidationOutcomeCacheConnector.getOutcome.flatMap {
+      val outcomes = parsingAndValidationOutcomeCacheConnector.getOutcome(request.srn).flatMap {
         case Some(ParsingAndValidationOutcome(Success, _, _)) =>
           Future.successful(Json.obj("status" -> "processed"))
         case Some(ParsingAndValidationOutcome(IncorrectHeadersOrEmptyFile, _, _)) =>

@@ -58,8 +58,9 @@ class UpscanInitiateConnectorSpec
   val mockAuditService: AuditService = mock[AuditService]
 
   private lazy val connector: UpscanInitiateConnector = app.injector.instanceOf[UpscanInitiateConnector]
+  val srn = "srn"
   private implicit val dataRequest: DataRequest[AnyContent] =
-    DataRequest("Pstr123", "SchemeABC", "returnUrl", FakeRequest(GET, "/"), LoggedInUser("user", Administrator, "psaId"), UserAnswers(), "srn")
+    DataRequest("Pstr123", "SchemeABC", "returnUrl", FakeRequest(GET, "/"), LoggedInUser("user", Administrator, "psaId"), UserAnswers(), srn)
 
   private val url = "/upscan/v2/initiate"
 

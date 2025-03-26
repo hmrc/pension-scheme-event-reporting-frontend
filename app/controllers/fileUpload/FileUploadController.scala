@@ -16,11 +16,9 @@
 
 package controllers.fileUpload
 
-import audit.AuditService
 import config.FrontendAppConfig
-import connectors.{EventReportingConnector, UpscanInitiateConnector}
+import connectors.UpscanInitiateConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import forms.fileUpload.FileUploadResultFormProvider
 import models.enumeration.EventType
 import models.enumeration.EventType.getEventTypeByName
 import models.requests.DataRequest
@@ -30,7 +28,7 @@ import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.errormessage.ErrorMessage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.fileUpload.{FileUploadResultView, FileUploadView}
+import views.html.fileUpload.FileUploadView
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -40,13 +38,9 @@ class FileUploadController @Inject()(val controllerComponents: MessagesControlle
                                      identify: IdentifierAction,
                                      getData: DataRetrievalAction,
                                      requireData: DataRequiredAction,
-                                     eventReportingConnector: EventReportingConnector,
                                      upscanInitiateConnector: UpscanInitiateConnector,
-                                     formProvider: FileUploadResultFormProvider,
                                      appConfig: FrontendAppConfig,
-                                     view: FileUploadView,
-                                     resultView: FileUploadResultView,
-                                     auditService: AuditService
+                                     view: FileUploadView
                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(waypoints: Waypoints, eventType: EventType): Action[AnyContent] = (identify andThen getData(eventType)
