@@ -82,13 +82,13 @@ class UpscanInitiateConnector @Inject()(httpClientV2: HttpClientV2, appConfig: F
   )
   private val logger = Logger(classOf[UpscanInitiateConnector])
 
-  def initiateV2(redirectOnSuccess: Option[String], redirectOnError: Option[String], eventType: EventType)
+  def initiateV2(redirectOnSuccess: Option[String], redirectOnError: Option[String], eventType: EventType, srn: String)
                 (implicit request: DataRequest[AnyContent], headerCarrier: HeaderCarrier): Future[UpscanInitiateResponse] = {
 
-    val upscanCallbackURL = s"${appConfig.eventReportingUrl}/pension-scheme-event-reporting/file-upload-response/save"
-    logger.info(s"Upscan initiation: callback URL is $upscanCallbackURL")
+    def upscanCallbackURL(srn: String) = s"${appConfig.eventReportingUrl}/pension-scheme-event-reporting/file-upload-response/save/$srn"
+    logger.info(s"Upscan initiation: callback URL is ${upscanCallbackURL(srn)}")
     val req = UpscanInitiateRequestV2(
-      callbackUrl = upscanCallbackURL,
+      callbackUrl = upscanCallbackURL(srn),
       successRedirect = redirectOnSuccess,
       errorRedirect = redirectOnError,
       minimumFileSize = Some(1),
