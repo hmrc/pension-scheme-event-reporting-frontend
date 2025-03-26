@@ -48,7 +48,7 @@ class FileUploadSuccessController @Inject()(
         case Event1 => controllers.event1.routes.UnauthPaymentSummaryController.onPageLoad(waypoints).url
         case _ => controllers.common.routes.MembersSummaryController.onPageLoad(waypoints, MemberSummaryPath(eventType)).url
       }
-      parsingAndValidationOutcomeCacheConnector.getOutcome.map {
+      parsingAndValidationOutcomeCacheConnector.getOutcome(request.srn).map {
         case Some(ParsingAndValidationOutcome(Success, _, fileName)) =>
           Ok(view(continueUrl, fileName.getOrElse("Your file")))
         case _ => NotFound

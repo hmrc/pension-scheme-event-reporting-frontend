@@ -70,7 +70,7 @@ class ValidationErrorsSummaryControllerSpec extends SpecBase with BeforeAndAfter
   private def testReturnOkAndCorrectView(eventType: EventType): Unit = {
     s"must return OK and the correct view for a GET (Event ${eventType.toString})" in {
 
-      when(mockParsingAndValidationOutcomeCacheConnector.getOutcome(any(), any())).thenReturn(Future.successful(Some(expectedOutcome)))
+      when(mockParsingAndValidationOutcomeCacheConnector.getOutcome(any())(any(), any())).thenReturn(Future.successful(Some(expectedOutcome)))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
 

@@ -66,7 +66,7 @@ class ProcessingRequestControllerSpec extends SpecBase with BeforeAndAfterEach {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
 
       val testFile = "test-file.csv"
-      when(mockParsingAndValidationOutcomeCacheConnector.getOutcome(any(), any()))
+      when(mockParsingAndValidationOutcomeCacheConnector.getOutcome(any())(any(), any()))
         .thenReturn(Future.successful(Some(ParsingAndValidationOutcome(status = ParsingAndValidationOutcomeStatus.Success, fileName = Some(testFile)))))
 
       val request = FakeRequest(GET, routes.ProcessingRequestController.onPageLoad(waypoints, eventType).url)
@@ -75,7 +75,7 @@ class ProcessingRequestControllerSpec extends SpecBase with BeforeAndAfterEach {
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual routes.FileUploadSuccessController.onPageLoad(waypoints, eventType).url
-      verify(mockParsingAndValidationOutcomeCacheConnector, times(1)).getOutcome(any(), any())
+      verify(mockParsingAndValidationOutcomeCacheConnector, times(1)).getOutcome(any())(any(), any())
 
       Await.result(application.stop(), 10.seconds)
     }
@@ -87,7 +87,7 @@ class ProcessingRequestControllerSpec extends SpecBase with BeforeAndAfterEach {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
 
       val testFile = "test-file.csv"
-      when(mockParsingAndValidationOutcomeCacheConnector.getOutcome(any(), any()))
+      when(mockParsingAndValidationOutcomeCacheConnector.getOutcome(any())(any(), any()))
         .thenReturn(Future.successful(Some(ParsingAndValidationOutcome(status = ParsingAndValidationOutcomeStatus.GeneralError, fileName = Some(testFile)))))
 
       val request = FakeRequest(GET, routes.ProcessingRequestController.onPageLoad(waypoints, eventType).url)
@@ -96,7 +96,7 @@ class ProcessingRequestControllerSpec extends SpecBase with BeforeAndAfterEach {
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual routes.ProblemWithServiceController.onPageLoad(waypoints, eventType).url
-      verify(mockParsingAndValidationOutcomeCacheConnector, times(1)).getOutcome(any(), any())
+      verify(mockParsingAndValidationOutcomeCacheConnector, times(1)).getOutcome(any())(any(), any())
 
       Await.result(application.stop(), 10.seconds)
     }
@@ -108,7 +108,7 @@ class ProcessingRequestControllerSpec extends SpecBase with BeforeAndAfterEach {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
 
       val testFile = "test-file.csv"
-      when(mockParsingAndValidationOutcomeCacheConnector.getOutcome(any(), any()))
+      when(mockParsingAndValidationOutcomeCacheConnector.getOutcome(any())(any(), any()))
         .thenReturn(Future.successful(Some(ParsingAndValidationOutcome(status = ParsingAndValidationOutcomeStatus.ValidationErrorsLessThan10, fileName = Some(testFile)))))
 
       val request = FakeRequest(GET, routes.ProcessingRequestController.onPageLoad(waypoints, eventType).url)
@@ -117,7 +117,7 @@ class ProcessingRequestControllerSpec extends SpecBase with BeforeAndAfterEach {
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual routes.ValidationErrorsAllController.onPageLoad(waypoints, eventType).url
-      verify(mockParsingAndValidationOutcomeCacheConnector, times(1)).getOutcome(any(), any())
+      verify(mockParsingAndValidationOutcomeCacheConnector, times(1)).getOutcome(any())(any(), any())
 
       Await.result(application.stop(), 10.seconds)
     }
@@ -129,7 +129,7 @@ class ProcessingRequestControllerSpec extends SpecBase with BeforeAndAfterEach {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
 
       val testFile = "test-file.csv"
-      when(mockParsingAndValidationOutcomeCacheConnector.getOutcome(any(), any()))
+      when(mockParsingAndValidationOutcomeCacheConnector.getOutcome(any())(any(), any()))
         .thenReturn(Future.successful(Some(ParsingAndValidationOutcome(status = ParsingAndValidationOutcomeStatus.ValidationErrorsMoreThanOrEqual10, fileName = Some(testFile)))))
 
       val request = FakeRequest(GET, routes.ProcessingRequestController.onPageLoad(waypoints, eventType).url)
@@ -138,7 +138,7 @@ class ProcessingRequestControllerSpec extends SpecBase with BeforeAndAfterEach {
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual routes.ValidationErrorsSummaryController.onPageLoad(waypoints, eventType).url
-      verify(mockParsingAndValidationOutcomeCacheConnector, times(1)).getOutcome(any(), any())
+      verify(mockParsingAndValidationOutcomeCacheConnector, times(1)).getOutcome(any())(any(), any())
 
       Await.result(application.stop(), 10.seconds)
     }
@@ -149,7 +149,7 @@ class ProcessingRequestControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
 
-      when(mockParsingAndValidationOutcomeCacheConnector.getOutcome(any(), any()))
+      when(mockParsingAndValidationOutcomeCacheConnector.getOutcome(any())(any(), any()))
         .thenReturn(Future.successful(Some(ParsingAndValidationOutcome(status = ParsingAndValidationOutcomeStatus.IncorrectHeadersOrEmptyFile, fileName = None))))
 
       val request = FakeRequest(GET, routes.ProcessingRequestController.onPageLoad(waypoints, eventType).url)
@@ -157,7 +157,7 @@ class ProcessingRequestControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result).value mustEqual routes.InvalidHeadersOrEmptyFileController.onPageLoad(waypoints, eventType).url
-      verify(mockParsingAndValidationOutcomeCacheConnector, times(1)).getOutcome(any(), any())
+      verify(mockParsingAndValidationOutcomeCacheConnector, times(1)).getOutcome(any())(any(), any())
 
       Await.result(application.stop(), 10.seconds)
     }
@@ -168,14 +168,14 @@ class ProcessingRequestControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
 
-      when(mockParsingAndValidationOutcomeCacheConnector.getOutcome(any(), any()))
+      when(mockParsingAndValidationOutcomeCacheConnector.getOutcome(any())(any(), any()))
         .thenReturn(Future.successful(None))
 
       val request = FakeRequest(GET, routes.ProcessingRequestController.onPageLoad(waypoints, eventType).url)
       val result = route(application, request).value
 
       status(result) mustEqual OK
-      verify(mockParsingAndValidationOutcomeCacheConnector, times(1)).getOutcome(any(), any())
+      verify(mockParsingAndValidationOutcomeCacheConnector, times(1)).getOutcome(any())(any(), any())
 
       Await.result(application.stop(), 10.seconds)
     }

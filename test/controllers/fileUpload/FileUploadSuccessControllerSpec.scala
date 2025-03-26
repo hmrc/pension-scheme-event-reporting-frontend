@@ -67,7 +67,7 @@ class FileUploadSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
   private def testReturnOkAndCorrectView(eventType: EventType): Unit = {
     s"must return OK and the correct view for a GET (Event ${eventType.toString})" in {
 
-      when(mockParsingAndValidationOutcomeCacheConnector.getOutcome(any(), any()))
+      when(mockParsingAndValidationOutcomeCacheConnector.getOutcome(any())(any(), any()))
         .thenReturn(Future.successful(Some(expectedOutcome)))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()

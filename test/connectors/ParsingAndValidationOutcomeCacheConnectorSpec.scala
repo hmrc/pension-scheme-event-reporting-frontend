@@ -32,7 +32,8 @@ class ParsingAndValidationOutcomeCacheConnectorSpec extends AsyncWordSpec with M
   override protected def portConfigKey: String = "microservice.services.pension-scheme-event-reporting.port"
 
   private lazy val connector: ParsingAndValidationOutcomeCacheConnector = injector.instanceOf[ParsingAndValidationOutcomeCacheConnector]
-  private val url = "/pension-scheme-event-reporting/parsing-and-validation-outcome"
+  private val srn = "srn"
+  private val url = s"/pension-scheme-event-reporting/parsing-and-validation-outcome/$srn"
 
   private val successOutcome = ParsingAndValidationOutcome(Success, fileName = Some("test"))
 
@@ -46,7 +47,7 @@ class ParsingAndValidationOutcomeCacheConnectorSpec extends AsyncWordSpec with M
           )
       )
 
-      connector.getOutcome map {
+      connector.getOutcome(srn) map {
         result =>
           result mustNot be(defined)
       }
@@ -60,7 +61,7 @@ class ParsingAndValidationOutcomeCacheConnectorSpec extends AsyncWordSpec with M
           )
       )
 
-      connector.getOutcome map {
+      connector.getOutcome(srn) map {
         result =>
           result.value mustEqual successOutcome
       }
@@ -74,7 +75,7 @@ class ParsingAndValidationOutcomeCacheConnectorSpec extends AsyncWordSpec with M
           )
       )
 
-      connector.getOutcome.map { result =>
+      connector.getOutcome(srn).map { result =>
         result mustNot be(defined)
       }
     }
@@ -87,7 +88,7 @@ class ParsingAndValidationOutcomeCacheConnectorSpec extends AsyncWordSpec with M
           )
       )
 
-      connector.getOutcome.map { result =>
+      connector.getOutcome(srn).map { result =>
         result mustNot be(defined)
       }
     }
@@ -105,7 +106,7 @@ class ParsingAndValidationOutcomeCacheConnectorSpec extends AsyncWordSpec with M
           )
       )
 
-      connector.setOutcome(successOutcome) map {
+      connector.setOutcome(successOutcome, srn) map {
         _ mustEqual(():Unit)
       }
     }
@@ -121,7 +122,7 @@ class ParsingAndValidationOutcomeCacheConnectorSpec extends AsyncWordSpec with M
           )
       )
 
-      connector.setOutcome(successOutcome).map {
+      connector.setOutcome(successOutcome, srn).map {
         _ mustEqual((): Unit)
       }
     }
@@ -132,7 +133,7 @@ class ParsingAndValidationOutcomeCacheConnectorSpec extends AsyncWordSpec with M
       server.stubFor(delete(urlEqualTo(url)).
         willReturn(ok)
       )
-      connector.deleteOutcome.map {
+      connector.deleteOutcome(srn).map {
         _ mustEqual(():Unit)
       }
     }
@@ -145,7 +146,7 @@ class ParsingAndValidationOutcomeCacheConnectorSpec extends AsyncWordSpec with M
           )
       )
 
-      connector.deleteOutcome.map {
+      connector.deleteOutcome(srn).map {
         _ mustEqual((): Unit)
       }
     }
