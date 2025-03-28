@@ -17,10 +17,14 @@
 package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
-import models.PsaSchemeDetails
+import models.enumeration.AdministratorOrPractitioner.{Administrator, Practitioner}
+import models.{LoggedInUser, PsaSchemeDetails}
+import models.requests.OptionalDataRequest
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AsyncWordSpec
 import play.api.http.Status.OK
+import play.api.mvc.AnyContentAsEmpty
+import play.api.test.FakeRequest
 import uk.gov.hmrc.http._
 import utils.WireMockHelper
 
@@ -40,12 +44,12 @@ class SchemeConnectorSpec
 
 
   "getOpenDate" must {
-    val openDateUrl = "/pensions-scheme/open-date"
+    implicit val req: OptionalDataRequest[AnyContentAsEmpty.type] =
+      OptionalDataRequest(pstr, "schemeName", "", FakeRequest(), LoggedInUser("externalId", Administrator, psaId), None, idNumber)
+    val openDateUrl = s"/pensions-scheme/open-date/$idNumber?loggedInAsPsa=true"
     "return the openDate for a valid request/response" in {
       server.stubFor(
         get(urlEqualTo(openDateUrl))
-          .withHeader("idType", equalTo("psaid"))
-          .withHeader("idValue", equalTo(psaId))
           .willReturn(
             aResponse()
               .withStatus(OK)
@@ -56,16 +60,17 @@ class SchemeConnectorSpec
 
       val connector = injector.instanceOf[SchemeConnector]
 
-      connector.getOpenDate("psaId", psaId, pstr).map { openDate =>
+      connector.getOpenDate(pstr).map { openDate =>
         openDate mustBe LocalDate.parse("2017-12-17")
       }
     }
 
     "return the openDate for psp for a valid request/response" in {
+      implicit val req: OptionalDataRequest[AnyContentAsEmpty.type] =
+        OptionalDataRequest(pstr, "schemeName", "", FakeRequest(), LoggedInUser("externalId", Practitioner, pspId), None, idNumber)
+      val openDateUrl = s"/pensions-scheme/open-date/$idNumber?loggedInAsPsa=false"
       server.stubFor(
         get(urlEqualTo(openDateUrl))
-          .withHeader("idType", equalTo("pspid"))
-          .withHeader("idValue", equalTo(pspId))
           .willReturn(
             aResponse()
               .withStatus(OK)
@@ -76,7 +81,7 @@ class SchemeConnectorSpec
 
       val connector = injector.instanceOf[SchemeConnector]
 
-      connector.getOpenDate("pspId", pspId, pstr).map { openDate =>
+      connector.getOpenDate(pstr).map { openDate =>
         openDate mustBe LocalDate.parse("2017-12-17")
       }
     }
@@ -84,8 +89,6 @@ class SchemeConnectorSpec
     "throw BadRequestException for a 400 Bad Request response" in {
       server.stubFor(
         get(urlEqualTo(openDateUrl))
-          .withHeader("idType", equalTo("psaid"))
-          .withHeader("idValue", equalTo(psaId))
           .willReturn(
             badRequest
               .withHeader("Content-Type", "application/json")
@@ -95,7 +98,7 @@ class SchemeConnectorSpec
       val connector = injector.instanceOf[SchemeConnector]
 
       recoverToSucceededIf[BadRequestException] {
-        connector.getOpenDate("psaId", psaId, pstr)
+        connector.getOpenDate(pstr)
       }
     }
   }
