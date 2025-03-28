@@ -48,7 +48,6 @@ class SchemeWindUpDateController @Inject()(val controllerComponents: MessagesCon
   private val eventType = EventType.WindUp
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async { implicit request =>
-    val idValue = request.loggedInUser.idName
     schemeConnector.getOpenDate(request.pstr).flatMap { openDate =>
       val taxYear = getTaxYearFromOption(request.userAnswers)
       val startDate = LocalDate.of(taxYear, 4, 6)
@@ -60,7 +59,6 @@ class SchemeWindUpDateController @Inject()(val controllerComponents: MessagesCon
 
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
-      val idValue = request.loggedInUser.idName
       schemeConnector.getOpenDate(request.pstr).flatMap { openDate =>
         val taxYear = getTaxYearFromOption(request.userAnswers)
         val startDate = LocalDate.of(taxYear, 4, 6)
