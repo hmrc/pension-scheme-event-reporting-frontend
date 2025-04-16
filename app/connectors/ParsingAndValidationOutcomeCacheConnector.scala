@@ -22,6 +22,7 @@ import models.fileUpload.ParsingAndValidationOutcome
 import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json.Json
+import play.api.libs.ws.writeableOf_JsValue
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, NotFoundException, StringContextOps}
@@ -39,7 +40,7 @@ class ParsingAndValidationOutcomeCacheConnector @Inject()(config: FrontendAppCon
 
     val headers: Seq[(String, String)] = Seq(("Content-Type", "application/json"))
 
-    http.get(url(srn)).setHeader(headers: _*).execute[HttpResponse]
+    http.get(url(srn)).setHeader(headers*).execute[HttpResponse]
       .recoverWith(mapExceptionsToStatus)
       .map { response =>
         response.status match {
@@ -55,7 +56,7 @@ class ParsingAndValidationOutcomeCacheConnector @Inject()(config: FrontendAppCon
 
     http.post(url(srn))
       .withBody(Json.toJson(outcome))
-      .setHeader(headers: _*)
+      .setHeader(headers*)
       .execute[HttpResponse] andThen {
       case Failure(t: Throwable) => logger.warn("Unable to post parsing and validation outcome", t)
     } map { _ => () }
@@ -64,7 +65,7 @@ class ParsingAndValidationOutcomeCacheConnector @Inject()(config: FrontendAppCon
   def deleteOutcome(srn: String)(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Unit] = {
     val headers: Seq[(String, String)] = Seq(("Content-Type", "application/json"))
 
-    http.delete(url(srn)).setHeader(headers: _*).execute[HttpResponse] andThen {
+    http.delete(url(srn)).setHeader(headers*).execute[HttpResponse] andThen {
       case Failure(t: Throwable) => logger.warn("Unable to delete parsing and validation outcome", t)
     } map { _ => () }
   }

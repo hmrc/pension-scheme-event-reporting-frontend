@@ -71,7 +71,6 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
       administratorOrPractitioner match {
         case AdministratorOrPractitioner.Administrator => schemeSummaryPsaUrl
         case AdministratorOrPractitioner.Practitioner => schemeSummaryPspUrl
-        case _ => schemeSummaryPsaUrl
       }
       ).format(srn)
 

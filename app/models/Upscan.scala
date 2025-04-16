@@ -54,7 +54,7 @@ object FileUploadOutcomeStatus extends Enumerable.Implicits {
   private val values: List[FileUploadOutcomeStatus] = List(IN_PROGRESS, SUCCESS, FAILURE)
 
   implicit val enumerable: Enumerable[FileUploadOutcomeStatus] =
-    Enumerable(values.map(v => v.toString -> v): _*)
+    Enumerable(values.map(v => v.toString -> v)*)
 }
 
 

@@ -31,6 +31,6 @@ class BecameDateFormProvider {
       mapping(
         localDateMappingWithDateRange(field = "becameDate", date = (min, max))
       )
-      (Event20Date.apply)(Event20Date.unapply)
+      (Event20Date.apply)(e => Some(e.date))
     )
 }

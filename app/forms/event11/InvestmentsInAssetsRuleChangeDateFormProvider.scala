@@ -33,6 +33,6 @@ class InvestmentsInAssetsRuleChangeDateFormProvider @Inject() extends Mappings {
       mapping(
         localDateMappingWithDateRange(date = (min, max))
       )
-      (Event11Date.apply)(Event11Date.unapply)
+      (Event11Date.apply)(e => Some(e.date))
     )
 }

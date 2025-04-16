@@ -85,7 +85,7 @@ class Event12CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         .setOrException(EventReportingOverviewPage, erOverviewSeq))).build()
 
       running(application) {
-        val request = FakeRequest(GET, controllers.event12.routes.Event12CheckYourAnswersController.onPageLoad.url)
+        val request = FakeRequest(GET, controllers.event12.routes.Event12CheckYourAnswersController.onPageLoad().url)
 
         val result = route(application, request).value
 
@@ -104,7 +104,7 @@ class Event12CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         .setOrException(EventReportingOverviewPage, erOverviewSeq))).build()
 
       running(application) {
-        val request = FakeRequest(GET, controllers.event12.routes.Event12CheckYourAnswersController.onPageLoad.url)
+        val request = FakeRequest(GET, controllers.event12.routes.Event12CheckYourAnswersController.onPageLoad().url)
 
         val result = route(application, request).value
 
@@ -136,7 +136,7 @@ class Event12CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
 
       running(application) {
         when(mockView.apply(captor.capture(), any(), any())(any(), any())).thenReturn(play.twirl.api.Html(""))
-        val request = FakeRequest(GET, controllers.event12.routes.Event12CheckYourAnswersController.onPageLoad.url)
+        val request = FakeRequest(GET, controllers.event12.routes.Event12CheckYourAnswersController.onPageLoad().url)
         val result = route(application, request).value
         status(result) mustEqual OK
 
@@ -170,7 +170,7 @@ class Event12CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
 
       running(application) {
         when(mockView.apply(captor.capture(), any(), any())(any(), any())).thenReturn(play.twirl.api.Html(""))
-        val request = FakeRequest(GET, controllers.event12.routes.Event12CheckYourAnswersController.onPageLoad.url)
+        val request = FakeRequest(GET, controllers.event12.routes.Event12CheckYourAnswersController.onPageLoad().url)
         val result = route(application, request).value
         status(result) mustEqual OK
 
@@ -190,7 +190,7 @@ class Event12CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, controllers.event12.routes.Event12CheckYourAnswersController.onPageLoad.url)
+        val request = FakeRequest(GET, controllers.event12.routes.Event12CheckYourAnswersController.onPageLoad().url)
 
         val result = route(application, request).value
 

@@ -19,7 +19,7 @@
         govukButton: GovukButton
 )
 
-@(continueUrl: String, fileName: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(continueUrl: String, fileName: String)(implicit request: RequiredSchemeDataRequest[?], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("fileUploadSuccess.title"))) {
 

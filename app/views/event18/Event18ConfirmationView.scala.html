@@ -22,7 +22,7 @@
         govukButton: GovukButton
 )
 
-@(continueUrl: String, waypoints: Waypoints)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(continueUrl: String, waypoints: Waypoints)(implicit request: RequiredSchemeDataRequest[?], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("event18Confirmation.title"))) {
 

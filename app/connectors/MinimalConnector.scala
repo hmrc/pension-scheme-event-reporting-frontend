@@ -46,7 +46,7 @@ class MinimalConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig)
                         (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[MinimalDetails] = {
 
     val url = url"${config.minimalDetailsUrl}"
-    http.get(url).setHeader(headers: _*).execute[HttpResponse] map {
+    http.get(url).setHeader(headers*).execute[HttpResponse] map {
       response =>
         response.status match {
           case OK =>

@@ -28,5 +28,5 @@ object JourneyStartType extends Enumerable.Implicits {
 
   private val values: List[JourneyStartType] = List(StartNew, InProgress, PastEventTypes)
   implicit val enumerable: Enumerable[JourneyStartType] =
-    Enumerable(values.map(v => v.toString -> v): _*)
+    Enumerable(values.map(v => v.toString -> v)*)
 }

@@ -28,7 +28,7 @@
 )
 
 
-@(form: Form[_], protectionPageVal: String, waypoints: Waypoints, index: Index)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[?], protectionPageVal: String, waypoints: Waypoints, index: Index)(implicit request: RequiredSchemeDataRequest[?], messages: Messages)
 
 @formGroupErrorClass = {
     @if(form.errors.nonEmpty) {
@@ -39,7 +39,7 @@
 }
 
 @errorMessage = {
-    @form("value").error.map(err => messages(err.message, err.args: _*))
+    @form("value").error.map(err => messages(err.message, err.args*))
 }
 
 @layout(

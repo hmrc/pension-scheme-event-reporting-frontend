@@ -85,7 +85,7 @@ class Event13CheckYourAnswersControllerSpec extends SpecBase with SummaryListFlu
         .setOrException(EventReportingOverviewPage, erOverviewSeq))).build()
 
       running(application) {
-        val request = FakeRequest(GET, controllers.event12.routes.Event12CheckYourAnswersController.onPageLoad.url)
+        val request = FakeRequest(GET, controllers.event12.routes.Event12CheckYourAnswersController.onPageLoad().url)
 
         val result = route(application, request).value
 

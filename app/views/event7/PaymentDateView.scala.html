@@ -27,7 +27,7 @@
     govukDateInput: GovukDateInput
 )
 
-@(form: Form[_], waypoints: Waypoints, index: Index, startDate: LocalDate, endDate: LocalDate)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[?], waypoints: Waypoints, index: Index, startDate: LocalDate, endDate: LocalDate)(implicit request: RequiredSchemeDataRequest[?], messages: Messages)
 
 @layout(pageTitle = title(form, messages("paymentDate.title"))) {
 

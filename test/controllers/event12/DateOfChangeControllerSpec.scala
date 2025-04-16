@@ -105,7 +105,7 @@ class DateOfChangeControllerSpec extends SpecBase with BeforeAndAfterEach with M
           .build()
 
       running(application) {
-        val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(dateOfChange(validValue.dateOfChange): _*)
+        val request = FakeRequest(POST, postRoute).withFormUrlEncodedBody(dateOfChange(validValue.dateOfChange)*)
 
         val result = route(application, request).value
         val updatedAnswers = emptyUserAnswersWithTaxYear.set(DateOfChangePage, validValue).success.value

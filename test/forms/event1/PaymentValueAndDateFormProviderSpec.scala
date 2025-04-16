@@ -68,7 +68,7 @@ class PaymentValueAndDateFormProviderSpec extends SpecBase
 
     "not bind numbers with too many decimals" in {
       forAll(invalidDataGenerator -> "tooManyDecimals") {
-        num: String =>
+        num =>
           val result = form.bind(paymentDetails(paymentValue = num, Some(LocalDate.of(2022,6,4))))
           result.errors mustEqual Seq(FormError(paymentValueKey, s"$messageKeyPaymentValueKey.error.tooManyDecimals"))
       }
@@ -88,7 +88,7 @@ class PaymentValueAndDateFormProviderSpec extends SpecBase
 
     "not bind numbers below 0" in {
       forAll(negativeValueDataGenerator -> "negative") {
-        number: String =>
+        number =>
           val result = form.bind(paymentDetails(paymentValue = number, Some(LocalDate.of(2022,6,4))))
           result.errors.headOption.map(_.message) mustEqual Some(s"$messageKeyPaymentValueKey.error.negative")
       }

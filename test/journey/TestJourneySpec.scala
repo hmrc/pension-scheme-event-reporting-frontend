@@ -58,7 +58,7 @@ import play.api.libs.json.Writes
 import java.time.{LocalDate, Month}
 
 class TestJourneySpec extends AnyFreeSpec with JourneyHelpers with ModelGenerators {
-  private val writesTaxYear: Writes[ChooseTaxYear]= ChooseTaxYear.writes(ChooseTaxYear.enumerable(2021))
+  private val writesTaxYear: Writes[ChooseTaxYear]= ChooseTaxYear.writes(using ChooseTaxYear.enumerable(2021))
 
   "test journey" in {
 

@@ -27,7 +27,7 @@
 )
 
 
-@(form: Form[_], waypoints: Waypoints, eventType: EventType, index: Index)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[?], waypoints: Waypoints, eventType: EventType, index: Index)(implicit request: RequiredSchemeDataRequest[?], messages: Messages)
 
 @layout(pageTitle = title(form, messages(s"manualOrUpload.event${eventType.toString}.title"))) {
 

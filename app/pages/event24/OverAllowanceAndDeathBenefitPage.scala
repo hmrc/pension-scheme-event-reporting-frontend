@@ -24,6 +24,7 @@ import pages.common.MembersPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import pages.{EmptyWaypoints, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
+import pages.RecoveryOps
 
 import scala.util.{Success, Try}
 

@@ -27,7 +27,7 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_],
+@(form: Form[?],
 pageTitle: String,
 waypoints: Waypoints,
 eventType: EventType,
@@ -37,7 +37,7 @@ selectedTaxYear: String,
 paginationStats: PaginationStats[SummaryListRowWithThreeValues],
 pageNumber: Index,
 searchValue: Option[String],
-searchHref: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+searchHref: String)(implicit request: RequiredSchemeDataRequest[?], messages: Messages)
 
 @pageLink(pageNumber:Index) = @{controllers.event7.routes.Event7MembersSummaryController.onPageLoadWithPageNumber(waypoints, Index(pageNumber))}
 

@@ -26,6 +26,7 @@ import pages.{TaxYearPage, VersionInfoPage}
 import play.api.Logging
 import play.api.http.Status._
 import play.api.libs.json._
+import play.api.libs.ws.writeableOf_JsValue
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http._
@@ -108,7 +109,7 @@ class UserAnswersCacheConnector @Inject()(
     getJson(noEventHeaders(pstr), req.srn).flatMap {
       case Some(noEventData) =>
         val headers = eventHeaders(pstr, eventType, Some(noEventData))
-        http.get(isDataModifiedUrl(req.srn)).setHeader(headers: _*).execute[HttpResponse]
+        http.get(isDataModifiedUrl(req.srn)).setHeader(headers*).execute[HttpResponse]
           .map { response =>
             response.status match {
               case NOT_FOUND => None
@@ -129,7 +130,7 @@ class UserAnswersCacheConnector @Inject()(
 
   private def getJson(headers: Seq[(String, String)], srn: String)(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier) = {
 
-    http.get(url(srn)).setHeader(headers: _*).transform(_.withRequestTimeout(config.ifsTimeout)).execute[HttpResponse]
+    http.get(url(srn)).setHeader(headers*).transform(_.withRequestTimeout(config.ifsTimeout)).execute[HttpResponse]
       .recoverWith(mapExceptionsToStatus)
       .map { response =>
         response.status match {
@@ -156,7 +157,7 @@ class UserAnswersCacheConnector @Inject()(
       "version" -> version
     )
 
-    http.post(url(srn)).withBody(userAnswers).setHeader(headers: _*).transform(_.withRequestTimeout(config.ifsTimeout)).execute[HttpResponse]
+    http.post(url(srn)).withBody(userAnswers).setHeader(headers*).transform(_.withRequestTimeout(config.ifsTimeout)).execute[HttpResponse]
       .map { response =>
         response.status match {
           case OK => ()
@@ -196,7 +197,7 @@ class UserAnswersCacheConnector @Inject()(
       "newVersion" -> newVersion
     )
 
-    http.put(url(req.srn)).withBody(Json.obj()).setHeader(headers: _*).transform(_.withRequestTimeout(config.ifsTimeout)).execute[HttpResponse]
+    http.put(url(req.srn)).withBody(Json.obj()).setHeader(headers*).transform(_.withRequestTimeout(config.ifsTimeout)).execute[HttpResponse]
       .map { response =>
         response.status match {
           case NOT_FOUND | NO_CONTENT => ()
@@ -214,7 +215,7 @@ class UserAnswersCacheConnector @Inject()(
       "pstr" -> pstr
     )
 
-    http.post(url(srn)).withBody(userAnswers.noEventTypeData).setHeader(headers: _*).transform(_.withRequestTimeout(config.ifsTimeout)).execute[HttpResponse]
+    http.post(url(srn)).withBody(userAnswers.noEventTypeData).setHeader(headers*).transform(_.withRequestTimeout(config.ifsTimeout)).execute[HttpResponse]
       .map { response =>
         response.status match {
           case OK => ()
@@ -242,7 +243,7 @@ class UserAnswersCacheConnector @Inject()(
       "pstr" -> pstr
     )
 
-    http.delete(url(req.srn)).setHeader(headers: _*).transform(_.withRequestTimeout(config.ifsTimeout)).execute[HttpResponse]
+    http.delete(url(req.srn)).setHeader(headers*).transform(_.withRequestTimeout(config.ifsTimeout)).execute[HttpResponse]
       .map { response =>
         response.status match {
           case OK => ()

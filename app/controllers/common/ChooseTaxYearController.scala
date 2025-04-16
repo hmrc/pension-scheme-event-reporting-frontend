@@ -43,11 +43,11 @@ class ChooseTaxYearController @Inject()(val controllerComponents: MessagesContro
   def onPageLoad(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] =
     (identify andThen getData(eventType)) { implicit request =>
       val taxYearChosen = getTaxYearFromOption(request.userAnswers)
-    val form = formProvider(eventType, taxYearChosen)
+      val form = formProvider(eventType, taxYearChosen)
       val rdsTaxYear = ChooseTaxYear.reads(ChooseTaxYear.enumerable(taxYearChosen))
-    val preparedForm = request.userAnswers.flatMap(_.get(common.ChooseTaxYearPage(eventType, index))(rdsTaxYear)).fold(form)(form.fill)
-    Ok(view(preparedForm, waypoints, eventType, index, taxYearChosen))
-  }
+      val preparedForm = request.userAnswers.flatMap(_.get(common.ChooseTaxYearPage(eventType, index))(rdsTaxYear)).fold(form)(form.fill)
+      Ok(view(preparedForm, waypoints, eventType, index, taxYearChosen))
+    }
 
   def onSubmit(waypoints: Waypoints, eventType: EventType, index: Index): Action[AnyContent] =
     (identify andThen getData(eventType)).async {
@@ -59,7 +59,7 @@ class ChooseTaxYearController @Inject()(val controllerComponents: MessagesContro
           Future.successful(BadRequest(view(formWithErrors, waypoints, eventType, index, taxYearChosen))),
         value => {
           val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
-          val updatedAnswers = originalUserAnswers.setOrException(common.ChooseTaxYearPage(eventType, index), value)(ChooseTaxYear.writes(ChooseTaxYear.enumerable(taxYearChosen)))
+          val updatedAnswers = originalUserAnswers.setOrException(common.ChooseTaxYearPage(eventType, index), value)(using ChooseTaxYear.writes(using ChooseTaxYear.enumerable(taxYearChosen)))
           userAnswersCacheConnector.save(request.pstr, eventType, updatedAnswers).map { _ =>
             Redirect(common.ChooseTaxYearPage(eventType, index).navigate(waypoints, originalUserAnswers, updatedAnswers).route)
           }

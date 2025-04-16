@@ -25,7 +25,7 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, beneficiaryName: String, index: Index)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[?], waypoints: Waypoints, beneficiaryName: String, index: Index)(implicit request: RequiredSchemeDataRequest[?], messages: Messages)
 
 @layout(pageTitle = title(form, messages("datePaid.event2.title"))) {
 

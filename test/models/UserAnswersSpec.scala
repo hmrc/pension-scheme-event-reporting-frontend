@@ -40,7 +40,7 @@ import java.time.LocalDate
 class UserAnswersSpec extends SpecBase with Matchers {
 
   private val userAnswersDataTaxYear = UserAnswers().setOrException(TaxYearPage, TaxYear("2020")).data
-  private val writesTaxYear: Writes[ChooseTaxYear] = ChooseTaxYear.writes(ChooseTaxYear.enumerable(2021))
+  private val writesTaxYear: Writes[ChooseTaxYear] = ChooseTaxYear.writes(using ChooseTaxYear.enumerable(2021))
 
 
   "getAll" - {

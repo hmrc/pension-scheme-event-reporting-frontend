@@ -25,7 +25,7 @@
 
 
 
-@(seqOfReturnHistorySummary:Seq[ReturnHistorySummary], taxYearEnd: String, schemeName: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(seqOfReturnHistorySummary:Seq[ReturnHistorySummary], taxYearEnd: String, schemeName: String)(implicit request: RequiredSchemeDataRequest[?], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("returnHistory.title", taxYearEnd))) {
 

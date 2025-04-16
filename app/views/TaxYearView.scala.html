@@ -22,11 +22,11 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, radioOptions: Seq[RadioItem], eventReportingUrl: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[?], waypoints: Waypoints, radioOptions: Seq[RadioItem], eventReportingUrl: String)(implicit request: RequiredSchemeDataRequest[?], messages: Messages)
 
 @field = @{form("value")}
 @errorMessage(field: Field) = @{
-    field.error.map { err => ErrorMessage(content = Text(messages(err.message, err.args: _*))) }
+    field.error.map { err => ErrorMessage(content = Text(messages(err.message, err.args*))) }
 }
 
 @layout(pageTitle = title(form, messages("taxYear.title"))) {

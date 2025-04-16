@@ -21,7 +21,7 @@
         govukButton: GovukButton
 )
 
-@(returnToFileUploadURL: String, fileDownloadInstructionsLink: String, dummyErrors: Seq[String], totalNumOfErrors: Int, fileTemplateInstructionLink: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(returnToFileUploadURL: String, fileDownloadInstructionsLink: String, dummyErrors: Seq[String], totalNumOfErrors: Int, fileTemplateInstructionLink: String)(implicit request: RequiredSchemeDataRequest[?], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("fileupload.invalid.title"))) {
 

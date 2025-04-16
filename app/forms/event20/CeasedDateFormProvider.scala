@@ -31,6 +31,6 @@ class CeasedDateFormProvider {
       mapping(
         localDateMappingWithDateRange(field = "ceasedDate", date = (min, max))
       )
-      (Event20Date.apply)(Event20Date.unapply)
+      (Event20Date.apply)(e => Some(e.date))
     )
 }

@@ -50,7 +50,7 @@ class CompanyDetailsFormProvider @Inject() extends Mappings {
             companyNumber("companyDetails.companyNumber.error.invalidCharacters")
           )
         )
-    )(CompanyDetails.apply)(CompanyDetails.unapply)
+    )(CompanyDetails.apply)(c => Some(Tuple.fromProductTyped(c)))
   )
 
 

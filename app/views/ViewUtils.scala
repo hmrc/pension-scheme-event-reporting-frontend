@@ -23,7 +23,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.errormessage.ErrorMessage
 
 object ViewUtils {
 
-  def title(form: Form[_], title: String, section: Option[String] = None)(implicit messages: Messages): String =
+  def title(form: Form[?], title: String, section: Option[String] = None)(implicit messages: Messages): String =
     titleNoForm(
       title   = s"${errorPrefix(form)} ${messages(title)}",
       section = section
@@ -44,7 +44,7 @@ object ViewUtils {
   def titleNoForm(title: String, section: Option[String] = None)(implicit messages: Messages): String =
     s"${messages(title)} - ${section.fold(StringUtils.EMPTY)(messages(_) + " - ")}${messages("service.name")} - ${messages("site.govuk")}"
 
-  def errorPrefix(form: Form[_])(implicit messages: Messages): String = {
+  def errorPrefix(form: Form[?])(implicit messages: Messages): String = {
     if (form.hasErrors || form.hasGlobalErrors) messages("error.browser.title.prefix") else StringUtils.EMPTY
   }
 }

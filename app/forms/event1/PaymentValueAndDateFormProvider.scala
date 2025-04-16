@@ -45,7 +45,7 @@ class PaymentValueAndDateFormProvider @Inject() extends Mappings with Transforms
           ),
         localDateMappingWithDateRange(field = "paymentDate", date = (startDate, endDate))
       )
-      (PaymentDetails.apply)(PaymentDetails.unapply)
+      (PaymentDetails.apply)(p => Some(Tuple.fromProductTyped(p)))
     )
   }
 }

@@ -33,6 +33,6 @@ class DateOfChangeFormProvider @Inject() extends Mappings with Transforms {
       mapping(
         localDateMappingWithDateRange(field = "dateOfChange", date = (min, max))
       )
-      (DateOfChange.apply)(DateOfChange.unapply)
+      (DateOfChange.apply)(d => Some(d.dateOfChange))
     )
 }

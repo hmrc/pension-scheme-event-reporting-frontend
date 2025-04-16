@@ -26,7 +26,7 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, eventType: EventType)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[?], waypoints: Waypoints, eventType: EventType)(implicit request: RequiredSchemeDataRequest[?], messages: Messages)
 
 @layout(pageTitle = title(form, messages("removeEvent.title", messages(s"eventSummary.event$eventType")))) {
 

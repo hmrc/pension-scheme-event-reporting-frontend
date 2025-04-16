@@ -22,7 +22,7 @@ import play.api.data.Form
 import javax.inject.Inject
 
 class ChooseAddressFormProvider @Inject() extends Mappings {
-  def apply(addresses: Seq[_]): Form[Int] =
+  def apply(addresses: Seq[?]): Form[Int] =
     Form(
       "value" -> int("chooseAddress.error.required")
         .verifying(minimumValue(0, "error.invalid"))

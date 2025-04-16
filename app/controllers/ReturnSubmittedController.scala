@@ -16,7 +16,6 @@
 
 package controllers
 
-import config.FrontendAppConfig
 import connectors.MinimalConnector
 import controllers.actions._
 import handlers.TaxYearNotAvailableException
@@ -37,7 +36,6 @@ class ReturnSubmittedController @Inject()(
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
                                            view: ReturnSubmittedView,
-                                           config: FrontendAppConfig,
                                            minimalConnector: MinimalConnector
                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 

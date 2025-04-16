@@ -71,7 +71,7 @@ class AmountCrystallisedAndDateFormProviderSpec extends SpecBase
 
     "not bind numbers with too many decimals" in {
       forAll(invalidDataGenerator -> "tooManyDecimals") {
-        num: String =>
+        num =>
           val result = form.bind(crystallisedDetails(amountCrystallised = num, Some(validDate)))
           result.errors mustEqual Seq(FormError(amountCrystallisedKey, s"$messageKeyPaymentValueKey.error.tooManyDecimals"))
       }
@@ -97,7 +97,7 @@ class AmountCrystallisedAndDateFormProviderSpec extends SpecBase
 
     "not bind numbers below 0" in {
       forAll(negativeValueDataGenerator -> "negative") {
-        number: String =>
+        number =>
           val result = form.bind(crystallisedDetails(amountCrystallised = number, Some(validDate)))
           result.errors.headOption.map(_.message) mustEqual Some(s"$messageKeyPaymentValueKey.error.negativeValue")
       }

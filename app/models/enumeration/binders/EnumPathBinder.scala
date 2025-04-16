@@ -18,19 +18,20 @@ package models.enumeration.binders
 
 import play.api.mvc.PathBindable
 
-object EnumPathBinder {
+trait EnumPathBinder[T <: Enumeration](using val en: T){
 
-  def pathBinder[T <: Enumeration](`enum`: T)(implicit stringBinder: PathBindable[String]): PathBindable[T#Value] = new PathBindable[T#Value] {
+//  def pathBinder[T <: Enumeration](enumb: T)(implicit stringBinder: PathBindable[String]): PathBindable[T#Value] = new PathBindable[T#Value] {
+  def pathBinder(enums: T)(implicit stringBinder: PathBindable[String]): PathBindable[en.Value] = new PathBindable[en.Value] {
 
-    def bind(key: String, value: String): Either[String, T#Value] = {
-      enumByName(enum, value) match {
+    def bind(key: String, value: String): Either[String, en.Value] = {
+      enumByName(enums, value) match {
         case Some(v) => Right(v)
         case None => Left(s"Unknown Enum Type $value")
       }
     }
 
-    override def unbind(key: String, value: T#Value): String = stringBinder.unbind(key, value.toString)
+    override def unbind(key: String, value: en.Value): String = stringBinder.unbind(key, value.toString)
 
-    private def enumByName(`enum`: T, key: String): Option[T#Value] = enum.values.find(_.toString == key)
+    private def enumByName(enums: T, key: String): Option[en.Value] = enums.values.find(_.toString == key).asInstanceOf[Option[en.Value]]
   }
 }

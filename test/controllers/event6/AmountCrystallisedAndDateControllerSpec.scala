@@ -122,7 +122,7 @@ class AmountCrystallisedAndDateControllerSpec extends SpecBase with BeforeAndAft
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(crystallisedDetails("1000.00", Some(validDate)): _*)
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(crystallisedDetails("1000.00", Some(validDate))*)
 
         val result = route(application, request).value
         val updatedAnswers = emptyUserAnswers.set(AmountCrystallisedAndDatePage(eventType, 0), validValue).success.value

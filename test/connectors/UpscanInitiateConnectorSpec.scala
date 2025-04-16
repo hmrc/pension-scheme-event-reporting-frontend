@@ -138,7 +138,7 @@ class UpscanInitiateConnectorSpec
             psaOrPspId mustBe dataRequest.loggedInUser.psaIdOrPspId
             pstr mustBe dataRequest.pstr
             schemeAdministratorType mustBe dataRequest.loggedInUser.administratorOrPractitioner
-            outcome.left.getOrElse("") contains "returned 400. Response body: 'test'" mustBe true
+            outcome.left.getOrElse("") `contains` "returned 400. Response body: 'test'" mustBe true
         }
       }
     }

@@ -23,6 +23,7 @@ import models.event20A.WhatChange.{BecameMasterTrust, CeasedMasterTrust}
 import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import pages.RecoveryOps
 
 import scala.util.{Success, Try}
 

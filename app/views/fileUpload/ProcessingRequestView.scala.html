@@ -18,7 +18,7 @@
  layout: templates.Layout,
 )
 
-@(continueUrl: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(continueUrl: String)(implicit request: RequiredSchemeDataRequest[?], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("fileUpload.processingRequest.title"))) {
 

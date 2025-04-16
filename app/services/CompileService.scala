@@ -92,7 +92,7 @@ class CompileService @Inject()(
             compiledVersionAvailable = true
           )
         }
-        erOverview copy (versionDetails = newVersionDetails)
+        erOverview.copy(versionDetails = newVersionDetails)
       } else {
         erOverview
       }

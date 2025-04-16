@@ -26,7 +26,7 @@ import wolfendale.scalacheck.regexp.RegexpGen
 trait AddressBehaviours extends FormSpec with StringFieldBehaviours with Constraints with AddressMapping {
 
   def formWithAddressField(
-                            form: Form[_],
+                            form: Form[?],
                             fieldName: String,
                             keyAddressRequired: String,
                             keyAddressLength: String,
@@ -105,7 +105,7 @@ trait AddressBehaviours extends FormSpec with StringFieldBehaviours with Constra
 
   }
 
-  def formWithPostCode(form: Form[_], fieldName: String, keyRequired: String, keyLength: String, keyInvalid: String): Unit = {
+  def formWithPostCode(form: Form[?], fieldName: String, keyRequired: String, keyLength: String, keyInvalid: String): Unit = {
 
     "behave like a form with a Post Code" - {
 
@@ -198,7 +198,7 @@ trait AddressBehaviours extends FormSpec with StringFieldBehaviours with Constra
   }
 
   def formWithCountry(
-                       form: Form[_],
+                       form: Form[?],
                        fieldName: String,
                        keyRequired: String,
                        keyInvalid: String,

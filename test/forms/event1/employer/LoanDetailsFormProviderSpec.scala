@@ -57,7 +57,7 @@ class LoanDetailsFormProviderSpec extends StringFieldBehaviours {
 
     "not bind non-numeric numbers" in {
       forAll(nonNumerics -> "nonNumeric") {
-        nonNumeric: String =>
+        nonNumeric =>
           val result = form.bind(details(loanAmount = nonNumeric))
           result.errors mustEqual Seq(FormError(loanAmountKey, loanAmountNotANumberErrorKey))
       }
@@ -65,7 +65,7 @@ class LoanDetailsFormProviderSpec extends StringFieldBehaviours {
 
     "not bind decimals that are greater than 2 dp" in {
       forAll(decimals -> "decimal") {
-        decimal: String =>
+        decimal =>
           val result = form.bind(details(loanAmount = decimal))
           result.errors mustEqual Seq(FormError(loanAmountKey, loanAmountTooManyDecimalsKey))
       }
@@ -73,7 +73,7 @@ class LoanDetailsFormProviderSpec extends StringFieldBehaviours {
 
     "not bind negative values" in {
       forAll(decimalsBelowValue(0) -> "negative") {
-        decimal: String =>
+        decimal =>
           val result = form.bind(details(loanAmount = decimal))
           result.errors.headOption.map(_.message) mustEqual Some(loanAmountNegativeKey)
       }
@@ -81,7 +81,7 @@ class LoanDetailsFormProviderSpec extends StringFieldBehaviours {
 
     "not bind decimals longer than 11 characters" in {
       forAll(longDecimalString(12) -> "decimalAboveMax") {
-        decimal: String =>
+        decimal =>
           val result = form.bind(details(loanAmount = decimal))
           result.errors.headOption.map(_.message) mustEqual Some(loanAmountAmountTooHighErrorKey)
       }
@@ -102,7 +102,7 @@ class LoanDetailsFormProviderSpec extends StringFieldBehaviours {
 
     "not bind non-numeric numbers" in {
       forAll(nonNumerics -> "nonNumeric") {
-        nonNumeric: String =>
+        nonNumeric =>
           val result = form.bind(details(fundValue = nonNumeric))
           result.errors mustEqual Seq(FormError(fundValueKey, fundValueNotANumberErrorKey))
       }
@@ -110,7 +110,7 @@ class LoanDetailsFormProviderSpec extends StringFieldBehaviours {
 
     "not bind decimals that are greater than 2 dp" in {
       forAll(decimals -> "decimal") {
-        decimal: String =>
+        decimal =>
           val result = form.bind(details(fundValue = decimal))
           result.errors mustEqual Seq(FormError(fundValueKey, fundValueTooManyDecimalsKey))
       }
@@ -118,7 +118,7 @@ class LoanDetailsFormProviderSpec extends StringFieldBehaviours {
 
     "not bind negative values" in {
       forAll(decimalsBelowValue(0) -> "negative") {
-        decimal: String =>
+        decimal =>
           val result = form.bind(details(fundValue = decimal))
           result.errors.headOption.map(_.message) mustEqual Some(fundValueNegativeKey)
       }
@@ -126,7 +126,7 @@ class LoanDetailsFormProviderSpec extends StringFieldBehaviours {
 
     "not bind decimals longer than 11 characters" in {
       forAll(longDecimalString(12) -> "decimalAboveMax") {
-        decimal: String =>
+        decimal =>
           val result = form.bind(details(fundValue = decimal))
           result.errors.headOption.map(_.message) mustEqual Some(fundValueAmountTooHighErrorKey)
       }

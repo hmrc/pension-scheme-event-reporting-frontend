@@ -19,7 +19,7 @@
         govukButton: GovukButton
 )
 
-@(returnUrl: String, seqOfEventTypes: Seq[EventSummary], isMultipleEvents :Boolean)(implicit request: Request[_], messages: Messages)
+@(returnUrl: String, seqOfEventTypes: Seq[EventSummary], isMultipleEvents :Boolean)(implicit request: Request[?], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("cannotSubmitLockedEvents.title"))) {
 

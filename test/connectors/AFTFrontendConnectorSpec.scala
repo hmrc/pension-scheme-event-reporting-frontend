@@ -30,7 +30,7 @@ class AFTFrontendConnectorSpec extends AsyncWordSpec with Matchers with WireMock
   private val erOutstandingPaymentAmountURL = "/manage-pension-scheme-accounting-for-tax/%s/er-outstanding-payment-amount"
   private val dueAmount: Html = Html("£0.0")
   private val srn = "srn"
-  implicit val request: FakeRequest[_] = FakeRequest("", "")
+  implicit val request: FakeRequest[?] = FakeRequest("", "")
 
 
   "AFTFrontendConnector" when {

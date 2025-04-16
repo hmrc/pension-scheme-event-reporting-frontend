@@ -106,7 +106,7 @@ class InvestmentsInAssetsRuleChangeDateControllerSpec extends SpecBase with Befo
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(event11Date(validAnswer.date): _*)
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(event11Date(validAnswer.date)*)
 
         val result = route(application, request).value
 

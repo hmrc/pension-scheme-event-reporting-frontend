@@ -18,7 +18,7 @@
     layout: templates.Layout
 )
 
-@(contactHmrcUrl: String)(implicit request: Request[_], messages: Messages)
+@(contactHmrcUrl: String)(implicit request: Request[?], messages: Messages)
 
 @layout(
     pageTitle    = titleNoForm(messages("pageNotFound404.title")),

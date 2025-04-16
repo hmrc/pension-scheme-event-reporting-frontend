@@ -19,7 +19,7 @@
     govukButton: GovukButton
 )
 
-@(waypoints: Waypoints, continueUrl: Call)(implicit request: Request[_], messages: Messages)
+@(waypoints: Waypoints, continueUrl: Call)(implicit request: Request[?], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("fileUpload.error.invalidHeadersOrEmpty.title"))) {
 

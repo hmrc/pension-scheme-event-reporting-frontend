@@ -22,7 +22,7 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, events: Seq[SummaryListRow], selectedTaxYear: String, schemeName: String, version: Option[Int], isSubmitted: Boolean)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[?], waypoints: Waypoints, events: Seq[SummaryListRow], selectedTaxYear: String, schemeName: String, version: Option[Int], isSubmitted: Boolean)(implicit request: RequiredSchemeDataRequest[?], messages: Messages)
 
 @layout(pageTitle = title(form, messages("eventSummary.title", selectedTaxYear))) {
 

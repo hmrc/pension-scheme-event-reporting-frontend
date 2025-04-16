@@ -19,7 +19,6 @@ package controllers.eventWindUp
 import connectors.{SchemeConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import forms.eventWindUp.SchemeWindUpDateFormProvider
-import helpers.DateHelper
 import models.TaxYear.getTaxYearFromOption
 import models.UserAnswers
 import models.enumeration.EventType
@@ -42,7 +41,6 @@ class SchemeWindUpDateController @Inject()(val controllerComponents: MessagesCon
                                     schemeConnector : SchemeConnector,
                                     formProvider: SchemeWindUpDateFormProvider,
                                     view: SchemeWindUpDateView,
-                                    dateHelper: DateHelper
                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val eventType = EventType.WindUp

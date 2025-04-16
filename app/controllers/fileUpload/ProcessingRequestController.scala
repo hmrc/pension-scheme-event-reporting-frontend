@@ -54,7 +54,6 @@ class ProcessingRequestController @Inject()(
           Future.successful(Redirect(controllers.fileUpload.routes.ValidationErrorsSummaryController.onPageLoad(waypoints, eventType)))
         case Some(ParsingAndValidationOutcome(GeneralError, _, _)) =>
           Future.successful(Redirect(controllers.fileUpload.routes.ProblemWithServiceController.onPageLoad(waypoints, eventType)))
-        case Some(outcome) => throw new RuntimeException(s"Unknown outcome $outcome")
         case _ =>
           Future.successful(Ok(view(controllers.routes.JourneyRecoveryController.onPageLoad(None).url)))
       }
@@ -73,7 +72,6 @@ class ProcessingRequestController @Inject()(
           Future.successful(Json.obj("status" -> "processed"))
         case Some(ParsingAndValidationOutcome(GeneralError, _, _)) =>
           Future.successful(Json.obj("status" -> "processed"))
-        case Some(outcome) => throw new RuntimeException(s"Unknown outcome $outcome")
         case _ =>
           Future.successful(Json.obj("status" -> "processing"))
       }

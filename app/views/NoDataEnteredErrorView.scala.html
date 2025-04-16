@@ -18,7 +18,7 @@
     layout: templates.Layout
 )
 
-@(manageOverviewDashboardUrl: String)(implicit request: Request[_], messages: Messages)
+@(manageOverviewDashboardUrl: String)(implicit request: Request[?], messages: Messages)
 
 @layout(
     pageTitle    = titleNoForm(messages("noDataEnteredError.title")),

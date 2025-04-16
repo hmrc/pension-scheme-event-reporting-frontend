@@ -99,7 +99,7 @@ class DeclarationController @Inject()(
   }
 
   private def sendEmail(psaName: String, email: String, taxYear: String, schemeName: String)(
-    implicit request: DataRequest[_], hc: HeaderCarrier): Future[EmailStatus] = {
+    implicit request: DataRequest[?], hc: HeaderCarrier): Future[EmailStatus] = {
     val requestId = hc.requestId.map(_.value).getOrElse(request.headers.get("X-Session-ID").getOrElse(""))
 
     val submittedDate = formatSubmittedDate(ZonedDateTime.now(ZoneId.of("Europe/London")))
@@ -141,7 +141,6 @@ class DeclarationController @Inject()(
     val psaOrPsp = loggedInUser.administratorOrPractitioner match {
       case AdministratorOrPractitioner.Administrator => "PSA"
       case AdministratorOrPractitioner.Practitioner => "PSP"
-      case _ => throw new RuntimeException("Unknown user type")
     }
 
     Json.obj(

@@ -21,9 +21,10 @@ import models.UserAnswers
 import models.enumeration.EventType
 import models.fileUpload.FileUploadResult
 import models.fileUpload.FileUploadResult.{No, Yes}
-import pages.{JourneyRecoveryPage, Page, QuestionPage, Waypoints}
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import pages.RecoveryOps
 
 case class FileUploadResultPage(eventType: EventType) extends QuestionPage[FileUploadResult] {
 
@@ -38,7 +39,6 @@ case class FileUploadResultPage(eventType: EventType) extends QuestionPage[FileU
     answers.get(this).map {
       case Yes => ProcessingRequestPage(eventType)
       case No => FileUploadPage(eventType)
-      case _ => JourneyRecoveryPage
     }.orRecover
   }
 }

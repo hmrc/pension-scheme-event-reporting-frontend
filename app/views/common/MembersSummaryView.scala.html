@@ -28,7 +28,7 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_],
+@(form: Form[?],
 pageTitle: String,
 waypoints: Waypoints,
 eventType: EventType,
@@ -38,7 +38,7 @@ selectedTaxYear: String,
 paginationStats: PaginationStats[SummaryListRowWithTwoValues],
 pageNumber: Index,
 searchValue: Option[String],
-searchHref: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+searchHref: String)(implicit request: RequiredSchemeDataRequest[?], messages: Messages)
 
 @pageLink(pageNumber:Index) = @{controllers.common.routes.MembersSummaryController.onPageLoadPaginated(waypoints, MemberSummaryPath(eventType), Index(pageNumber))}
 

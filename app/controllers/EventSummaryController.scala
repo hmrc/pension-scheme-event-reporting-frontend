@@ -202,7 +202,7 @@ class EventSummaryController @Inject()(
       case EventType.Event7 => Some(controllers.event7.routes.Event7MembersSummaryController.onPageLoad(EmptyWaypoints).url)
       case EventType.Event10 => Some(controllers.event10.routes.Event10CheckYourAnswersController.onPageLoad.url)
       case EventType.Event11 => Some(controllers.event11.routes.Event11CheckYourAnswersController.onPageLoad.url)
-      case EventType.Event12 => Some(controllers.event12.routes.Event12CheckYourAnswersController.onPageLoad.url)
+      case EventType.Event12 => Some(controllers.event12.routes.Event12CheckYourAnswersController.onPageLoad().url)
       case EventType.Event13 => Some(controllers.event13.routes.Event13CheckYourAnswersController.onPageLoad.url)
       case EventType.Event14 => reportSubmitted match {
         case true => Some(controllers.event14.routes.Event14CheckYourAnswersController.onPageLoad().url)
@@ -246,9 +246,6 @@ class EventSummaryController @Inject()(
       case EventType.Event23 => Some(controllers.common.routes.RemoveEventController.onPageLoad(EmptyWaypoints, eventType).url)
       case EventType.Event24 => Some(controllers.common.routes.RemoveEventController.onPageLoad(EmptyWaypoints, eventType).url)
       case EventType.WindUp => Some(controllers.common.routes.RemoveEventController.onPageLoad(EmptyWaypoints, eventType).url)
-      case _ =>
-        logger.info(s"Missing event type $eventType")
-        None
     }
   }
 
@@ -264,7 +261,7 @@ class EventSummaryController @Inject()(
       case EventType.Event7 => Some(controllers.event7.routes.Event7MembersSummaryController.onPageLoad(EmptyWaypoints).url)
       case EventType.Event10 => Some(controllers.event10.routes.Event10CheckYourAnswersController.onPageLoad.url)
       case EventType.Event11 => Some(controllers.event11.routes.Event11CheckYourAnswersController.onPageLoad.url)
-      case EventType.Event12 => Some(controllers.event12.routes.Event12CheckYourAnswersController.onPageLoad.url)
+      case EventType.Event12 => Some(controllers.event12.routes.Event12CheckYourAnswersController.onPageLoad().url)
       case EventType.Event13 => Some(controllers.event13.routes.Event13CheckYourAnswersController.onPageLoad.url)
       case EventType.Event14 => Some(controllers.event14.routes.Event14CheckYourAnswersController.onPageLoad().url)
       case EventType.Event18 => Some(controllers.routes.EventSummaryController.onPageLoadForEvent18ViewOnlyLink(EmptyWaypoints).url)
@@ -272,9 +269,6 @@ class EventSummaryController @Inject()(
       case EventType.Event20 => Some(controllers.event20.routes.Event20CheckYourAnswersController.onPageLoad.url)
       case EventType.Event20A => Some(controllers.event20A.routes.Event20ACheckYourAnswersController.onPageLoad.url)
       case EventType.WindUp => Some(controllers.eventWindUp.routes.EventWindUpCheckYourAnswersController.onPageLoad().url)
-      case _ =>
-        logger.error(s"Missing event type $eventType")
-        None
     }
   }
 }

@@ -24,6 +24,7 @@ import models.{EROverview, EventDataIdentifier, EventSummary, FileUploadOutcomeR
 import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json._
+import play.api.libs.ws.writeableOf_JsValue
 import play.api.mvc.{AnyContent, Result}
 import play.api.mvc.Results.{BadRequest, NoContent}
 import uk.gov.hmrc.http.HttpReads.Implicits._
@@ -68,7 +69,7 @@ class EventReportingConnector @Inject()(
     )
 
     httpClientV2.get(eventRepSummaryUrl(req.srn))
-      .setHeader(headers: _*)
+      .setHeader(headers*)
       .transform(_.withRequestTimeout(config.ifsTimeout))
       .execute[HttpResponse]
       .recoverWith(mapExceptionsToStatus)
@@ -101,7 +102,7 @@ class EventReportingConnector @Inject()(
 
     httpClientV2.post(eventCompileUrl(req.srn))
       .withBody(Json.obj())
-      .setHeader(headers: _*)
+      .setHeader(headers*)
       .transform(_.withRequestTimeout(config.ifsTimeout))
       .execute[HttpResponse]
       .map { response =>
@@ -129,7 +130,7 @@ class EventReportingConnector @Inject()(
     httpClientV2.post(eventSubmitUrl(req.srn))
                 .withBody(ua.data)
                 .transform(_.withRequestTimeout(config.ifsTimeout))
-                .setHeader(headers: _*).execute[HttpResponse]
+                .setHeader(headers*).execute[HttpResponse]
                 .map { response =>
                   response.status match {
                     case NO_CONTENT => NoContent
@@ -152,7 +153,7 @@ class EventReportingConnector @Inject()(
 
     httpClientV2.post(event20ASubmitUrl(req.srn))
       .withBody(ua.data)
-      .setHeader(headers: _*)
+      .setHeader(headers*)
       .transform(_.withRequestTimeout(config.ifsTimeout))
       .execute[HttpResponse]
       .map { response =>
@@ -168,7 +169,7 @@ class EventReportingConnector @Inject()(
 
   def getFileUploadOutcome(reference: String)(implicit hc: HeaderCarrier, req: RequiredSchemeDataRequest[AnyContent]): Future[FileUploadOutcomeResponse] = {
     val headers = Seq(("reference", reference))
-    httpClientV2.get(getFileUploadResponseUrl(req.srn)).setHeader(headers: _*)
+    httpClientV2.get(getFileUploadResponseUrl(req.srn)).setHeader(headers*)
       .transform(_.withRequestTimeout(config.ifsTimeout))
       .execute[HttpResponse]
       .map { response =>
@@ -204,7 +205,7 @@ class EventReportingConnector @Inject()(
 
     httpClientV2
       .get(eventOverviewUrl(req.srn))
-      .setHeader(headers: _*)
+      .setHeader(headers*)
       .transform(_.withRequestTimeout(config.ifsTimeout))
       .execute[HttpResponse]
       .map { response =>
@@ -233,7 +234,7 @@ class EventReportingConnector @Inject()(
 
     httpClientV2.post(deleteMemberUrl(req.srn))
       .withBody(Json.obj())
-      .setHeader(headers: _*)
+      .setHeader(headers*)
       .transform(_.withRequestTimeout(config.ifsTimeout))
       .execute[HttpResponse]
       .map { response =>
@@ -249,7 +250,7 @@ class EventReportingConnector @Inject()(
                                                          req: RequiredSchemeDataRequest[AnyContent]): Future[Seq[VersionsWithSubmitter]] = {
     val headers = Seq(("pstr", pstr), ("startDate", startDate))
     httpClientV2.get(erListOfVersionsUrl(req.srn))
-      .setHeader(headers: _*)
+      .setHeader(headers*)
       .transform(_.withRequestTimeout(config.ifsTimeout))
       .execute[HttpResponse]
       .map { response =>

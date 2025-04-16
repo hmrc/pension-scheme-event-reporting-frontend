@@ -19,7 +19,7 @@
         govukButton: GovukButton
 )
 
-@()(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@()(implicit request: RequiredSchemeDataRequest[?], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("cannotResume.title")), showBackLink = false) {
 

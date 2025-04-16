@@ -153,7 +153,7 @@ class SchemeChangeDateControllerSpec extends SpecBase with BeforeAndAfterEach wi
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(schemeChangeDate(validValue.schemeChangeDate): _*)
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(schemeChangeDate(validValue.schemeChangeDate)*)
 
         val result = route(application, request).value
         val updatedAnswers = userAnswers.set(SchemeChangeDatePage, validValue).success.value
@@ -176,7 +176,7 @@ class SchemeChangeDateControllerSpec extends SpecBase with BeforeAndAfterEach wi
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(schemeChangeDate(validValue.schemeChangeDate): _*)
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(schemeChangeDate(validValue.schemeChangeDate)*)
 
         val result = route(application, request).value
         val updatedAnswers = userAnswers.set(SchemeChangeDatePage, validValue).success.value

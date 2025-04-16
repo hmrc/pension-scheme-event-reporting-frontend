@@ -19,7 +19,7 @@
         govukButton: GovukButton
 )
 
-@(continueUrl: String, selectedTaxYear: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(continueUrl: String, selectedTaxYear: String)(implicit request: RequiredSchemeDataRequest[?], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("whatYouWillNeed.title"))) {
 

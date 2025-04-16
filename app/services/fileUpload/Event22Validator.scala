@@ -87,7 +87,7 @@ class Event22Validator @Inject()(
     )
     val b = resultFromFormValidationResult[ChooseTaxYear](
       taxYearValidation(index, columns, taxYear), createCommitItem(index, ChooseTaxYearPage.apply(Event22, _)
-      )(ChooseTaxYear.writes(ChooseTaxYear.enumerable(taxYear)))
+      )(using ChooseTaxYear.writes( using ChooseTaxYear.enumerable(taxYear)))
     )
 
     val c = resultFromFormValidationResult[BigDecimal](

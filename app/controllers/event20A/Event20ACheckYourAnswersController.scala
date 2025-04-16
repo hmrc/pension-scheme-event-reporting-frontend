@@ -17,7 +17,6 @@
 package controllers.event20A
 
 import com.google.inject.Inject
-import connectors.EventReportingConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import models.UserAnswers
 import models.enumeration.EventType.Event20A
@@ -41,7 +40,6 @@ class Event20ACheckYourAnswersController @Inject()(
                                                    identify: IdentifierAction,
                                                    getData: DataRetrievalAction,
                                                    requireData: DataRequiredAction,
-                                                   connector: EventReportingConnector,
                                                    val controllerComponents: MessagesControllerComponents,
                                                    view: CheckYourAnswersView,
                                                    userAnswersValidation: Event20AUserAnswerValidation

@@ -22,11 +22,10 @@ import models.requests.DataRequest
 import pages.EmptyWaypoints
 import pages.event20A.{BecameDatePage, CeasedDatePage, Event20ACheckYourAnswersPage, WhatChangePage}
 import play.api.mvc.AnyContent
-import services.CompileService
 
 import javax.inject.Inject
 
-class Event20AUserAnswerValidation @Inject()(compileService: CompileService){
+class Event20AUserAnswerValidation @Inject()(){
   def validateAnswers()(implicit request: DataRequest[AnyContent]): String = {
     val whatChangeAnswer = request.userAnswers.get(WhatChangePage)
     val becameDateAnswer = request.userAnswers.get(BecameDatePage)

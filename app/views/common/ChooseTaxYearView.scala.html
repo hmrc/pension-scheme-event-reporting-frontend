@@ -26,7 +26,7 @@
         govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, eventType: EventType, index: Index, taxYearMax: Int)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[?], waypoints: Waypoints, eventType: EventType, index: Index, taxYearMax: Int)(implicit request: RequiredSchemeDataRequest[?], messages: Messages)
 
 @layout(pageTitle = title(form, messages(s"chooseTaxYear.event${eventType.toString}.title"))) {
 
