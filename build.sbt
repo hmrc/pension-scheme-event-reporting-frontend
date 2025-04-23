@@ -44,13 +44,7 @@ lazy val root = (project in file("."))
       "pages.Waypoints"
     ),
     PlayKeys.playDefaultPort := 8216,
-    ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*handlers.*;" +
-      ".*BuildInfo.*;.*javascript.*;.*Routes.*;.*GuiceInjector;" +
-      ".*ControllerConfiguration;.*TestController;.*LanguageSwitchController;.*viewmodels.govuk.*;.*components.*;" +
-      "models.Mode.*;models.Enumerable.*;pages.*",
-    ScoverageKeys.coverageMinimumStmtTotal := 80,
-    ScoverageKeys.coverageFailOnMinimum := true,
-    ScoverageKeys.coverageHighlighting := true,
+    CodeCoverageSettings(),
     scalacOptions ++= Seq(
       "-feature",
       "-Xfatal-warnings",
@@ -58,13 +52,6 @@ lazy val root = (project in file("."))
       "-Wconf:src=twirl/.*:silent",  // Suppress warnings from twirl files
       "-Wconf:src=target/.*:silent", // Suppress warnings from target files
       "-Wconf:msg=Flag.*repeatedly:silent", // Suppress repeated flag warnings
-//      "-feature",
-//      "-deprecation",
-//      "-rootdir",
-//      baseDirectory.value.getCanonicalPath,
-//      "-Wconf:src=target/.*:s",
-//      "-Wconf:src=routes/.*:s",
-//      "-Wconf:cat=unused-imports&src=html/.*:s"
     ),
     libraryDependencies ++= AppDependencies(),
     retrieveManaged := true,

@@ -18,7 +18,7 @@ package models.enumeration.binders
 
 import play.api.mvc.PathBindable
 
-trait EnumPathBinder[T <: Enumeration](using val en: T){
+class EnumPathBinder[T <: Enumeration](using val en: T){
 
 //  def pathBinder[T <: Enumeration](enumb: T)(implicit stringBinder: PathBindable[String]): PathBindable[T#Value] = new PathBindable[T#Value] {
   def pathBinder(enums: T)(implicit stringBinder: PathBindable[String]): PathBindable[en.Value] = new PathBindable[en.Value] {
