@@ -52,8 +52,6 @@ import pages.event20A.{BecameDatePage, CeasedDatePage, Event20ACheckYourAnswersP
 import pages.eventWindUp.{EventWindUpCheckYourAnswersPage, SchemeWindUpDatePage}
 import pages.{CannotSubmitLockedEventsPage, DeclarationPage, EventReportingTileLinksPage, EventSelectionPage, EventSummaryPage, TaxYearPage, WantToSubmitPage}
 import play.api.libs.json.Writes
-//import pages.fileUpload.FileUploadResultPage
-//import pages.fileUpload.ProcessingRequestPage
 
 import java.time.{LocalDate, Month}
 

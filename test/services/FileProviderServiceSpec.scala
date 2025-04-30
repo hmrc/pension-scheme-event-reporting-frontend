@@ -21,7 +21,6 @@ import models.enumeration.EventType
 import models.enumeration.EventType.{Event1, Event22, Event23, Event6}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Environment
-//import play.api.test.Helpers.baseApplicationBuilder.injector
 import play.api.test.Helpers.baseApplicationBuilder
 
 import java.io.File
