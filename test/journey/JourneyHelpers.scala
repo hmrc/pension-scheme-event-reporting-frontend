@@ -43,10 +43,10 @@ trait JourneyHelpers extends Matchers with TryValues with OptionValues {
     }
 
     def run(steps: JourneyStep[Unit]*): JourneyState =
-      journeyOf(steps: _*).runS(this).value
+      journeyOf(steps*).runS(this).value
 
     def check(steps: JourneyStep[Unit]*): JourneyState =
-      run(steps: _*)
+      run(steps*)
   }
 
   def journeyOf(steps: JourneyStep[Unit]*): JourneyStep[Unit] =
@@ -76,7 +76,7 @@ trait JourneyHelpers extends Matchers with TryValues with OptionValues {
   def getAnswers: JourneyStep[UserAnswers] =
     State.inspect(_.answers)
 
-  def setUserAnswerTo[A](page: Page with Settable[A], answer: A)(implicit writes: Writes[A]): JourneyStep[Unit] =
+  def setUserAnswerTo[A](page: Page & Settable[A], answer: A)(implicit writes: Writes[A]): JourneyStep[Unit] =
     State.modify { journeyState =>
       journeyState.copy(answers = journeyState.answers.set(page, answer).success.value)
     }
@@ -116,7 +116,7 @@ trait JourneyHelpers extends Matchers with TryValues with OptionValues {
       answers.get(gettable).value mustEqual expectedAnswer
     }
 
-  def submitAnswer[A](page: Page with Settable[A], value: A)(implicit writes: Writes[A], position: Position): JourneyStep[Unit] = {
+  def submitAnswer[A](page: Page & Settable[A], value: A)(implicit writes: Writes[A], position: Position): JourneyStep[Unit] = {
     for {
       _ <- pageMustBe(page)
       originalAnswers <- getAnswers

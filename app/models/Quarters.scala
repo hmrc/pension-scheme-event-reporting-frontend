@@ -103,6 +103,6 @@ trait CommonQuarters {
 object Quarters extends CommonQuarters with Enumerable.Implicits {
 
   implicit def enumerable(quarters: Seq[AFTQuarter]): Enumerable[AFTQuarter] =
-    Enumerable(quarters.map(v => v.toString -> v): _*)
+    Enumerable(quarters.map(v => v.toString -> v)*)
 
 }

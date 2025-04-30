@@ -54,8 +54,8 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
 
   "Data Retrieval Action when there is no data in the cache" - {
     "must set userAnswers to 'None' in the request" in {
-      when(userAnswersCacheConnector.getBySrn(eqTo(pstr), eqTo(eventType), eqTo(srn))(any(), any())) thenReturn Future(None)
-      when(userAnswersCacheConnector.getBySrn(eqTo(pstr), eqTo(srn))(any(), any())) thenReturn Future(None)
+      when(userAnswersCacheConnector.getBySrn(eqTo(pstr), eqTo(eventType), eqTo(srn))(any(), any())).thenReturn(Future(None))
+      when(userAnswersCacheConnector.getBySrn(eqTo(pstr), eqTo(srn))(any(), any())).thenReturn(Future(None))
       val action = new Harness
 
       val expectedResult = OptionalDataRequest(pstr, "schemeName", "returnUrl", request, loggedInUser, None, srn)

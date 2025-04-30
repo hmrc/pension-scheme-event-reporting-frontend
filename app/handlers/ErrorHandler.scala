@@ -38,13 +38,13 @@ class ErrorHandler @Inject()(
   extends FrontendErrorHandler with I18nSupport {
 
   def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: RequestHeader): Future[Html] = {
-    implicit def requestImplicit: Request[_] = Request(request, "")
+    implicit def requestImplicit: Request[?] = Request(request, "")
 
     Future.successful(errorTemplateView(pageTitle, heading, message))
   }
 
   override def notFoundTemplate(implicit request: RequestHeader): Future[Html] = {
-    implicit def requestImplicit: Request[_] = Request(request, "")
+    implicit def requestImplicit: Request[?] = Request(request, "")
 
     Future.successful(pageNotFoundView(config.contactHmrcURL))
   }

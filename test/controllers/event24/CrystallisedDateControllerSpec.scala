@@ -112,7 +112,7 @@ class CrystallisedDateControllerSpec extends SpecBase with BeforeAndAfterEach {
       running(application) {
         val request =
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(
-            crystallisedDate(validAnswer.date): _*
+            crystallisedDate(validAnswer.date)*
           )
 
         val result = route(application, request).value
@@ -138,7 +138,7 @@ class CrystallisedDateControllerSpec extends SpecBase with BeforeAndAfterEach {
       running(application) {
         val request =
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(
-            crystallisedDate(invalidAnswer.date): _*
+            crystallisedDate(invalidAnswer.date)*
           )
 
         val result = route(application, request).value

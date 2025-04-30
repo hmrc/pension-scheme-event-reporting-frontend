@@ -22,7 +22,7 @@
     govukButton: GovukButton
 )
 
-@(list: SummaryList, continueUrl: String, readOnlyHeading: Tuple2[Option[Int], Option[EventType]]=Tuple2(None,None))(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(list: SummaryList, continueUrl: String, readOnlyHeading: Tuple2[Option[Int], Option[EventType]]=Tuple2(None,None))(implicit request: RequiredSchemeDataRequest[?], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("checkYourAnswers.title"))) {
 

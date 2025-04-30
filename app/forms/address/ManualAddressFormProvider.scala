@@ -36,7 +36,7 @@ class ManualAddressFormProvider @Inject()(countryOptions: CountryOptions) extend
         addressLines._4 -> optionalAddressLineMapping(optionalAddressLineArgs(addressLines._4, name)),
         postCodeAndCountry._1 -> postCodeWithCountryMapping(postCodeArgs(postCodeAndCountry._1, name)),
         postCodeAndCountry._2 -> countryMapping(countryOptions, countryArgs(postCodeAndCountry._2, name))
-      )(Address.apply)(Address.unapply)
+      )(Address.apply)(a => Some(Tuple.fromProductTyped(a)))
     )
 }
 

@@ -28,7 +28,7 @@ import play.api.libs.ws.{BodyWritable, InMemoryBody}
 import play.api.mvc.AnyContent
 import play.mvc.Http.HeaderNames
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.client.{HttpClientV2, readStreamHttpResponse}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 
 import java.net.URL
@@ -57,8 +57,11 @@ case class UploadForm(href: String, fields: Map[String, String])
 case class Reference(reference: String) extends AnyVal
 
 object Reference {
-  implicit val referenceReader: Reads[Reference] = Reads.StringReads.map(Reference(_))
-  implicit val referenceWrites: OWrites[Reference] = Json.writes[Reference]
+  implicit val referenceFormat: Format[Reference] =
+    Format(
+      Reads.of[String].map(Reference(_)),
+      Writes(ref => JsString(ref.reference))
+    )
 }
 
 case class PreparedUpload(reference: Reference, uploadRequest: UploadForm)
@@ -106,7 +109,7 @@ class UpscanInitiateConnector @Inject()(httpClientV2: HttpClientV2, appConfig: F
     val startTime = System.currentTimeMillis
     httpClientV2.post(url)
       .withBody(initialRequest)
-      .setHeader(headers: _*)
+      .setHeader(headers*)
       .execute[PreparedUpload]
       .map {
       response =>

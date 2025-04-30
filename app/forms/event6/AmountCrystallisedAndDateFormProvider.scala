@@ -43,7 +43,7 @@ class AmountCrystallisedAndDateFormProvider @Inject() extends Mappings with Tran
           ),
         localDateMappingWithDateRange(field = "crystallisedDate", date = (startDate, endDate))
       )
-      (CrystallisedDetails.apply)(CrystallisedDetails.unapply)
+      (CrystallisedDetails.apply)(c => Some(Tuple.fromProductTyped(c)))
     )
 }
 

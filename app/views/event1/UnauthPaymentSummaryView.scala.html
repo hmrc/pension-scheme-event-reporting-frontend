@@ -26,7 +26,7 @@
 )
 
 
-@(form: Form[_],
+@(form: Form[?],
         pageTitle: String,
         waypoints: Waypoints,
         memberOrEmployerSeq: Seq[SummaryListRow],
@@ -35,7 +35,7 @@
         total: String,
         taxYear: String,
         searchValue: Option[String],
-        searchHref: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+        searchHref: String)(implicit request: RequiredSchemeDataRequest[?], messages: Messages)
 
 @layout(pageTitle = title(form, pageTitle)) {
 

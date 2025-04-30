@@ -45,10 +45,10 @@ class AFTFrontendConnector @Inject()(httpClientV2: HttpClientV2, config: Fronten
       HeaderCarrierFunctions
         .headerCarrierForPartials(request)
         .toHeaderCarrier
-        .withExtraHeaders(extraHeaders: _*)
+        .withExtraHeaders(extraHeaders*)
 
     httpClientV2.get(url)
-      .setHeader(extraHeaders: _*)
+      .setHeader(extraHeaders*)
       .execute[HtmlPartial] recover
             connectionExceptionsAsHtmlPartialFailure map {
       case HtmlPartial.Success(_, content) =>

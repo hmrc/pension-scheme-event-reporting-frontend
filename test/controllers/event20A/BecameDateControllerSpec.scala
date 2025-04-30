@@ -112,7 +112,7 @@ class BecameDateControllerSpec extends SpecBase with BeforeAndAfterEach with Moc
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(becameDate(validAnswer): _*)
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(becameDate(validAnswer)*)
 
         val result = route(application, request).value
         val updatedAnswers = userAnswers.set(BecameDatePage, validAnswer).success.value

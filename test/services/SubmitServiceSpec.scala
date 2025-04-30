@@ -29,7 +29,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.VersionInfoPage
 import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, OK}
-import play.api.mvc.AnyContent
+import play.api.mvc.{AnyContent, Result}
 import play.api.mvc.Results.{BadRequest, Forbidden, InternalServerError, NoContent, ServiceUnavailable}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.GET
@@ -71,7 +71,7 @@ class SubmitServiceSpec extends SpecBase with BeforeAndAfterEach {
           .save(ArgumentMatchers.eq(pstr), captor.capture())(any(), any(), any())
         val actualUAAfterSave = captor.getValue
         actualUAAfterSave.get(VersionInfoPage) mustBe Some(VersionInfo(2, Submitted))
-        status mustBe OK
+        status.header.status mustBe OK
       }
     }
 
@@ -85,7 +85,7 @@ class SubmitServiceSpec extends SpecBase with BeforeAndAfterEach {
       submitService.submitReport(pstr, ua).map { status =>
         verify(mockUserAnswersCacheConnector, times(0))
           .save(ArgumentMatchers.eq(pstr), captor.capture())(any(), any(), any())
-        status mustBe BAD_REQUEST
+        status.header.status mustBe BAD_REQUEST
       }
     }
 
@@ -99,7 +99,7 @@ class SubmitServiceSpec extends SpecBase with BeforeAndAfterEach {
       submitService.submitReport(pstr, ua).map { status =>
         verify(mockUserAnswersCacheConnector, times(0))
           .save(ArgumentMatchers.eq(pstr), captor.capture())(any(), any(), any())
-        status mustBe BAD_REQUEST
+        status.header.status mustBe BAD_REQUEST
       }
     }
 
@@ -112,7 +112,7 @@ class SubmitServiceSpec extends SpecBase with BeforeAndAfterEach {
       submitService.submitReport(pstr, ua).map { status =>
         verify(mockUserAnswersCacheConnector, times(0))
           .save(ArgumentMatchers.eq(pstr), any())(any(), any(), any())
-        status mustBe NOT_FOUND
+        status.header.status mustBe NOT_FOUND
       }
     }
 
@@ -125,7 +125,7 @@ class SubmitServiceSpec extends SpecBase with BeforeAndAfterEach {
       submitService.submitReport(pstr, ua).map { status =>
         verify(mockUserAnswersCacheConnector, times(0))
           .save(ArgumentMatchers.eq(pstr), any())(any(), any(), any())
-        status mustBe NOT_FOUND
+        status.header.status mustBe NOT_FOUND
       }
     }
 
@@ -169,7 +169,7 @@ class SubmitServiceSpec extends SpecBase with BeforeAndAfterEach {
         .thenReturn(Future.failed(new RuntimeException("Database error")))
       val ua = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(2, Compiled), nonEventTypeData = true)
       submitService.submitReport(pstr, ua).map { status =>
-        status mustBe INTERNAL_SERVER_ERROR
+        status.header.status mustBe INTERNAL_SERVER_ERROR
       }
     }
 
@@ -180,7 +180,7 @@ class SubmitServiceSpec extends SpecBase with BeforeAndAfterEach {
         .thenReturn(Future.failed(new RuntimeException("Cache save error")))
       val ua = emptyUserAnswersWithTaxYear.setOrException(VersionInfoPage, VersionInfo(2, Compiled), nonEventTypeData = true)
       submitService.submitReport(pstr, ua).map { status =>
-        status mustBe INTERNAL_SERVER_ERROR
+        status.header.status mustBe INTERNAL_SERVER_ERROR
       }
     }
   }

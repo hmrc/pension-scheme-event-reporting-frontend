@@ -177,7 +177,7 @@ object SampleData extends SpecBase {
   val memberDetails9: MembersDetails = MembersDetails("Joe", "Bloggs", "AA345678A")
   val memberDetails10: MembersDetails = MembersDetails("Joe", "Bloggs", "AA345678B")
 
-  private val writesTaxYear: Writes[ChooseTaxYear] = ChooseTaxYear.writes(ChooseTaxYear.enumerable(2021))
+  private val writesTaxYear: Writes[ChooseTaxYear] = ChooseTaxYear.writes(using ChooseTaxYear.enumerable(2021))
 
   val paymentDetails: Event1PaymentDetails = Event1PaymentDetails(1000.00, LocalDate.of(2022, 11, 8))
   val crystallisedDetails: CrystallisedDetails = CrystallisedDetails(10.00, LocalDate.of(2022, 11, 8))

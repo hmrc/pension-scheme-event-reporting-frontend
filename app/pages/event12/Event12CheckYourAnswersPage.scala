@@ -25,7 +25,7 @@ case class Event12CheckYourAnswersPage() extends CheckAnswersPage {
     s"event-${Event12.toString}-check-answers"
 
   override def route(waypoints: Waypoints): Call = {
-    controllers.event12.routes.Event12CheckYourAnswersController.onPageLoad
+    controllers.event12.routes.Event12CheckYourAnswersController.onPageLoad()
   }
 
   override def toString: String = "CheckYourAnswersPage"

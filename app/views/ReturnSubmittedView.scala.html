@@ -22,7 +22,7 @@
     govukSummaryList: GovukSummaryList,
 )
 
-@(continueUrl: String, schemeName: String, taxYear: String, dateSubmitted: String, email: String, returnUrl: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(continueUrl: String, schemeName: String, taxYear: String, dateSubmitted: String, email: String, returnUrl: String)(implicit request: RequiredSchemeDataRequest[?], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("confirmation.title")), showBackLink = false) {
 

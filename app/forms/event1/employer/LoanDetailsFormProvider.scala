@@ -50,7 +50,7 @@ class LoanDetailsFormProvider @Inject() extends Mappings with Transforms {
             minimumValue[BigDecimal](0.01, "loanDetails.fundValue.zeroAmount")
           )
       )
-      (LoanDetails.apply)(LoanDetails.unapply)
+      (LoanDetails.apply)(l => Some(Tuple.fromProductTyped(l)))
     )
 }
 

@@ -26,8 +26,8 @@ import play.api.libs.json._
 
 class ChooseTaxYearSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
 
-  private val writesTaxYear: Writes[ChooseTaxYear]= ChooseTaxYear.writes(ChooseTaxYear.enumerable(2021))
-  private val rdsTaxYear: Reads[ChooseTaxYear] = ChooseTaxYear.reads(ChooseTaxYear.enumerable(2021))
+  private val writesTaxYear: Writes[ChooseTaxYear]= ChooseTaxYear.writes(using ChooseTaxYear.enumerable(2021))
+  private val rdsTaxYear: Reads[ChooseTaxYear] = ChooseTaxYear.reads(using ChooseTaxYear.enumerable(2021))
 
   "ChooseTaxYear" - {
 

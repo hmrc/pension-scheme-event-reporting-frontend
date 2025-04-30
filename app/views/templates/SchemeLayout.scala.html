@@ -18,7 +18,7 @@
   layout:templates.Layout
 )
 
-@(pageTitle: String, showBackLink: Boolean = true, timeout: Boolean = true, showSignOut: Boolean = true)(contentBlock: Html)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(pageTitle: String, showBackLink: Boolean = true, timeout: Boolean = true, showSignOut: Boolean = true)(contentBlock: Html)(implicit request: RequiredSchemeDataRequest[?], messages: Messages)
 
 @content = {
   @contentBlock

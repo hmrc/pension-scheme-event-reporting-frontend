@@ -47,7 +47,7 @@ class TotalAmountBenefitCrystallisationFormProviderSpec extends SpecBase with Bi
 
       "not bind numbers with too many decimals" in {
         forAll(invalidDataGenerator -> "tooManyDecimals") {
-          num: String =>
+          num =>
             val result = form.bind(valueDetails(num))
             result.errors mustEqual Seq(FormError(fieldName, "totalAmountBenefitCrystallisation.event24.error.nonNumeric"))
         }
@@ -73,7 +73,7 @@ class TotalAmountBenefitCrystallisationFormProviderSpec extends SpecBase with Bi
 
       "not bind numbers below 0" in {
         forAll(negativeValueDataGenerator -> "negative") {
-          number: String =>
+          number =>
             val result = form.bind(valueDetails(number))
             result.errors.headOption.map(_.message) mustEqual Some("totalAmountBenefitCrystallisation.event24.error.negativeValue")
         }

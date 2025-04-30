@@ -23,7 +23,7 @@
         govukTable : GovukTable
 )
 
-@(returnToFileUploadURL: String, fileDownloadInstructionsLink: String, dummyErrors: Seq[ValidationErrorForRendering], fileDownloadTemplateLink: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(returnToFileUploadURL: String, fileDownloadInstructionsLink: String, dummyErrors: Seq[ValidationErrorForRendering], fileDownloadTemplateLink: String)(implicit request: RequiredSchemeDataRequest[?], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("fileupload.invalid.title"))) {
 

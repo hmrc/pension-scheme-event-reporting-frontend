@@ -44,17 +44,17 @@ class EventSelectionPageSpec extends PageBehaviours {
     testGetCorrectPageEvent8or8a(Event8A, models.EventSelection.Event8A)
     testGetCorrectPageEvent22or23(Event22, models.EventSelection.Event22)
     testGetCorrectPageEvent22or23(Event23, models.EventSelection.Event23)
-    testRedirectToIncompleteIndexManualOrUpload(Event1,  models.EventSelection.Event1,  ManualOrUploadPage(Event1, 2))
-    testRedirectToIncompleteIndexManualOrUpload(Event6,  models.EventSelection.Event6,  ManualOrUploadPage(Event6, 2))
-    testRedirectToIncompleteIndexManualOrUpload(Event22, models.EventSelection.Event22, ManualOrUploadPage(Event22, 2))
-    testRedirectToIncompleteIndexManualOrUpload(Event23, models.EventSelection.Event23, ManualOrUploadPage(Event23, 2))
-    testRedirectToIncompleteIndexMemberDetailsEvent2(models.EventSelection.Event2,  MembersDetailsPage(Event2, 2, 1))
-    testRedirectToIncompleteIndexMemberDetails(Event3,  models.EventSelection.Event3,  MembersDetailsPage(Event3, 2))
-    testRedirectToIncompleteIndexMemberDetails(Event4,  models.EventSelection.Event4,  MembersDetailsPage(Event4, 2))
-    testRedirectToIncompleteIndexMemberDetails(Event5,  models.EventSelection.Event5,  MembersDetailsPage(Event5, 2))
-    testRedirectToIncompleteIndexMemberDetails(Event7,  models.EventSelection.Event7,  MembersDetailsPage(Event7, 2))
-    testRedirectToIncompleteIndexMemberDetails(Event8,  models.EventSelection.Event8,  MembersDetailsPage(Event8, 2))
-    testRedirectToIncompleteIndexMemberDetails(Event8A, models.EventSelection.Event8A, MembersDetailsPage(Event8A, 2))
+    testRedirectToIncompleteIndexManualOrUpload(Event1,  models.EventSelection.Event1)
+    testRedirectToIncompleteIndexManualOrUpload(Event6,  models.EventSelection.Event6)
+    testRedirectToIncompleteIndexManualOrUpload(Event22, models.EventSelection.Event22)
+    testRedirectToIncompleteIndexManualOrUpload(Event23, models.EventSelection.Event23)
+    testRedirectToIncompleteIndexMemberDetailsEvent2(models.EventSelection.Event2)
+    testRedirectToIncompleteIndexMemberDetails(Event3,  models.EventSelection.Event3)
+    testRedirectToIncompleteIndexMemberDetails(Event4,  models.EventSelection.Event4)
+    testRedirectToIncompleteIndexMemberDetails(Event5,  models.EventSelection.Event5)
+    testRedirectToIncompleteIndexMemberDetails(Event7,  models.EventSelection.Event7)
+    testRedirectToIncompleteIndexMemberDetails(Event8,  models.EventSelection.Event8)
+    testRedirectToIncompleteIndexMemberDetails(Event8A, models.EventSelection.Event8A)
     testGetCorrectPageEvent10()
   }
 
@@ -150,7 +150,7 @@ class EventSelectionPageSpec extends PageBehaviours {
     }
   }
 
-  private def testRedirectToIncompleteIndexManualOrUpload(eventType: EventType, eventSelection: EventSelection, page: ManualOrUploadPage): Unit = {
+  private def testRedirectToIncompleteIndexManualOrUpload(eventType: EventType, eventSelection: EventSelection): Unit = {
     s"must redirect to complete missing journey data for first entry in Event $eventType" in {
       val ua = UserAnswers()
         .setOrException(EventSelectionPage, eventSelection)
@@ -161,7 +161,7 @@ class EventSelectionPageSpec extends PageBehaviours {
     }
   }
 
-  private def testRedirectToIncompleteIndexMemberDetailsEvent2(eventSelection: EventSelection, page: MembersDetailsPage): Unit = {
+  private def testRedirectToIncompleteIndexMemberDetailsEvent2(eventSelection: EventSelection): Unit = {
     s"must redirect to complete missing journey data for first entry in Event2" in {
       val ua = UserAnswers()
         .setOrException(EventSelectionPage, eventSelection)
@@ -172,7 +172,7 @@ class EventSelectionPageSpec extends PageBehaviours {
     }
   }
 
-  private def testRedirectToIncompleteIndexMemberDetails(eventType: EventType, eventSelection: EventSelection, page: MembersDetailsPage): Unit = {
+  private def testRedirectToIncompleteIndexMemberDetails(eventType: EventType, eventSelection: EventSelection): Unit = {
     s"must redirect to complete missing journey data for first entry in Event $eventType" in {
       val ua = UserAnswers()
         .setOrException(EventSelectionPage, eventSelection)

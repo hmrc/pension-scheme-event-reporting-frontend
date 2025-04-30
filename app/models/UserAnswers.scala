@@ -29,31 +29,31 @@ final case class UserAnswers(
                             ) {
 
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] = {
-    Reads.optionNoError(Reads.at(page.path)).reads(data) match {
-      case JsSuccess(a@Some(_), _) => a
+    Reads.optionNoError(using Reads.at(page.path)).reads(data) match {
+      case JsSuccess(Some(a), _) => Some(a)
       case _ =>
-        Reads.optionNoError(Reads.at(page.path)).reads(noEventTypeData).getOrElse(None)
+        Reads.optionNoError(using Reads.at(page.path)).reads(noEventTypeData).getOrElse(None)
     }
   }
 
   def get(path: JsPath)(implicit rds: Reads[JsValue]): Option[JsValue] =
-    Reads.optionNoError(Reads.at(path)).reads(data) match {
-      case JsSuccess(a@Some(_), _) => a
+    Reads.optionNoError(using Reads.at(path)).reads(data) match {
+      case JsSuccess(Some(a), _) => Some(a)
       case _ =>
-        Reads.optionNoError(Reads.at(path)).reads(noEventTypeData).getOrElse(None)
+        Reads.optionNoError(using Reads.at(path)).reads(noEventTypeData).getOrElse(None)
     }
 
   def get[A, B](derivable: Derivable[A, B])(implicit rds: Reads[A]): Option[B] =
-    Reads.optionNoError(Reads.at(derivable.path))
+    Reads.optionNoError(using Reads.at(derivable.path))
       .reads(data)
       .getOrElse(None)
       .map(derivable.derive)
 
-  def isDefined(gettable: Gettable[_]): Boolean = {
-    Reads.optionNoError(Reads.at[JsValue](gettable.path)).reads(data) match {
-      case JsSuccess(a@Some(_), _) if a.isDefined => true
+  def isDefined(gettable: Gettable[?]): Boolean = {
+    Reads.optionNoError(using Reads.at[JsValue](gettable.path)).reads(data) match {
+      case JsSuccess(Some(a), _) => true
       case _ =>
-        Reads.optionNoError(Reads.at[JsValue](gettable.path)).reads(noEventTypeData)
+        Reads.optionNoError(using Reads.at[JsValue](gettable.path)).reads(noEventTypeData)
           .map(_.isDefined)
           .getOrElse(false)
     }

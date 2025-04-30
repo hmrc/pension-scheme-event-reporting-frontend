@@ -47,5 +47,5 @@ object ChooseTaxYear extends Enumerable.Implicits {
   }
 
   implicit def enumerable(taxYearMax: Int): Enumerable[ChooseTaxYear] =
-    Enumerable(values(taxYearMax).map(value => value.toString -> value): _*)
+    Enumerable(values(taxYearMax).map(value => value.toString -> value)*)
 }

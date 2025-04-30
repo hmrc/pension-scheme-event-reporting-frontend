@@ -40,7 +40,7 @@ class MembersDetailsFormProvider {
         nameMapping(firstName, detailsType),
         nameMapping(lastName, detailsType),
         ninoMapping(detailsType)
-      )(MembersDetails.apply)(MembersDetails.unapply)
+      )(MembersDetails.apply)(m => Some(Tuple.fromProductTyped(m)))
     )
   }
 }

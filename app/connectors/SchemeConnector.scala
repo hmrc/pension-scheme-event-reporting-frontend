@@ -69,7 +69,7 @@ class SchemeConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig)
       )
 
 
-    http.get(url).setHeader(headers: _*).execute[HttpResponse] map {
+    http.get(url).setHeader(headers*).execute[HttpResponse] map {
       response =>
         response.status match {
           case OK =>
@@ -87,7 +87,7 @@ class SchemeConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig)
     val url = url"${config.pspSchemeDetailsUrl.format(srn)}"
     val headers = Seq(("pstr", pstr), ("pspId", pspId))
 
-    http.get(url).setHeader(headers: _*).execute[HttpResponse] map { response =>
+    http.get(url).setHeader(headers*).execute[HttpResponse] map { response =>
         response.status match {
           case OK =>
             Json.parse(response.body).validate[PspSchemeDetails] match {

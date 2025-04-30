@@ -133,5 +133,5 @@ object TaxYear extends Enumerable.Implicits {
   }
 
   implicit val enumerable: Enumerable[TaxYear] =
-    Enumerable(values.map(v => v.startYear -> v): _*)
+    Enumerable(values.map(v => v.startYear -> v)*)
 }

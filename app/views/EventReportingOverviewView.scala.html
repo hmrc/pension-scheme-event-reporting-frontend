@@ -24,7 +24,7 @@ govukRadios: GovukRadios,
 govukButton: GovukButton
 )
 
-@(viewModel: OverviewViewModel)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(viewModel: OverviewViewModel)(implicit request: RequiredSchemeDataRequest[?], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("eventReportingOverview.title"))) {
 

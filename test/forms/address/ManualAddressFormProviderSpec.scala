@@ -21,6 +21,7 @@ import data.SampleData.companyDetails
 import forms.behaviours.{AddressBehaviours, FormBehaviours}
 import models.address.Address
 import utils.FakeCountryOptions
+import play.api.data.Form
 
 import scala.util.Random
 
@@ -46,7 +47,7 @@ class ManualAddressFormProviderSpec extends SpecBase with AddressBehaviours with
     "country" -> "GB"
   )
 
-  val form = new ManualAddressFormProvider(countryOptions)(companyName)
+  val form: Form[Address] = new ManualAddressFormProvider(countryOptions)(companyName)
 
   "Address form" - {
     behave like questionForm(Address(

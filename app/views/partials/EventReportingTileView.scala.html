@@ -20,7 +20,7 @@
         govukButton: GovukButton
 )
 
-@(d: Seq[CardViewModel])(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(d: Seq[CardViewModel])(implicit request: RequiredSchemeDataRequest[?], messages: Messages)
 
 
 <div class="card" id="event-reporting">

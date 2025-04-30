@@ -35,6 +35,6 @@ class SchemeDetailsFormProvider @Inject() extends Mappings {
               .verifying(descriptionConstraint("schemeDetails.error.ref.length",
                 "schemeDetails.error.ref.invalidCharacters")
           )
-      )(SchemeDetails.apply)(SchemeDetails.unapply)
+      )(SchemeDetails.apply)(s => Some(Tuple.fromProductTyped(s)))
     )
 }

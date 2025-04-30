@@ -65,7 +65,7 @@ trait SpecBase
           bind[DataRequiredAction].to[DataRequiredActionImpl],
           bind[IdentifierAction].to[FakeIdentifierAction],
           bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers))
-        ): _*
+        )*
       )
 
   protected def applicationBuilderForPSP(userAnswers: Option[UserAnswers] = None,
@@ -76,7 +76,7 @@ trait SpecBase
           bind[DataRequiredAction].to[DataRequiredActionImpl],
           bind[IdentifierAction].to[FakeIdentifierAction],
           bind[DataRetrievalAction].toInstance(new FakeDataRetrievalActionForPSP(userAnswers))
-        ): _*
+        )*
       )
 
   protected def messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]

@@ -46,7 +46,7 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
   private val maxTaxYear = 2022
   private val maxTaxYearForWrites = 2021
   private val chooseTaxYearFormProvider = new ChooseTaxYearFormProvider()
-  private val writesTaxYear: Writes[ChooseTaxYear] = ChooseTaxYear.writes(ChooseTaxYear.enumerable(taxYearMax = maxTaxYearForWrites))
+  private val writesTaxYear: Writes[ChooseTaxYear] = ChooseTaxYear.writes(using ChooseTaxYear.enumerable(taxYearMax = maxTaxYearForWrites))
   private val waypoints = EmptyWaypoints
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
   private val dateYear = 2023
@@ -162,7 +162,7 @@ class ChooseTaxYearControllerSpec extends SpecBase with BeforeAndAfterEach with 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result).removeAllNonces()mustEqual view.render(boundForm, waypoints, eventType, 0, maxTaxYear, request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view.render(boundForm, waypoints, eventType, 0, maxTaxYear, request, messages(application)).toString
         verify(mockUserAnswersCacheConnector, never()).save(any(), any(), any())(any(), any(), any())
       }
 

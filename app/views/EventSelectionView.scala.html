@@ -22,7 +22,7 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], eventList: Seq[RadioItem], waypoints: Waypoints)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[?], eventList: Seq[RadioItem], waypoints: Waypoints)(implicit request: RequiredSchemeDataRequest[?], messages: Messages)
 
 @layout(
     pageTitle = title(form, messages("eventSelection.title")),

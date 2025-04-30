@@ -46,5 +46,5 @@ object ManualOrUpload extends Enumerable.Implicits {
   }
 
   implicit val enumerable: Enumerable[ManualOrUpload] =
-    Enumerable(values.map(v => v.toString -> v): _*)
+    Enumerable(values.map(v => v.toString -> v)*)
 }

@@ -34,6 +34,6 @@ class CrystallisedDateFormProvider @Inject() extends Mappings with Transforms { 
         localDateMappingWithDateRange(
           field = "crystallisedDate", date = (min, max))
       )
-      (CrystallisedDate.apply)(CrystallisedDate.unapply)
+      (CrystallisedDate.apply)(c => Some(c.date))
     )
 }

@@ -115,7 +115,7 @@ class LumpSumAmountAndDateControllerSpec extends SpecBase with BeforeAndAfterEac
 
       running(application) {
         val request =
-          FakeRequest(POST, postRouteEvent8).withFormUrlEncodedBody(lumpSumDetails("1000.00", Some(validDate)): _*)
+          FakeRequest(POST, postRouteEvent8).withFormUrlEncodedBody(lumpSumDetails("1000.00", Some(validDate))*)
 
         val result = route(application, request).value
         val updatedAnswers = emptyUserAnswers.set(LumpSumAmountAndDatePage(event8, 0), validValue).success.value
@@ -191,7 +191,7 @@ class LumpSumAmountAndDateControllerSpec extends SpecBase with BeforeAndAfterEac
 
       running(application) {
         val request =
-          FakeRequest(POST, postRouteEvent8A).withFormUrlEncodedBody(lumpSumDetails("1000.00", Some(validDate)): _*)
+          FakeRequest(POST, postRouteEvent8A).withFormUrlEncodedBody(lumpSumDetails("1000.00", Some(validDate))*)
 
         val result = route(application, request).value
         val updatedAnswers = emptyUserAnswers.set(LumpSumAmountAndDatePage(event8a, 0), validValue).success.value

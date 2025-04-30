@@ -63,6 +63,6 @@ class TypeOfProtectionGroup1ReferenceFormProvider @Inject() extends Mappings wit
               minLength(minLength, "typeOfProtectionReference.event24.error.minLength"),
               regexp(protectionReferenceRegex, "typeOfProtectionReference.error.invalid"))
           )
-      )(ProtectionReferenceData.apply)(ProtectionReferenceData.unapply)
+      )(ProtectionReferenceData.apply)(p => Some(Tuple.fromProductTyped(p)))
     )
 }

@@ -65,7 +65,7 @@ class MembersDetailsController @Inject()(val controllerComponents: MessagesContr
                          page: MembersDetailsPage,
                          postCall: => Call,
                          memberPageNo: Int
-                        )(implicit request: OptionalDataRequest[_]): Future[Result] = {
+                        )(implicit request: OptionalDataRequest[?]): Future[Result] = {
     val form = formProvider(eventType, memberPageNo)
     form.bindFromRequest().fold(
       formWithErrors =>

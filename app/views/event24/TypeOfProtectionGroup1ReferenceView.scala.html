@@ -27,7 +27,7 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], waypoints: Waypoints, index: Index, requiredReferenceTypes: Seq[TypeOfProtectionGroup1])(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[?], waypoints: Waypoints, index: Index, requiredReferenceTypes: Seq[TypeOfProtectionGroup1])(implicit request: RequiredSchemeDataRequest[?], messages: Messages)
 
 @layout(pageTitle = title(form, messages("typeOfProtectionReferenceGroup1.event24.title"))) {
 

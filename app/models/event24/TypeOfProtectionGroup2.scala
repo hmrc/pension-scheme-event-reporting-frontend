@@ -48,5 +48,5 @@ object TypeOfProtectionGroup2 extends Enumerable.Implicits {
   val protectionOptions: Seq[TypeOfProtectionGroup2] = values.filter(_ != NoOtherProtections)
 
   implicit val enumerable: Enumerable[TypeOfProtectionGroup2] =
-    Enumerable(values.map(v => v.toString -> v): _*)
+    Enumerable(values.map(v => v.toString -> v)*)
 }

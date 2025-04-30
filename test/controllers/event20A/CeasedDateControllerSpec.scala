@@ -112,7 +112,7 @@ class CeasedDateControllerSpec extends SpecBase with BeforeAndAfterEach with Moc
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(ceasedDate(validAnswer): _*)
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(ceasedDate(validAnswer)*)
 
         val result = route(application, request).value
         val updatedAnswers = userAnswers.set(CeasedDatePage, validAnswer).success.value

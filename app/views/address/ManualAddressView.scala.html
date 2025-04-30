@@ -30,7 +30,7 @@
     govukSelect: GovukSelect
 )
 
-@(form: Form[_], waypoints: Waypoints, addressJourneyType: AddressJourneyType, pageTitle: String, pageHeading: String, options: Seq[InputOption], index: Index, isUk: Boolean)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(form: Form[?], waypoints: Waypoints, addressJourneyType: AddressJourneyType, pageTitle: String, pageHeading: String, options: Seq[InputOption], index: Index, isUk: Boolean)(implicit request: RequiredSchemeDataRequest[?], messages: Messages)
 
 @selectDefaultCountry = @{if(form("country").value.isEmpty) true else false}
 

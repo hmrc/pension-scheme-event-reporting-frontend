@@ -17,8 +17,6 @@
 package pages.event3
 
 import pages.behaviours.PageBehaviours
-import pages.event3.EarlyBenefitsBriefDescriptionPage
-
 
 class EarlyBenefitsBriefDescriptionPageSpec extends PageBehaviours {
 

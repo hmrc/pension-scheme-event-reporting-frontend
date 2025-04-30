@@ -70,7 +70,7 @@ class LumpSumAmountAndDateFormProviderSpec extends SpecBase
 
     "not bind numbers with too many decimals" in {
       forAll(invalidDataGenerator -> "tooManyDecimals") {
-        num: String =>
+        num =>
           val result = form.bind(lumpSumDetails(lumpSumAmount = num, Some(validDate)))
           result.errors mustEqual Seq(FormError(lumpSumAmountKey, s"$messageKeyLumpSumValueKey.error.tooManyDecimals"))
       }
@@ -96,7 +96,7 @@ class LumpSumAmountAndDateFormProviderSpec extends SpecBase
 
     "not bind numbers below 0" in {
       forAll(negativeValueDataGenerator -> "negative") {
-        number: String =>
+        number =>
           val result = form.bind(lumpSumDetails(lumpSumAmount = number, Some(validDate)))
           result.errors.headOption.map(_.message) mustEqual Some(s"$messageKeyLumpSumValueKey.error.negativeValue")
       }

@@ -119,7 +119,7 @@ class PaymentDateControllerSpec extends SpecBase with BeforeAndAfterEach with Mo
 
       running(application) {
         val request =
-          FakeRequest(POST, postRoute).withFormUrlEncodedBody(paymentDetails(validDate): _*)
+          FakeRequest(POST, postRoute).withFormUrlEncodedBody(paymentDetails(validDate)*)
 
         val result = route(application, request).value
         val updatedAnswers = emptyUserAnswers.set(PaymentDatePage(0), validValue).success.value

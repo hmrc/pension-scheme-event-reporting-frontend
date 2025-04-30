@@ -33,6 +33,6 @@ class SchemeChangeDateFormProvider @Inject() extends Mappings with Transforms {
       mapping(
         localDateMappingWithDateRange(field = "schemeChangeDate", date = (min, max))
       )
-      (SchemeChangeDate.apply)(SchemeChangeDate.unapply)
+      (SchemeChangeDate.apply)(s => Some(s.schemeChangeDate))
     )
 }

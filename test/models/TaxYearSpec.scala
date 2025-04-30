@@ -17,32 +17,23 @@
 package models
 
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Gen
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.{BeforeAndAfterEach, OptionValues}
+import org.scalatest.OptionValues
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{JsError, JsString, Json}
 import utils.DateHelper
 
 import java.time.LocalDate
 
-class TaxYearSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues with BeforeAndAfterEach {
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    DateHelper.setDate(Some(LocalDate.of(2024, 6, 1)))
-  }
+class TaxYearSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
 
   "TaxYear" - {
-
-    "must deserialise valid values" in {
-
-      val gen = Gen.oneOf(TaxYear.values)
-
-      forAll(gen) {
-        taxYear =>
-          JsString(taxYear.startYear).validate[TaxYear].asOpt.value mustEqual taxYear
+    DateHelper.setDate(Some(LocalDate.now()))
+    TaxYear.values.foreach { taxYear =>
+      s"must deserialise valid $taxYear values" in {
+          val ty = JsString(taxYear.startYear).validate[TaxYear]
+          ty.asOpt.value mustEqual taxYear
       }
     }
 
@@ -57,13 +48,8 @@ class TaxYearSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyCheck
       }
     }
 
-    "must serialise" in {
-
-      val gen = Gen.oneOf(TaxYear.values)
-
-      forAll(gen) {
-        taxYear =>
-
+    TaxYear.values.foreach { taxYear =>
+      s"must serialise $taxYear" in {
           Json.toJson(taxYear) mustEqual JsString(taxYear.startYear)
       }
     }
@@ -71,6 +57,7 @@ class TaxYearSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyCheck
 
   "Values" - {
     "must return a sequence of 7 year ranges from 2024-2025 to 2018-2019" in {
+      DateHelper.setDate(Some(LocalDate.of(2024, 6, 1)))
       TaxYear.values mustEqual
         Seq(
           TaxYear("2024"), TaxYear("2023"), TaxYear( "2022"), TaxYear( "2021"), TaxYear( "2020"), TaxYear( "2019"), TaxYear( "2018"))

@@ -25,7 +25,6 @@ import pages.event10.Event10CheckYourAnswersPage
 import pages.{CheckAnswersPage, EmptyWaypoints, VersionInfoPage, Waypoints}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.CompileService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.UserAnswersValidation
@@ -40,7 +39,6 @@ class Event10CheckYourAnswersController @Inject()(
                                                    identify: IdentifierAction,
                                                    getData: DataRetrievalAction,
                                                    requireData: DataRequiredAction,
-                                                   compileService: CompileService,
                                                    val controllerComponents: MessagesControllerComponents,
                                                    view: CheckYourAnswersView,
                                                    userAnswersValidation: UserAnswersValidation

@@ -43,7 +43,7 @@ class PaymentDetailsFormProvider @Inject() extends Mappings with Transforms {
           ),
         localDateMappingWithDateRange(field = "eventDate", date = (min, max))
       )
-      (PaymentDetails.apply)(PaymentDetails.unapply)
+      (PaymentDetails.apply)(p => Some(Tuple.fromProductTyped(p)))
     )
 }
 

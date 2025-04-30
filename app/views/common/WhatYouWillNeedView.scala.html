@@ -22,7 +22,7 @@
         govukButton: GovukButton
 )
 
-@(eventType: EventType, continueUrl: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(eventType: EventType, continueUrl: String)(implicit request: RequiredSchemeDataRequest[?], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages(s"whatYouWillNeed.common.title"))) {
 

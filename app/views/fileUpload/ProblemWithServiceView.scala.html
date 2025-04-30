@@ -19,7 +19,7 @@
         govukButton: GovukButton
 )
 
-@(returnUrl: String)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(returnUrl: String)(implicit request: RequiredSchemeDataRequest[?], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("problemWithService.title"))) {
 

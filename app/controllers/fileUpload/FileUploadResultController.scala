@@ -148,7 +148,7 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
   }
 
   private def performValidation(eventType: EventType,
-                                source: Source[ByteString, _],
+                                source: Source[ByteString, ?],
                                 fileName: Option[String])(implicit request: OptionalDataRequest[AnyContent]): Future[Unit] = {
     val startTime = System.currentTimeMillis
 
@@ -336,7 +336,7 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
           ParsingAndValidationOutcome(
             status = ValidationErrorsLessThan10,
             json = Json.obj(
-              "errors" -> Json.arr(errorJson(errors.toSeq, messages).map(x => Json.toJsFieldJsValueWrapper(x)): _*)
+              "errors" -> Json.arr(errorJson(errors.toSeq, messages).map(x => Json.toJsFieldJsValueWrapper(x))*)
             )
           )
         } else {
@@ -356,7 +356,7 @@ class FileUploadResultController @Inject()(val controllerComponents: MessagesCon
       val cell = String.valueOf(('A' + e.col).toChar) + (e.row + 1)
       Json.obj(
         "cell" -> cell,
-        "error" -> messages(e.error, e.args: _*),
+        "error" -> messages(e.error, e.args*),
         "columnName" -> e.columnName
       )
     }

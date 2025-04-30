@@ -46,7 +46,7 @@ class AmountCrystallisedAndDateController @Inject()(val controllerComponents: Me
 
   private val startDate: LocalDate = LocalDate.of(2006, 4, 6)
 
-  private def endDate(implicit request: OptionalDataRequest[_]): LocalDate = {
+  private def endDate(implicit request: OptionalDataRequest[?]): LocalDate = {
     val startDate = startDateOfCurrentTaxYear(request.userAnswers.flatMap(_.get(TaxYearPage)))
     val date = Quarters.getQuarter(startDate).endDate
     date match {

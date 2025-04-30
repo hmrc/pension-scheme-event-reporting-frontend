@@ -9,7 +9,7 @@ import scala.sys.process.*
 lazy val appName: String = "pension-scheme-event-reporting-frontend"
 
 ThisBuild / majorVersion := 0
-ThisBuild / scalaVersion := "2.13.16"
+ThisBuild / scalaVersion := "3.6.4"
 
 lazy val root = (project in file("."))
   .enablePlugins(PlayScala, SbtDistributablesPlugin)
@@ -44,21 +44,14 @@ lazy val root = (project in file("."))
       "pages.Waypoints"
     ),
     PlayKeys.playDefaultPort := 8216,
-    ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*handlers.*;" +
-      ".*BuildInfo.*;.*javascript.*;.*Routes.*;.*GuiceInjector;" +
-      ".*ControllerConfiguration;.*TestController;.*LanguageSwitchController;.*viewmodels.govuk.*;.*components.*;" +
-      "models.Mode.*;models.Enumerable.*;pages.*",
-    ScoverageKeys.coverageMinimumStmtTotal := 80,
-    ScoverageKeys.coverageFailOnMinimum := true,
-    ScoverageKeys.coverageHighlighting := true,
+    CodeCoverageSettings(),
     scalacOptions ++= Seq(
       "-feature",
-      "-deprecation",
-      "-rootdir",
-      baseDirectory.value.getCanonicalPath,
-      "-Wconf:src=target/.*:s",
-      "-Wconf:src=routes/.*:s",
-      "-Wconf:cat=unused-imports&src=html/.*:s"
+      "-Xfatal-warnings",
+      "-Wconf:src=routes/.*:silent", // Suppress warnings from routes files
+      "-Wconf:src=twirl/.*:silent",  // Suppress warnings from twirl files
+      "-Wconf:src=target/.*:silent", // Suppress warnings from target files
+      "-Wconf:msg=Flag.*repeatedly:silent", // Suppress repeated flag warnings
     ),
     libraryDependencies ++= AppDependencies(),
     retrieveManaged := true,
@@ -86,7 +79,7 @@ lazy val root = (project in file("."))
     }
   )
 
-lazy val testSettings: Seq[Def.Setting[_]] = Seq(
+lazy val testSettings: Seq[Def.Setting[?]] = Seq(
   fork := true,
   unmanagedSourceDirectories += baseDirectory.value / "test-utils"
 )

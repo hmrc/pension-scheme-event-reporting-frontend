@@ -43,7 +43,7 @@ class LumpSumAmountAndDateFormProvider @Inject() extends Mappings with Transform
           ),
         localDateMappingWithDateRange(field = "lumpSumDate", date = (min, max))
       )
-      (LumpSumDetails.apply)(LumpSumDetails.unapply)
+      (LumpSumDetails.apply)(l => Some(Tuple.fromProductTyped(l)))
     )
 }
 

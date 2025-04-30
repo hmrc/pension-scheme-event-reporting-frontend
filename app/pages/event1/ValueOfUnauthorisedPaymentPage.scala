@@ -21,7 +21,7 @@ import models.UserAnswers
 import models.enumeration.EventType
 import pages.common.MembersOrEmployersPage
 import pages.event1.member.PaymentNaturePage
-import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
+import pages.{NonEmptyWaypoints, Page, QuestionPage, RecoveryOps, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 

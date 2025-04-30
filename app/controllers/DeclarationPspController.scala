@@ -120,7 +120,7 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
   }
 
   private def sendEmail(pspName: String, email: String, taxYear: String, schemeName: String)(
-    implicit request: DataRequest[_], hc: HeaderCarrier): Future[EmailStatus] = {
+    implicit request: DataRequest[?], hc: HeaderCarrier): Future[EmailStatus] = {
     val requestId = hc.requestId.map(_.value).getOrElse(request.headers.get("X-Session-ID").getOrElse(""))
 
     val submittedDate = formatSubmittedDate(ZonedDateTime.now(ZoneId.of("Europe/London")))
@@ -161,7 +161,6 @@ class DeclarationPspController @Inject()(val controllerComponents: MessagesContr
     val psaOrPsp = loggedInUser.administratorOrPractitioner match {
       case AdministratorOrPractitioner.Administrator => "PSA"
       case AdministratorOrPractitioner.Practitioner => "PSP"
-      case _ => throw new RuntimeException("Unknown user type")
     }
     optAuthorisingPsaId.map { authorisingPsaId =>
       Json.obj(

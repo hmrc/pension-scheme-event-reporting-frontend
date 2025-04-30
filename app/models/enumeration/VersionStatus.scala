@@ -28,5 +28,5 @@ object VersionStatus extends Enumerable.Implicits {
   private val values: List[VersionStatus] = List(NotStarted, Compiled, Submitted)
 
   implicit val enumerable: Enumerable[VersionStatus] =
-    Enumerable(values.map(v => v.toString -> v): _*)
+    Enumerable(values.map(v => v.toString -> v)*)
 }

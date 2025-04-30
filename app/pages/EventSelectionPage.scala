@@ -90,7 +90,7 @@ private object EventSelectionPageUtility {
 
     val rangeAsList = (0 until countForEvent).toList
 
-    val getIndex = Index.intToIndex _
+    val getIndex = Index.intToIndex
 
     val questionWasAnswered: Option[Any] => Boolean = {
       case Some(_) => true

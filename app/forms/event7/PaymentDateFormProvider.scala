@@ -33,6 +33,6 @@ class PaymentDateFormProvider @Inject() extends Mappings with Transforms { // sc
       mapping(
         localDateMappingWithDateRange(field = "paymentDate", date = (startDate, endDate))
       )
-      (PaymentDate.apply)(PaymentDate.unapply)
+      (PaymentDate.apply)(p => Some(p.date))
     )
 }

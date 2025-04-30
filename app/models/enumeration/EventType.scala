@@ -141,5 +141,5 @@ object EventType extends Enumerable.Implicits {
   implicit val jsLiteral: JavascriptLiteral[EventType] = (value: EventType) => value.toString
 
   implicit val enumerable: Enumerable[EventType] =
-    Enumerable(values.map(v => v.toString -> v): _*)
+    Enumerable(values.map(v => v.toString -> v)*)
 }

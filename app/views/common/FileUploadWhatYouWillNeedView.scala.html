@@ -21,7 +21,7 @@
    govukButton: GovukButton
 )
 
-@(continueUrl: String, templateDownloadLink: Call, instructionsDownloadLink: Call, eventType: EventType)(implicit request: RequiredSchemeDataRequest[_], messages: Messages)
+@(continueUrl: String, templateDownloadLink: Call, instructionsDownloadLink: Call, eventType: EventType)(implicit request: RequiredSchemeDataRequest[?], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages(s"fileUploadWhatYouWillNeed.event${eventType.toString}.title"))) {
 

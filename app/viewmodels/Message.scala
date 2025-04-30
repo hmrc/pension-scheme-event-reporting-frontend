@@ -43,7 +43,7 @@ object Message {
         case _@Literal(v) => v
         case x => x
       }
-      messages(key, transformedArgs: _*)
+      messages(key, transformedArgs*)
     }
 
     override def withArgs(args: Any*): Message =
