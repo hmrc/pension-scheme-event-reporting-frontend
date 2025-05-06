@@ -46,9 +46,7 @@ class SchemeWindUpDateController @Inject()(val controllerComponents: MessagesCon
   private val eventType = EventType.WindUp
 
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async { implicit request =>
-    val psaOrPspId = request.loggedInUser.psaIdOrPspId
-    val idValue = request.loggedInUser.idName
-    schemeConnector.getOpenDate(idValue, psaOrPspId, request.pstr).flatMap { openDate =>
+    schemeConnector.getOpenDate(request.pstr).flatMap { openDate =>
       val taxYear = getTaxYearFromOption(request.userAnswers)
       val startDate = LocalDate.of(taxYear, 4, 6)
       def form: Form[LocalDate] = formProvider(taxYear, openDate)
@@ -59,9 +57,7 @@ class SchemeWindUpDateController @Inject()(val controllerComponents: MessagesCon
 
   def onSubmit(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async {
     implicit request =>
-      val psaOrPspId = request.loggedInUser.psaIdOrPspId
-      val idValue = request.loggedInUser.idName
-      schemeConnector.getOpenDate(idValue, psaOrPspId, request.pstr).flatMap { openDate =>
+      schemeConnector.getOpenDate(request.pstr).flatMap { openDate =>
         val taxYear = getTaxYearFromOption(request.userAnswers)
         val startDate = LocalDate.of(taxYear, 4, 6)
         def form: Form[LocalDate] = formProvider(taxYear, openDate)

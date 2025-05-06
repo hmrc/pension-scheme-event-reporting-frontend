@@ -70,7 +70,7 @@ class SchemeWindUpDateControllerSpec extends SpecBase with BeforeAndAfterEach wi
   "SchemeWindUpDate Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      when(mockSchemeConnector.getOpenDate(any(), any(), any())(any(), any()))
+      when(mockSchemeConnector.getOpenDate(any())(any(), any(), any()))
         .thenReturn(Future.successful(openDate))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswersWithTaxYear), extraModules).build()
@@ -87,7 +87,7 @@ class SchemeWindUpDateControllerSpec extends SpecBase with BeforeAndAfterEach wi
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      when(mockSchemeConnector.getOpenDate(any(), any(), any())(any(), any()))
+      when(mockSchemeConnector.getOpenDate(any())(any(), any(), any()))
         .thenReturn(Future.successful(openDate))
 
       val userAnswers = emptyUserAnswersWithTaxYear.set(SchemeWindUpDatePage, validAnswer).success.value
@@ -109,7 +109,7 @@ class SchemeWindUpDateControllerSpec extends SpecBase with BeforeAndAfterEach wi
       val uaCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       when(mockUserAnswersCacheConnector.save(any(), any(), uaCaptor.capture())(any(), any(), any()))
         .thenReturn(Future.successful(()))
-      when(mockSchemeConnector.getOpenDate(any(), any(), any())(any(), any()))
+      when(mockSchemeConnector.getOpenDate(any())(any(), any(), any()))
               .thenReturn(Future.successful(openDate))
 
       val application =
@@ -136,7 +136,7 @@ class SchemeWindUpDateControllerSpec extends SpecBase with BeforeAndAfterEach wi
     "must return bad request when invalid data is submitted" in {
       when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(()))
-      when(mockSchemeConnector.getOpenDate(any(), any(), any())(any(), any()))
+      when(mockSchemeConnector.getOpenDate(any())(any(), any(), any()))
         .thenReturn(Future.successful(openDate))
 
       val application =
