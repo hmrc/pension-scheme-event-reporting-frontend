@@ -1,19 +1,7 @@
 @import "lib/govuk-frontend/dist/govuk/base";
 
-.govuk-radios__input:disabled~.govuk-radios__hint {
-  color: inherit;
-}
-
 .whitespace-nowrap {
   white-space: nowrap;
-}
-
-.govuk-back-link {
-  display: none;
-
-  &.js-enabled {
-    display: inline-block;
-  }
 }
 
 li.govuk-summary-list__actions-list-item {
