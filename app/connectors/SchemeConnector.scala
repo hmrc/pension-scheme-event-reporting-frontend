@@ -36,7 +36,7 @@ class SchemeConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig)
   extends HttpResponseHelper {
   
   def getOpenDate(pstr: String)
-                 (implicit hc: HeaderCarrier, ec: ExecutionContext, request: RequiredSchemeDataRequest[_]): Future[LocalDate] = {
+                 (implicit hc: HeaderCarrier, ec: ExecutionContext, request: RequiredSchemeDataRequest[?]): Future[LocalDate] = {
 
     val schemeHc = hc.withExtraHeaders("pstr" -> pstr)
     openDate(url"${config.openDateUrl(request.srn)}?loggedInAsPsa=${request.loggedInUser.administratorOrPractitioner == Administrator}")(schemeHc, ec)
