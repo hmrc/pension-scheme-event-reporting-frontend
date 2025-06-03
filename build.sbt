@@ -66,13 +66,6 @@ lazy val root = (project in file("."))
     pipelineStages := Seq(digest),
     // below line required to force asset pipeline to operate in dev rather than only prod
     Assets / pipelineStages := Seq(concat),
-    // auto-run migrate script after g8Scaffold task
-    g8Scaffold := {
-      g8Scaffold.evaluated
-      streams.value.log.info("Running migrate script")
-      val scriptPath = baseDirectory.value.getCanonicalPath + "/migrate.sh"
-      s"bash -c $scriptPath".!
-    }
   )
 
 lazy val testSettings: Seq[Def.Setting[?]] = Seq(
