@@ -18,6 +18,8 @@ package connectors
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
+import models.enumeration.AdministratorOrPractitioner.Administrator
+import models.requests.RequiredSchemeDataRequest
 import models.{PsaSchemeDetails, PspSchemeDetails}
 import play.api.http.Status._
 import play.api.libs.json._
@@ -32,19 +34,14 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SchemeConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig)
   extends HttpResponseHelper {
-  def getOpenDate(idType: String, idValue: String, pstr: String)
-                 (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[LocalDate] = {
-    val idTypeValue = idType match {
-      case "pspId" => Some("pspid")
-      case "psaId" => Some("psaid")
-      case _ => None
-    }
+  
+  def getOpenDate(pstr: String)
+                 (implicit hc: HeaderCarrier, ec: ExecutionContext, request: RequiredSchemeDataRequest[?]): Future[LocalDate] = {
 
-    idTypeValue.map { idTypeValue =>
-      val schemeHc = hc.withExtraHeaders("idType" -> idTypeValue, "idValue" -> idValue, "pstr" -> pstr)
-      openDate(url"${config.openDateUrl}")(schemeHc, ec)
-    }.getOrElse(Future.failed(new IllegalArgumentException("Invalid idType")))
+    val schemeHc = hc.withExtraHeaders("pstr" -> pstr)
+    openDate(url"${config.openDateUrl(request.srn)}?loggedInAsPsa=${request.loggedInUser.administratorOrPractitioner == Administrator}")(schemeHc, ec)
   }
+  
   private def openDate(url: URL)
                            (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[LocalDate] = {
     http.get(url).execute[HttpResponse].map { response =>
