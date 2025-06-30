@@ -39,7 +39,8 @@ class AuthController @Inject()(
     implicit request =>
       sessionDataCacheConnector.removeAll().flatMap { _ =>
         userAnswersCacheConnector.removeAll(request.pstr)
-        Future.successful(Redirect(config.signOutUrl))
+        Future.successful(Redirect(config.signOutUrl,
+          Map("continue" -> Seq(config.exitSurveyUrl))))
       }
   }
 
@@ -47,8 +48,8 @@ class AuthController @Inject()(
     implicit request =>
       sessionDataCacheConnector.removeAll().flatMap { _ =>
         userAnswersCacheConnector.removeAll(request.pstr)
-        Future.successful(Redirect(config.loginUrl,
-          Map("continue" -> Seq(config.loginContinueUrl))).withNewSession)
+        Future.successful(Redirect(config.signOutUrl,
+          Map("continue" -> Seq(config.signOutNoSurveyUrl))))
       }
   }
 }
