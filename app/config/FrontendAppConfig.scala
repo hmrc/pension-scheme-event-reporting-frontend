@@ -59,6 +59,8 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
   val loginUrl: String = configuration.get[String]("urls.login")
   val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
   val signOutUrl: String = loadConfig("urls.signOut")
+  val exitSurveyUrl: String = loadConfig("urls.feedback")
+  val signOutNoSurveyUrl : String = s"$loginUrl?continue=$loginContinueUrl"
 
   def administratorOrPractitionerUrl: String = loadConfig("urls.administratorOrPractitioner")
 
