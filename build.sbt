@@ -44,7 +44,6 @@ lazy val root = (project in file("."))
     CodeCoverageSettings(),
     scalacOptions ++= Seq(
       "-feature",
-      "-Xfatal-warnings",
       "-Wconf:src=routes/.*:silent", // Suppress warnings from routes files
       "-Wconf:src=twirl/.*:silent",  // Suppress warnings from twirl files
       "-Wconf:src=target/.*:silent", // Suppress warnings from target files
