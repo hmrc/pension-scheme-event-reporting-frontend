@@ -5,6 +5,16 @@ if (window.history && window.history.replaceState && typeof window.history.repla
 
 document.addEventListener('DOMContentLoaded', function(event) {
 
+     var backLink = document.querySelector('.govuk-back-link');
+    if (backLink) {
+        backLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (window.history && window.history.back && typeof window.history.back === 'function') {
+                window.history.back();
+            }
+        });
+    }
+
     // handle print link
     var printLink = document.querySelector('#print-this-page-link');
     if (printLink) {
