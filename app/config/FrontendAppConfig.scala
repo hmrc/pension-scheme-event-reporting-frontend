@@ -144,4 +144,6 @@ class FrontendAppConfig @Inject()(configuration: Configuration, servicesConfig: 
   val validEvent22Header: String = configuration.get[String]("validEvent22Header")
   val validEvent23Header: String = configuration.get[String]("validEvent23Header")
   val validEvent24Header: String = configuration.get[String]("validEvent24Header")
+
+  lazy val forceServiceNavigation: Boolean = configuration.getOptional[Boolean]("play-frontend-hmrc.forceServiceNavigation").getOrElse(false)
 }
