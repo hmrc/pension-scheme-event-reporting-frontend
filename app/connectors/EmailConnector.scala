@@ -24,8 +24,8 @@ import play.api.Logger
 import play.api.http.Status.*
 import play.api.libs.json.Json
 import play.api.libs.ws.writeableOf_JsValue
+import services.JsonCryptoService
 import uk.gov.hmrc.crypto.PlainText
-import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.ApplicationCrypto
 import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
@@ -43,7 +43,7 @@ case object EmailNotSent extends WithName("EmailNotSent") with EmailStatus
 class EmailConnector @Inject()(
                                 appConfig: FrontendAppConfig,
                                 httpClientV2: HttpClientV2,
-                                crypto: ApplicationCrypto
+                                crypto: JsonCryptoService
                               ) {
 
   private val logger = Logger(classOf[EmailConnector])
@@ -56,9 +56,9 @@ class EmailConnector @Inject()(
                            email: String,
                            reportVersion: String
                          ): String = {
-    val encryptedPsaOrPspId = URLEncoder.encode(crypto.QueryParameterCrypto.encrypt(PlainText(psaOrPspId)).value, StandardCharsets.UTF_8.toString)
-    val encryptedPstr = URLEncoder.encode(crypto.QueryParameterCrypto.encrypt(PlainText(pstr)).value, StandardCharsets.UTF_8.toString)
-    val encryptedEmail = URLEncoder.encode(crypto.QueryParameterCrypto.encrypt(PlainText(email)).value, StandardCharsets.UTF_8.toString)
+    val encryptedPsaOrPspId = URLEncoder.encode(crypto.encrypt(PlainText(psaOrPspId)), StandardCharsets.UTF_8.toString)
+    val encryptedPstr = URLEncoder.encode(crypto.encrypt(PlainText(pstr)), StandardCharsets.UTF_8.toString)
+    val encryptedEmail = URLEncoder.encode(crypto.encrypt(PlainText(email)), StandardCharsets.UTF_8.toString)
 
     appConfig.eventReportingEmailCallback(schemeAdministratorType, requestId, encryptedEmail, encryptedPsaOrPspId, encryptedPstr, reportVersion)
   }
