@@ -112,14 +112,14 @@ class UpscanInitiateConnector @Inject()(httpClientV2: HttpClientV2, appConfig: F
       .setHeader(headers*)
       .execute[PreparedUpload]
       .map {
-      response =>
-        val fileReference = UpscanFileReference(response.reference.reference)
-        val postTarget = response.uploadRequest.href
-        val formFields = response.uploadRequest.fields
-        UpscanInitiateResponse(fileReference, postTarget, formFields)
-    } andThen {
-      case Failure(t) =>
-        sendFailureAuditEvent(eventType, t.getMessage, startTime)
+        response =>
+          val fileReference = UpscanFileReference(response.reference.reference)
+          val postTarget = response.uploadRequest.href
+          val formFields = response.uploadRequest.fields
+          UpscanInitiateResponse(fileReference, postTarget, formFields)
+      } andThen {
+        case Failure(t) =>
+          sendFailureAuditEvent(eventType, t.getMessage, startTime)
     }
   }
 

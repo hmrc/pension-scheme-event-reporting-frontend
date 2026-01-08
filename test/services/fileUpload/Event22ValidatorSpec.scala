@@ -101,5 +101,19 @@ class Event22ValidatorSpec extends BulkUploadSpec[Event22Validator] with BeforeA
       )
     }
 
+
+    "no Header Row in uploaded file" in {
+      val data =
+        s"""Joe,Bloggs,AA234567D,2020 to 2023,12.20
+            Steven,Bloggs,AA123456C,2022 to 2023,13.20"""
+
+
+      val ((output, errors), rowNumber) = validate(data)
+
+      errors mustBe Seq(
+        ValidationError(0, 0, "Header is not in the expected format", "")
+      )
+    }
+
   }
 }
