@@ -80,11 +80,10 @@ class CompileService @Inject()(
           case Right((pstrVal, edi, currentVersionVal, memberIdToDelete)) =>
             eventReportingConnector.deleteMember(pstrVal, edi, currentVersionVal, memberIdToDelete)
         }
-        val maskedPstr = if (pstr.length > 4) s"***${pstr.takeRight(4)}" else "***"
         compileOrDelete
           .andThen {
-            case Success(_) => logger.info(s"CompileService.doCompile backend call succeeded for pstr=$maskedPstr")
-            case Failure(e) => logger.error(s"CompileService.doCompile backend call failed for pstr=$maskedPstr", e)
+            case Success(_) => logger.info(s"CompileService.doCompile backend call succeeded for pstr=$pstr")
+            case Failure(e) => logger.error(s"CompileService.doCompile backend call failed for pstr=$pstr", e)
           }
           .flatMap(_ => delay)
       }
