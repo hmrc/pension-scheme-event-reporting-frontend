@@ -31,6 +31,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.duration.DurationInt
 import scala.concurrent.{ExecutionContext, Future, Promise}
+import scala.util.{Failure, Success}
 
 class CompileService @Inject()(
                                 eventReportingConnector: EventReportingConnector,
@@ -69,15 +70,23 @@ class CompileService @Inject()(
         case _ => Future.unit
       }
 
-      userAnswersCacheConnector.save(pstr, updatedUA).map { _ =>
-        eventOrDelete match {
+      userAnswersCacheConnector.save(pstr, updatedUA).flatMap { _ =>
+        val compileOrDelete: Future[Unit] = eventOrDelete match {
           case Left(eventTypeVal) =>
-            eventReportingConnector.compileEvent(pstr, updatedUA.eventDataIdentifier(eventTypeVal, Some(newVersionInfo)), currentVersionInfo.version, delete)
-              .map { _ => delay }
+            eventReportingConnector.compileEvent(pstr,
+              updatedUA.eventDataIdentifier(eventTypeVal, Some(newVersionInfo)),
+              currentVersionInfo.version,
+              delete)
           case Right((pstrVal, edi, currentVersionVal, memberIdToDelete)) =>
             eventReportingConnector.deleteMember(pstrVal, edi, currentVersionVal, memberIdToDelete)
-              .map { _ => delay }
         }
+        val maskedPstr = if (pstr.length > 4) s"***${pstr.takeRight(4)}" else "***"
+        compileOrDelete
+          .andThen {
+            case Success(_) => logger.info(s"CompileService.doCompile backend call succeeded for pstr=$maskedPstr")
+            case Failure(e) => logger.error(s"CompileService.doCompile backend call failed for pstr=$maskedPstr", e)
+          }
+          .flatMap(_ => delay)
       }
     }
   }
