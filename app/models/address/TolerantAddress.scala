@@ -25,7 +25,7 @@ import scala.language.implicitConversions
 
 case class TolerantAddress(addressLine1: Option[String],
                            addressLine2: Option[String],
-                           townOrCity: Option[String],
+                           addressLine3: Option[String],
                            county: Option[String],
                            postcode: Option[String],
                            countryOpt: Option[String]) {
@@ -36,7 +36,7 @@ case class TolerantAddress(addressLine1: Option[String],
     Seq(
       this.addressLine1,
       this.addressLine2,
-      this.townOrCity,
+      this.addressLine3,
       this.county,
       this.countryOpt,
       this.postcode
@@ -45,8 +45,8 @@ case class TolerantAddress(addressLine1: Option[String],
   private def prepopAddress: Address =
     Address(
       addressLine1.getOrElse(""),
-      addressLine2,
-      townOrCity.getOrElse(""),
+      addressLine2.getOrElse(""),
+      addressLine3,
       county,
       postcode,
       countryOpt.getOrElse("")
@@ -54,50 +54,27 @@ case class TolerantAddress(addressLine1: Option[String],
 
   def toPrepopAddress: Address = toAddress.getOrElse(prepopAddress)
 
-  def toAddress: Option[Address] = (addressLine1, townOrCity, countryOpt) match {
-    case (Some(line1), Some(townOrCity), Some(country)) => Some(Address(line1, addressLine2, townOrCity, county, postcode, country))
+  def toAddress: Option[Address] = (addressLine1, addressLine2, countryOpt) match {
+    case (Some(line1), Some(addressLine2), Some(country)) => Some(Address(line1, addressLine2, addressLine3, county, postcode, country))
     case _ => shuffle
   }
 
-
+  private def emptyAddressLineCheck(addr: Seq[String], index: Int): Option[String] = {
+    if (addr(index).trim.isEmpty) None else Some(addr(index))
+  }
+  
   private def shuffle: Option[Address] = {
-    val values = Seq(addressLine1, addressLine2, townOrCity, county, postcode, countryOpt).flatten
-
-    values.length match {
-      case 5 => Some(Address(
-        values(0),
-        Some(values(1)),
-        values(2),
-        None,
-        Some(values(3)),
-        values(4)
-      ))
-      case 4 if (values(3) == "GB") => Some(Address(
-        values(0),
-        None,
-        values(1),
-        None,
-        Some(values(2)),
-        values(3)
-      ))
-      case 4 => Some(Address(
-        values(0),
-        Some(values(1)),
-        values(2),
-        None,
-        None,
-        values(3)
-      ))
-      case 3 => Some(Address(
-        values(0),
-        None,
-        values(1),
-        None,
-        None,
-        values(2)
-      ))
-      case _ => None
-    }
+    val values = Seq(addressLine1, addressLine2, addressLine3, county, postcode, countryOpt).flatten.padTo(6, "")
+    
+    Some(Address(
+      addressLine1 = values.head,
+      addressLine2 = values(1),
+      addressLine3 = emptyAddressLineCheck(values, 2), 
+      addressLine4 = emptyAddressLineCheck(values, 3),
+      postcode = postcode,
+      country = countryOpt.getOrElse("")
+    ))
+    
   }
 
 }
@@ -197,13 +174,13 @@ object TolerantAddress {
   implicit def convert(tolerant: TolerantAddress): Option[Address] =
     for {
       addressLine1 <- tolerant.addressLine1
-      townOrCity <- tolerant.townOrCity
+      addressLine2 <- tolerant.addressLine2
       country <- tolerant.countryOpt
     } yield {
       Address(
         addressLine1,
-        tolerant.addressLine2,
-        townOrCity,
+        addressLine2,
+        tolerant.addressLine3,
         tolerant.county,
         tolerant.postcode,
         country

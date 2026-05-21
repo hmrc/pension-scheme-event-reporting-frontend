@@ -114,7 +114,7 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach with 
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(
             "addressLine1" -> seqTolerantAddresses.head.addressLine1.get,
             "addressLine2" -> seqTolerantAddresses.head.addressLine2.get,
-            "townOrCity" -> seqTolerantAddresses.head.townOrCity.get,
+            "townOrCity" -> seqTolerantAddresses.head.addressLine3.get,
             "county" -> seqTolerantAddresses.head.county.get,
             "postCode" -> seqTolerantAddresses.head.postcode.get,
             "country" -> seqTolerantAddresses.head.countryOpt.get
@@ -138,7 +138,7 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach with 
           FakeRequest(POST, postRoute).withFormUrlEncodedBody(
             "addressLine1" -> "",
             "addressLine2" -> seqTolerantAddresses.head.addressLine2.get,
-            "townOrCity" -> seqTolerantAddresses.head.townOrCity.get,
+            "townOrCity" -> seqTolerantAddresses.head.addressLine3.get,
             "county" -> seqTolerantAddresses.head.county.get,
             "postCode" -> seqTolerantAddresses.head.postcode.get,
             "country" -> seqTolerantAddresses.head.countryOpt.get
@@ -165,8 +165,8 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach with 
       addressOption mustBe defined
       addressOption.get.addressLine1 mustEqual "Line 1"
       addressOption.get.addressLine2 mustEqual Some("Line 2")
-      addressOption.get.townOrCity mustEqual "Line 3"
-      addressOption.get.county mustEqual Some("Line 4")
+      addressOption.get.addressLine3 mustEqual "Line 3"
+      addressOption.get.addressLine4 mustEqual Some("Line 4")
       addressOption.get.postcode mustEqual Some("12345")
       addressOption.get.country mustEqual "Country"
     }
@@ -186,8 +186,8 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach with 
       addressOption mustBe defined
       addressOption.get.addressLine1 mustEqual "Line 1"
       addressOption.get.addressLine2 mustEqual Some("Line 2")
-      addressOption.get.townOrCity mustEqual "Line 4"
-      addressOption.get.county mustEqual None
+      addressOption.get.addressLine3 mustEqual "Line 4"
+      addressOption.get.addressLine4 mustEqual None
       addressOption.get.postcode mustEqual Some("12345")
       addressOption.get.country mustEqual "Country"
     }
@@ -207,8 +207,8 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach with 
       addressOption mustBe defined
       addressOption.get.addressLine1 mustEqual "Line 3"
       addressOption.get.addressLine2 mustEqual Some("Line 4")
-      addressOption.get.townOrCity mustEqual "12345"
-      addressOption.get.county mustEqual None
+      addressOption.get.addressLine3 mustEqual "12345"
+      addressOption.get.addressLine4 mustEqual None
       addressOption.get.postcode mustEqual None
       addressOption.get.country mustEqual "Country"
     }
@@ -228,8 +228,8 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach with 
       addressOption mustBe defined
       addressOption.get.addressLine1 mustEqual "Line 3"
       addressOption.get.addressLine2 mustEqual None
-      addressOption.get.townOrCity mustEqual "Line 4"
-      addressOption.get.county mustEqual None
+      addressOption.get.addressLine3 mustEqual "Line 4"
+      addressOption.get.addressLine4 mustEqual None
       addressOption.get.postcode mustEqual Some("12345")
       addressOption.get.country mustEqual "GB"
     }

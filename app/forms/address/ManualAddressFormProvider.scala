@@ -31,8 +31,8 @@ class ManualAddressFormProvider @Inject()(countryOptions: CountryOptions) extend
     Form(
       mapping(
         addressLines._1 -> addressLineMapping(requiredAddressLineArgs(addressLines._1, name)),
-        addressLines._2 -> optionalAddressLineMapping(optionalAddressLineArgs(addressLines._2, name)),
-        addressLines._3 -> addressLineMapping(requiredAddressLineArgs(addressLines._3, name)),
+        addressLines._2 -> addressLineMapping(requiredAddressLineArgs(addressLines._2, name)),
+        addressLines._3 -> optionalAddressLineMapping(optionalAddressLineArgs(addressLines._3, name)),
         addressLines._4 -> optionalAddressLineMapping(optionalAddressLineArgs(addressLines._4, name)),
         postCodeAndCountry._1 -> postCodeWithCountryMapping(postCodeArgs(postCodeAndCountry._1, name)),
         postCodeAndCountry._2 -> countryMapping(countryOptions, countryArgs(postCodeAndCountry._2, name))

@@ -53,7 +53,7 @@ There are several different options for enrolling through the auth login stub. I
 
 For access to the **Pension Administrator dashboard** for local development, enter the following information: 
 
-**Redirect url -** http://localhost:8204/manage-pension-schemes/overview 
+**Redirect url -** http://localhost:8204/manage-pension-schemes/overview
 
 **GNAP Token -** NO 
 

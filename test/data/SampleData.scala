@@ -78,16 +78,16 @@ object SampleData extends SpecBase {
     Address(
       addressLine1 = "addr11",
       addressLine2 = Some("addr12"),
-      townOrCity = "addr13",
-      county = Some("addr14"),
+      addressLine3 = "addr13",
+      addressLine4 = Some("addr14"),
       postcode = Some("zz11zz"),
       country = "GB"
     ),
     Address(
       addressLine1 = "addr21",
       addressLine2 = Some("addr22"),
-      townOrCity = "addr23",
-      county = Some("addr24"),
+      addressLine3 = "addr23",
+      addressLine4 = Some("addr24"),
       postcode = Some("zz11zz"),
       country = "GB"
     )
@@ -96,7 +96,7 @@ object SampleData extends SpecBase {
   val tolerantAddressRequiredFieldsOnly: TolerantAddress = TolerantAddress(
       addressLine1 = Some("addr11"),
       addressLine2 = Some("addr13"),
-      townOrCity = Some("ES"),
+      addressLine3 = Some("ES"),
       county = None,
       postcode = None,
       countryOpt = None
@@ -105,8 +105,8 @@ object SampleData extends SpecBase {
   val addressRequiredFieldsOnly: Address = Address(
     addressLine1 = "addr11",
     addressLine2 = None,
-    townOrCity = "addr13",
-    county = None,
+    addressLine3 = "addr13",
+    addressLine4 = None,
     postcode = None,
     country = "ES"
   )
@@ -114,8 +114,8 @@ object SampleData extends SpecBase {
   val employerAddress: Address = Address(
     addressLine1 = "addr11",
     addressLine2 = Some("addr12"),
-    townOrCity = "addr13",
-    county = Some("addr14"),
+    addressLine3 = "addr13",
+    addressLine4 = Some("addr14"),
     postcode = Some("zz11zz"),
     country = "GB"
   )
@@ -123,8 +123,8 @@ object SampleData extends SpecBase {
   val event1EmployerAddress: Address = Address(
     addressLine1 = "10 Other Place",
     addressLine2 = Some("Some District"),
-    townOrCity = "Anytown",
-    county = Some("Anyplace"),
+    addressLine3 = "Anytown",
+    addressLine4 = Some("Anyplace"),
     postcode = Some("ZZ1 1ZZ"),
     country = "GB"
   )
@@ -132,8 +132,8 @@ object SampleData extends SpecBase {
   val memberAddress: Address = Address(
     addressLine1 = "10 Other Place",
     addressLine2 = Some("Some District"),
-    townOrCity = "Anytown",
-    county = Some("Anyplace"),
+    addressLine3 = "Anytown",
+    addressLine4 = Some("Anyplace"),
     postcode = Some("ZZ1 1ZZ"),
     country = "GB"
   )
@@ -142,7 +142,7 @@ object SampleData extends SpecBase {
     TolerantAddress(
       addressLine1 = Some("addr11"),
       addressLine2 = Some("addr12"),
-      townOrCity = Some("addr13"),
+      addressLine3 = Some("addr13"),
       county = Some("addr14"),
       postcode = Some("zz11zz"),
       countryOpt = Some("GB")
@@ -150,7 +150,7 @@ object SampleData extends SpecBase {
     TolerantAddress(
       addressLine1 = Some("addr21"),
       addressLine2 = Some("addr22"),
-      townOrCity = Some("addr23"),
+      addressLine3 = Some("addr23"),
       county = Some("addr24"),
       postcode = Some("zz11zz"),
       countryOpt = Some("GB")

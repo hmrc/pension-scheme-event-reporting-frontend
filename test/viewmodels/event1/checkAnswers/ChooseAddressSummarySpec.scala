@@ -52,8 +52,8 @@ class ChooseAddressSummarySpec extends AnyFreeSpec with Matchers with OptionValu
     Html(
       addrLineToHtml(addr.addressLine1) +
         optionalAddrLineToHtml(addr.addressLine2) +
-        addrLineToHtml(addr.townOrCity) +
-        optionalAddrLineToHtml(addr.county) +
+        addrLineToHtml(addr.addressLine3) +
+        optionalAddrLineToHtml(addr.addressLine4) +
         optionalAddrLineToHtml(addr.postcode) +
         addrLineToHtml(messages("country." + addr.country))
     )

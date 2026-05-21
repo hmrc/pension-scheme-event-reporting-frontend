@@ -46,7 +46,7 @@ class AddressLookupConnector @Inject()(httpClientV2: HttpClientV2, config: Front
       .setHeader(headers*).execute[HttpResponse] flatMap   {
       case response if response.status `equals` OK => Future.successful {
         response.json.as[Seq[TolerantAddress]]
-          .filterNot(a => a.addressLine1.isEmpty && a.addressLine2.isEmpty && a.townOrCity.isEmpty &&
+          .filterNot(a => a.addressLine1.isEmpty && a.addressLine2.isEmpty && a.addressLine3.isEmpty &&
             a.county.isEmpty)
       }
       case response =>

@@ -115,7 +115,7 @@ class ManualAddressFormProviderSpec extends SpecBase with AddressBehaviours with
       messages("address.county.error.length", companyName),
       messages("address.county.error.invalid", companyName),
       validData,
-      (address: Address) => address.county
+      (address: Address) => address.addressLine4
     )
   }
 
