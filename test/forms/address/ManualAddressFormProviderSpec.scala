@@ -52,8 +52,8 @@ class ManualAddressFormProviderSpec extends SpecBase with AddressBehaviours with
   "Address form" - {
     behave like questionForm(Address(
       addressLine1,
-      Some(addressLine2),
-      townOrCity,
+      addressLine2,
+      Some(townOrCity),
       Some(county),
       Some(postCode),
       "GB"
@@ -94,19 +94,19 @@ class ManualAddressFormProviderSpec extends SpecBase with AddressBehaviours with
 
     behave like formWithAddressField(
       form,
-      "townOrCity",
-      messages("address.townOrCity.error.required", companyName),
-      messages("address.townOrCity.error.length", companyName),
-      messages("address.townOrCity.error.invalid", companyName)
+      "addressLine2",
+      messages("address.addressLine2.error.required", companyName),
+      messages("address.addressLine2.error.length", companyName),
+      messages("address.addressLine2.error.invalid", companyName)
     )
 
     behave like formWithOptionalAddressField(
       form,
-      "addressLine2",
-      messages("address.addressLine2.error.length", companyName),
-      messages("address.addressLine2.error.invalid", companyName),
+      "townOrCity",
+      messages("address.townOrCity.error.length", companyName),
+      messages("address.townOrCity.error.invalid", companyName),
       validData,
-      (address: Address) => address.addressLine2
+      (address: Address) => address.addressLine3
     )
 
     behave like formWithOptionalAddressField(

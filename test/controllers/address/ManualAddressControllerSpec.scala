@@ -164,8 +164,8 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach with 
 
       addressOption mustBe defined
       addressOption.get.addressLine1 mustEqual "Line 1"
-      addressOption.get.addressLine2 mustEqual Some("Line 2")
-      addressOption.get.addressLine3 mustEqual "Line 3"
+      addressOption.get.addressLine2 mustEqual "Line 2"
+      addressOption.get.addressLine3 mustEqual Some("Line 3")
       addressOption.get.addressLine4 mustEqual Some("Line 4")
       addressOption.get.postcode mustEqual Some("12345")
       addressOption.get.country mustEqual "Country"
@@ -185,8 +185,8 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach with 
 
       addressOption mustBe defined
       addressOption.get.addressLine1 mustEqual "Line 1"
-      addressOption.get.addressLine2 mustEqual Some("Line 2")
-      addressOption.get.addressLine3 mustEqual "Line 4"
+      addressOption.get.addressLine2 mustEqual "Line 2"
+      addressOption.get.addressLine3 mustEqual Some("Line 4")
       addressOption.get.addressLine4 mustEqual None
       addressOption.get.postcode mustEqual Some("12345")
       addressOption.get.country mustEqual "Country"
@@ -206,8 +206,8 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach with 
 
       addressOption mustBe defined
       addressOption.get.addressLine1 mustEqual "Line 3"
-      addressOption.get.addressLine2 mustEqual Some("Line 4")
-      addressOption.get.addressLine3 mustEqual "12345"
+      addressOption.get.addressLine2 mustEqual "Line 4"
+      addressOption.get.addressLine3 mustEqual Some("12345")
       addressOption.get.addressLine4 mustEqual None
       addressOption.get.postcode mustEqual None
       addressOption.get.country mustEqual "Country"
@@ -227,8 +227,8 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach with 
 
       addressOption mustBe defined
       addressOption.get.addressLine1 mustEqual "Line 3"
-      addressOption.get.addressLine2 mustEqual None
-      addressOption.get.addressLine3 mustEqual "Line 4"
+      addressOption.get.addressLine2 mustEqual "Line 4"
+      addressOption.get.addressLine3 mustEqual None
       addressOption.get.addressLine4 mustEqual None
       addressOption.get.postcode mustEqual Some("12345")
       addressOption.get.country mustEqual "GB"
