@@ -56,6 +56,7 @@ case class TolerantAddress(addressLine1: Option[String],
 
   def toAddress: Option[Address] = (addressLine1, addressLine2, countryOpt) match {
     case (Some(line1), Some(addressLine2), Some(country)) => Some(Address(line1, addressLine2, addressLine3, addressLine4, postcode, country))
+    //case _ if countryOpt.get != "GB" => shuffleNonUK
     case _ => shuffle
   }
 
