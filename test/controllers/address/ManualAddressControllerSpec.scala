@@ -115,7 +115,7 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach with 
             "addressLine1" -> seqTolerantAddresses.head.addressLine1.get,
             "addressLine2" -> seqTolerantAddresses.head.addressLine2.get,
             "townOrCity" -> seqTolerantAddresses.head.addressLine3.get,
-            "county" -> seqTolerantAddresses.head.county.get,
+            "county" -> seqTolerantAddresses.head.addressLine4.get,
             "postCode" -> seqTolerantAddresses.head.postcode.get,
             "country" -> seqTolerantAddresses.head.countryOpt.get
           )
@@ -139,7 +139,7 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach with 
             "addressLine1" -> "",
             "addressLine2" -> seqTolerantAddresses.head.addressLine2.get,
             "townOrCity" -> seqTolerantAddresses.head.addressLine3.get,
-            "county" -> seqTolerantAddresses.head.county.get,
+            "county" -> seqTolerantAddresses.head.addressLine4.get,
             "postCode" -> seqTolerantAddresses.head.postcode.get,
             "country" -> seqTolerantAddresses.head.countryOpt.get
           )
@@ -174,8 +174,8 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach with 
     "must correctly convert TolerantAddress to Address if one value missing" in {
       val tolerantAddress = TolerantAddress(
         Some("Line 1"),
-        Some("Line 2"),
         None,
+        Some("Line 3"),
         Some("Line 4"),
         Some("12345"),
         Some("Country")
@@ -185,7 +185,7 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach with 
 
       addressOption mustBe defined
       addressOption.get.addressLine1 mustEqual "Line 1"
-      addressOption.get.addressLine2 mustEqual "Line 2"
+      addressOption.get.addressLine2 mustEqual "Line 3"
       addressOption.get.addressLine3 mustEqual Some("Line 4")
       addressOption.get.addressLine4 mustEqual None
       addressOption.get.postcode mustEqual Some("12345")
@@ -204,12 +204,14 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach with 
 
       val addressOption = tolerantAddress.toAddress
 
+      println("\n\n\n" + addressOption + "\n\n")
+
       addressOption mustBe defined
       addressOption.get.addressLine1 mustEqual "Line 3"
       addressOption.get.addressLine2 mustEqual "Line 4"
-      addressOption.get.addressLine3 mustEqual Some("12345")
+      addressOption.get.addressLine3 mustEqual None
       addressOption.get.addressLine4 mustEqual None
-      addressOption.get.postcode mustEqual None
+      addressOption.get.postcode mustEqual Some("12345")
       addressOption.get.country mustEqual "Country"
     }
 

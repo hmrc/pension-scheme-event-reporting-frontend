@@ -96,10 +96,10 @@ object SampleData extends SpecBase {
   val tolerantAddressRequiredFieldsOnly: TolerantAddress = TolerantAddress(
       addressLine1 = Some("addr11"),
       addressLine2 = Some("addr13"),
-      addressLine3 = Some("ES"),
-      county = None,
+      addressLine3 = None,
+      addressLine4 = None,
       postcode = None,
-      countryOpt = None
+      countryOpt = Some("ES")
     )
 
   val addressRequiredFieldsOnly: Address = Address(
@@ -143,7 +143,7 @@ object SampleData extends SpecBase {
       addressLine1 = Some("addr11"),
       addressLine2 = Some("addr12"),
       addressLine3 = Some("addr13"),
-      county = Some("addr14"),
+      addressLine4 = Some("addr14"),
       postcode = Some("zz11zz"),
       countryOpt = Some("GB")
     ),
@@ -151,7 +151,7 @@ object SampleData extends SpecBase {
       addressLine1 = Some("addr21"),
       addressLine2 = Some("addr22"),
       addressLine3 = Some("addr23"),
-      county = Some("addr24"),
+      addressLine4 = Some("addr24"),
       postcode = Some("zz11zz"),
       countryOpt = Some("GB")
     )

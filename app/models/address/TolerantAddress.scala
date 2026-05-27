@@ -26,7 +26,7 @@ import scala.language.implicitConversions
 case class TolerantAddress(addressLine1: Option[String],
                            addressLine2: Option[String],
                            addressLine3: Option[String],
-                           county: Option[String],
+                           addressLine4: Option[String],
                            postcode: Option[String],
                            countryOpt: Option[String]) {
 
@@ -37,7 +37,7 @@ case class TolerantAddress(addressLine1: Option[String],
       this.addressLine1,
       this.addressLine2,
       this.addressLine3,
-      this.county,
+      this.addressLine4,
       this.countryOpt,
       this.postcode
     ).flatten(s => s)
@@ -47,7 +47,7 @@ case class TolerantAddress(addressLine1: Option[String],
       addressLine1.getOrElse(""),
       addressLine2.getOrElse(""),
       addressLine3,
-      county,
+      addressLine4,
       postcode,
       countryOpt.getOrElse("")
     )
@@ -55,7 +55,7 @@ case class TolerantAddress(addressLine1: Option[String],
   def toPrepopAddress: Address = toAddress.getOrElse(prepopAddress)
 
   def toAddress: Option[Address] = (addressLine1, addressLine2, countryOpt) match {
-    case (Some(line1), Some(addressLine2), Some(country)) => Some(Address(line1, addressLine2, addressLine3, county, postcode, country))
+    case (Some(line1), Some(addressLine2), Some(country)) => Some(Address(line1, addressLine2, addressLine3, addressLine4, postcode, country))
     case _ => shuffle
   }
 
@@ -64,7 +64,7 @@ case class TolerantAddress(addressLine1: Option[String],
   }
   
   private def shuffle: Option[Address] = {
-    val values = Seq(addressLine1, addressLine2, addressLine3, county, postcode, countryOpt).flatten.padTo(6, "")
+    val values = Seq(addressLine1, addressLine2, addressLine3, addressLine4).flatten.padTo(4, "")
     
     Some(Address(
       addressLine1 = values.head,
@@ -181,7 +181,7 @@ object TolerantAddress {
         addressLine1,
         addressLine2,
         tolerant.addressLine3,
-        tolerant.county,
+        tolerant.addressLine4,
         tolerant.postcode,
         country
       )
