@@ -54,11 +54,14 @@ case class TolerantAddress(addressLine1: Option[String],
 
   def toPrepopAddress: Address = toAddress.getOrElse(prepopAddress)
 
-  def toAddress: Option[Address] = (addressLine1, addressLine2, countryOpt) match {
-    case (Some(line1), Some(addressLine2), Some(country)) => Some(Address(line1, addressLine2, addressLine3, addressLine4, postcode, country))
-    //case _ if countryOpt.get != "GB" => shuffleNonUK
-    case _ => shuffle
-  }
+  def toAddress: Option[Address] =
+    (for {
+      addressLine1 <- addressLine1
+      addressLine2 <- addressLine2
+      country <- countryOpt
+    } yield Address(addressLine1, addressLine2, addressLine3, addressLine4, postcode, country))
+      .orElse(shuffle)
+
 
   private def emptyAddressLineCheck(addr: Seq[String], index: Int): Option[String] = {
     if (addr(index).trim.isEmpty) None else Some(addr(index))

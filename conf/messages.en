@@ -453,7 +453,6 @@ address.addressLine1.error.invalid  = Address line 1 must only include letters, 
 address.addressLine2.error.required = Enter address line 2
 address.addressLine2.error.length   = Address line 2 must be 35 characters or fewer
 address.addressLine2.error.invalid  = Address line 2 must only include letters, spaces, ampersands (&), grave accents (à), apostrophes, hyphens, full stops and carets (^)
-address.townOrCity.error.required = Enter Town or City
 address.townOrCity.error.length   = Town or City must be 35 characters or fewer
 address.townOrCity.error.invalid  = Town or City must only include letters, spaces, ampersands (&), grave accents (à), apostrophes, hyphens, full stops and carets (^)
 address.county.error.length   = County must be 35 characters or fewer

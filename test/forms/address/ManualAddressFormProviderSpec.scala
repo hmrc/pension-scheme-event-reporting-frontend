@@ -67,7 +67,7 @@ class ManualAddressFormProviderSpec extends SpecBase with AddressBehaviours with
       countryOptions,
       Map(
         "addressLine1" -> addressLine1,
-        "townOrCity" -> townOrCity
+        "addressLine2" -> addressLine2
       )
     )
 
@@ -78,7 +78,7 @@ class ManualAddressFormProviderSpec extends SpecBase with AddressBehaviours with
       "enterPostcode.error.nonUKLength",
       Map(
         "addressLine1" -> addressLine1,
-        "townOrCity" -> townOrCity
+        "addressLine2" -> addressLine2,
       ),
       (address: Address) => address.postcode.getOrElse("")
     )

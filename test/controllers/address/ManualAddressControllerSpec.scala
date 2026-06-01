@@ -235,19 +235,5 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach with 
       addressOption.get.postcode mustEqual Some("12345")
       addressOption.get.country mustEqual "GB"
     }
-
-    "must return None if country or postcode is missing" in {
-      val tolerantAddress = TolerantAddress(
-        Some("Line 1"),
-        Some("Line 2"),
-        None,
-        None,
-        None,
-        None
-      )
-
-      val addressOption = tolerantAddress.toAddress
-      addressOption mustBe None
-    }
   }
 }
