@@ -68,7 +68,7 @@ case class TolerantAddress(addressLine1: Option[String],
   }
   
   private def shuffle: Option[Address] = {
-    val values = Seq(addressLine1, addressLine2, addressLine3, addressLine4).flatten.padTo(4, "")
+    val values = Seq(addressLine1, addressLine2, addressLine3, addressLine4).flatten.padTo(6, "")
     
     Some(Address(
       addressLine1 = values.head,
