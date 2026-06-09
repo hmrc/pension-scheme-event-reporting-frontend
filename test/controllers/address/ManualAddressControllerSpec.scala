@@ -203,9 +203,7 @@ class ManualAddressControllerSpec extends SpecBase with BeforeAndAfterEach with 
       )
 
       val addressOption = tolerantAddress.toAddress
-
-      println("\n\n\n" + addressOption + "\n\n")
-
+      
       addressOption mustBe defined
       addressOption.get.addressLine1 mustEqual "Line 3"
       addressOption.get.addressLine2 mustEqual "Line 4"
