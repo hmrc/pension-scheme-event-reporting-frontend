@@ -43,9 +43,9 @@ object ChooseAddressSummary {
 
     Html(
       addrLineToHtml(addr.addressLine1) +
-        optionalAddrLineToHtml(addr.addressLine2) +
-        addrLineToHtml(addr.townOrCity) +
-        optionalAddrLineToHtml(addr.county) +
+        addrLineToHtml(addr.addressLine2) +
+        optionalAddrLineToHtml(addr.addressLine3) +
+        optionalAddrLineToHtml(addr.addressLine4) +
         optionalAddrLineToHtml(addr.postcode) +
         addrLineToHtml(messages("country." + addr.country))
     )

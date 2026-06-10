@@ -161,8 +161,8 @@ class Event1ValidatorSpec extends BulkUploadSpec[Event1Validator] with BeforeAnd
                                         |        "address" : {
                                         |          "addressLine1" : "10 Other Place",
                                         |          "addressLine2" : "Some District",
-                                        |          "townOrCity" : "Anytown",
-                                        |          "county" : "Anyplace",
+                                        |          "addressLine3" : "Anytown",
+                                        |          "addressLine4" : "Anyplace",
                                         |          "postcode" : "ZZ1 1ZZ",
                                         |          "country" : "GB"
                                         |        }
@@ -237,8 +237,8 @@ class Event1ValidatorSpec extends BulkUploadSpec[Event1Validator] with BeforeAnd
                                         |        "address" : {
                                         |          "addressLine1" : "10 Other Place",
                                         |          "addressLine2" : "Some District",
-                                        |          "townOrCity" : "Anytown",
-                                        |          "county" : "Anyplace",
+                                        |          "addressLine3" : "Anytown",
+                                        |          "addressLine4" : "Anyplace",
                                         |          "postcode" : "ZZ1 1ZZ",
                                         |          "country" : "GB"
                                         |        }
@@ -264,8 +264,8 @@ class Event1ValidatorSpec extends BulkUploadSpec[Event1Validator] with BeforeAnd
                                         |        "address" : {
                                         |          "addressLine1" : "10 Other Place",
                                         |          "addressLine2" : "Some District",
-                                        |          "townOrCity" : "Anytown",
-                                        |          "county" : "Anyplace",
+                                        |          "addressLine3" : "Anytown",
+                                        |          "addressLine4" : "Anyplace",
                                         |          "postcode" : "ZZ1 1ZZ",
                                         |          "country" : "GB"
                                         |        }
@@ -280,8 +280,8 @@ class Event1ValidatorSpec extends BulkUploadSpec[Event1Validator] with BeforeAnd
                                         |        "address" : {
                                         |          "addressLine1" : "10 Other Place",
                                         |          "addressLine2" : "Some District",
-                                        |          "townOrCity" : "Anytown",
-                                        |          "county" : "Anyplace",
+                                        |          "addressLine3" : "Anytown",
+                                        |          "addressLine4" : "Anyplace",
                                         |          "postcode" : "ZZ1 1ZZ",
                                         |          "country" : "GB"
                                         |        }
@@ -298,8 +298,8 @@ class Event1ValidatorSpec extends BulkUploadSpec[Event1Validator] with BeforeAnd
                                         |        "address" : {
                                         |          "addressLine1" : "10 Other Place",
                                         |          "addressLine2" : "Some District",
-                                        |          "townOrCity" : "Anytown",
-                                        |          "county" : "Anyplace",
+                                        |          "addressLine3" : "Anytown",
+                                        |          "addressLine4" : "Anyplace",
                                         |          "postcode" : "ZZ1 1ZZ",
                                         |          "country" : "GB"
                                         |        }
@@ -321,8 +321,8 @@ class Event1ValidatorSpec extends BulkUploadSpec[Event1Validator] with BeforeAnd
                                         |        "address" : {
                                         |          "addressLine1" : "10 Other Place",
                                         |          "addressLine2" : "Some District",
-                                        |          "townOrCity" : "Anytown",
-                                        |          "county" : "Anyplace",
+                                        |          "addressLine3" : "Anytown",
+                                        |          "addressLine4" : "Anyplace",
                                         |          "postcode" : "ZZ1 1ZZ",
                                         |          "country" : "GB"
                                         |        }
@@ -345,8 +345,8 @@ class Event1ValidatorSpec extends BulkUploadSpec[Event1Validator] with BeforeAnd
                                         |        "address" : {
                                         |          "addressLine1" : "10 Other Place",
                                         |          "addressLine2" : "Some District",
-                                        |          "townOrCity" : "Anytown",
-                                        |          "county" : "Anyplace",
+                                        |          "addressLine3" : "Anytown",
+                                        |          "addressLine4" : "Anyplace",
                                         |          "postcode" : "ZZ1 1ZZ",
                                         |          "country" : "GB"
                                         |        }
@@ -528,7 +528,7 @@ class Event1ValidatorSpec extends BulkUploadSpec[Event1Validator] with BeforeAnd
 
       errors.toList mustBe Seq(
         ValidationError(1, 20, messages("address.addressLine1.error.required", fullName), "addressLine1"),
-        ValidationError(1, 20, messages("address.townOrCity.error.required", fullName), "townOrCity"),
+        ValidationError(1, 20, messages("address.addressLine2.error.required", fullName), "addressLine2"),
         ValidationError(1, 20, messages("address.country.error.required", fullName), "country"),
         ValidationError(2, 20, messages("address.addressLine1.error.length", fullName), "addressLine1", ArraySeq(35)),
         ValidationError(2, 20, messages("address.addressLine2.error.length", fullName), "addressLine2", ArraySeq(35)),
