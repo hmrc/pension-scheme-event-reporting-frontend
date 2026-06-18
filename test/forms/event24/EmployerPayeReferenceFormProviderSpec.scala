@@ -27,7 +27,7 @@ class EmployerPayeReferenceFormProviderSpec extends StringFieldBehaviours with C
   private val lengthErrorKey = "employerPayeReference.event24.error.length"
   private val requiredErrorKey = "employerPayeReference.event24.error.required"
   private val maxLength = 12
-  private val minLength = 9
+  private val minLength = 5
 
   private val form = new EmployerPayeReferenceFormProvider()()
   val fieldName = "value"
