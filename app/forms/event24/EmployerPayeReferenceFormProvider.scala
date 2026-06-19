@@ -29,7 +29,6 @@ class EmployerPayeReferenceFormProvider @Inject() extends Mappings {
         .verifying(
           firstError(
             maxLength(12, "employerPayeReference.event24.error.length"),
-            minLength(9, "employerPayeReference.event24.error.length"),
             employerIdRefDisallowedChars("employerPayeReference.event24.error.disallowedChars"),
             employerPayeRefDigits("employerPayeReference.event24.error.leadingDigits"),
             employerPayeRefNoSlash("employerPayeReference.event24.error.noSlash")
