@@ -27,11 +27,11 @@ class Event24ValidatorSpec extends BulkUploadSpec[Event24Validator](2023) with B
   "Event 24 Validator" - {
     "return a valid result if there are no validation errors" in {
       val data =s"""$header
-                            ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
-                            ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM",12384nd82js,,123hids892h,,,NO,YES,,YES,,123/ABCDEF
-                            ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,,,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
+                            ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/AB1234
+                            ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM",12384nd82js,,123hids892h,,,NO,YES,,YES,,123/AB1234
+                            ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,,,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/AB1234
                             ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,,,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,NO,,
-                            ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,YES,,,YES,,123/ABCDEF
+                            ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,YES,,,YES,,123/AB1234
                             ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,YES,,,NO,,"""
 
       val ((output, errors), rowNumber) = validate(data)
@@ -181,7 +181,7 @@ class Event24ValidatorSpec extends BulkUploadSpec[Event24Validator](2023) with B
 
     "return validation errors when tax year out of range" in {
       val data = s"""$header
-                          ,Jane,Doe,AB123456A,13/11/2026,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF"""
+                          ,Jane,Doe,AB123456A,13/11/2026,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/AB1234"""
 
       val ((output, errors), rowNumber) = validate(data)
 
@@ -192,21 +192,21 @@ class Event24ValidatorSpec extends BulkUploadSpec[Event24Validator](2023) with B
 
     "return validation errors if present" in {
       val data = s"""$header
-                          ,,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
-                          ,Jane,,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
-                          ,Jane,Doe,,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
-                          ,Jane,Doe,AB123456A,,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
-                          ,Jane,Doe,AB123456A,13/11/202,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
-                          ,Jane,Doe,AB123456A,13/11/2023,ANNI,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
-                          ,Jane,Doe,AB123456A,13/11/2023,ANN,YES,YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
-                          ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
-                          ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
-                          ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXEDO,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
-                          ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123dnskassubcb,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/ABCDEF
-                          ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",NO,,,,,,,,,,,YES,,YES,,123/ABCDEF
-                          ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,,YES,,YES,,123/ABCDEF
-                          ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,,,YES,,123/ABCDEF
-                          ,Jane,Doe,AB123456A,13/11/2023,STAND,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,,,123/ABCDEF
+                          ,,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/AB1234
+                          ,Jane,,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/AB1234
+                          ,Jane,Doe,,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/AB1234
+                          ,Jane,Doe,AB123456A,,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/AB1234
+                          ,Jane,Doe,AB123456A,13/11/202,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/AB1234
+                          ,Jane,Doe,AB123456A,13/11/2023,ANNI,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/AB1234
+                          ,Jane,Doe,AB123456A,13/11/2023,ANN,YES,YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/AB1234
+                          ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/AB1234
+                          ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",,,123hids892h,,YES,NO,YES,,YES,,123/AB1234
+                          ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXEDO,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/AB1234
+                          ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123dnskassubcb,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,123/AB1234
+                          ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",NO,,,,,,,,,,,YES,,YES,,123/AB1234
+                          ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,,YES,,YES,,123/AB1234
+                          ,Jane,Doe,AB123456A,13/11/2023,ANN,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,,,YES,,123/AB1234
+                          ,Jane,Doe,AB123456A,13/11/2023,STAND,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,,,123/AB1234
                           ,Jane,Doe,AB123456A,13/11/2023,STAND,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,12:/ABCDEF
                           ,Jane,Doe,AB123456A,13/11/2023,STAND,"123,00",YES,,FIXED,abcdef123,"NON-RESIDENCE,PRE-COMM,SS",12384nd82js,,123hids892h,,YES,NO,YES,,YES,,"""
 

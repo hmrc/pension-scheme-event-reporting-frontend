@@ -33,7 +33,37 @@ class EmployerPayeReferenceFormProviderSpec extends StringFieldBehaviours with C
 
   def valueDetails(value: String): Map[String, String] = Map(fieldName -> value)
 
-  ".value" - {
+  "for the PAYE reference field" - {
+    "bind a valid reference with letters then numbers after the slash" in {
+      val result = form.bind(valueDetails("123/AB456"))
+      result.errors mustBe empty
+    }
+
+    "bind a valid reference with numbers then letters after the slash" in {
+      val result = form.bind(valueDetails("123/456AB"))
+      result.errors mustBe empty
+    }
+
+    "bind a valid reference with the maximum 8 characters after the slash" in {
+      val result = form.bind(valueDetails("123/AB123456"))
+      result.errors mustBe empty
+    }
+
+    "bind a valid reference with minimum 2 characters with letter and digit after the slash" in {
+      val result = form.bind(valueDetails("123/A1"))
+      result.errors mustBe empty
+    }
+
+    "not bind value with only letters after the slash" in {
+      val result = form.bind(valueDetails("123/ABCDEF"))
+      result.errors mustEqual Seq(FormError(fieldName, "employerPayeReference.event24.error.length", ArraySeq(employerIdRefCombinationRegex)))
+    }
+
+    "not bind value with only numbers after the slash" in {
+      val result = form.bind(valueDetails("123/123456"))
+      result.errors mustEqual Seq(FormError(fieldName, "employerPayeReference.event24.error.length", ArraySeq(employerIdRefCombinationRegex)))
+    }
+
     "not bind value without 3 digits at front" in {
       val result = form.bind(valueDetails("abc/123DEF"))
       result.errors mustEqual Seq(FormError(fieldName, "employerPayeReference.event24.error.leadingDigits", ArraySeq(employerIdRefDigitsRegex)))

@@ -41,6 +41,7 @@ trait Constraints {
   val employerIdRefDigitsRegex = "^[0-9]{3}[0-9a-zA-Z/]{2,9}$"
   val employerIdRefNoSlashRegex = "^[0-9]{3}/[0-9a-zA-Z]{1,8}"
   val employerIdRefDisallowedCharsRegex = "[A-Za-z0-9/]{1,12}"
+  val employerIdRefCombinationRegex = "^[0-9]{3}/(?=.*[A-Za-z])(?=.*[0-9])[0-9a-zA-Z]{1,8}"
   val protectionReferenceRegex = "^[A-Za-z0-9]{8,15}$"
   val MAX_LENGTH = 160
 
@@ -112,6 +113,8 @@ trait Constraints {
   protected def employerPayeRefNoSlash(errorKey: String): Constraint[String] = regexp(employerIdRefNoSlashRegex, errorKey)
 
   protected def employerIdRefDisallowedChars(errorKey: String): Constraint[String] = regexp(employerIdRefDisallowedCharsRegex, errorKey)
+
+  protected def employerPayeRefCombination(errorKey: String): Constraint[String] = regexp(employerIdRefCombinationRegex, errorKey)
 
   implicit def convertToOptionalConstraint[T](constraint: Constraint[T]): Constraint[Option[T]] =
     Constraint {
