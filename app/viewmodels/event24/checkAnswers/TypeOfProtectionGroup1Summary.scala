@@ -38,7 +38,7 @@ object TypeOfProtectionGroup1Summary {
       val value = HtmlContent(
         orderedSelections
           .map(selection => HtmlFormat.escape(messages(s"typeOfProtection.event24.${selection.toString}")).toString)
-          .mkString("<br>")
+          .mkString("<br><br>")
       )
 
       SummaryListRow(
