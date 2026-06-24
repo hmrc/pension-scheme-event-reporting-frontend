@@ -231,7 +231,7 @@ class Event24ValidatorSpec extends BulkUploadSpec[Event24Validator](2023) with B
         ValidationError(14, 18, "overAllowance.event24.error.required", "overAllowance"),
         ValidationError(15, 20, "marginalRate.event24.error.required", "marginalRate"),
         ValidationError(16, 22, "employerPayeReference.event24.error.disallowedChars", "employerPayeRef",
-          ArraySeq("[A-Za-z0-9/]{5,14}")),
+          ArraySeq("[A-Za-z0-9/]{5,12}")),
         ValidationError(17, 22, "employerPayeReference.event24.error.required", "employerPayeRef")
       )
     }

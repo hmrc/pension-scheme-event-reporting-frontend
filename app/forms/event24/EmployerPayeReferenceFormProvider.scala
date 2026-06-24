@@ -28,7 +28,7 @@ class EmployerPayeReferenceFormProvider @Inject() extends Mappings {
       "value" -> text("employerPayeReference.event24.error.required")
         .verifying(
           firstError(
-            maxLength(14, "employerPayeReference.event24.error.length"),
+            maxLength(12, "employerPayeReference.event24.error.length"),
             minLength(5, "employerPayeReference.event24.error.length"),
             employerIdRefDisallowedChars("employerPayeReference.event24.error.disallowedChars"),
             employerPayeRefDigits("employerPayeReference.event24.error.leadingDigits"),
