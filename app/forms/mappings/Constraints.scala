@@ -40,7 +40,7 @@ trait Constraints {
   val psaIdRegex = "^A[0-9]{7}$"
   val employerIdRefDigitsRegex = "^[0-9]{3}[0-9a-zA-Z/]{2,9}$"
   val employerIdRefNoSlashRegex = "^[0-9]{3}/[0-9a-zA-Z]{1,8}"
-  val employerIdRefDisallowedCharsRegex = "[A-Za-z0-9/]{1,12}"
+  val employerIdRefDisallowedCharsRegex = "[A-Za-z0-9/]{5,12}"
   val protectionReferenceRegex = "^[A-Za-z0-9]{8,15}$"
   val MAX_LENGTH = 160
 
