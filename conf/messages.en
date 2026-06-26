@@ -1868,6 +1868,7 @@ typeOfProtectionGroup2.event24.title = Was any protection relied upon for the re
 typeOfProtectionGroup1.event24.heading = Were any other protections or enhancements relied upon for the relevant benefit crystallisation event?
 typeOfProtectionGroup2.event24.heading = Was any protection relied upon for the relevant benefit crystallisation event?
 typeOfProtectionGroup1.event24.hint = Select all that apply.
+typeOfProtectionGroup1.event24.checkYourAnswersLabel = Were any other protections or enhancements relied upon for the relevant benefit crystallisation event?
 typeOfProtection.event24.error.required = Select the type of protection held
 typeOfProtectionGroup1.event24.error.required = Select a type of protection, enhancement, or if this does not apply ''No - none of the above''
 typeOfProtectionGroup1.event24.error.invalid = Select protection and enhancement(s) or ‘No – none of the above’. You cannot select both

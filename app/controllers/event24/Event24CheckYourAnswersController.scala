@@ -71,6 +71,7 @@ class Event24CheckYourAnswersController @Inject()(
       BCETypeSelectionSummary.rowBCETypeSelection(request.userAnswers, waypoints, index, sourcePage, request.readOnly()) ++
       TotalAmountBenefitCrystallisationSummary.row(request.userAnswers, waypoints, sourcePage, index) ++
       ValidProtectionSummary.row(request.userAnswers, waypoints, sourcePage, index) ++
+      TypeOfProtectionGroup1Summary.row(request.userAnswers, waypoints, sourcePage, index, request.readOnly()) ++
       referencesRow(waypoints, index, sourcePage) ++
       hasSchemeSpecificRow(waypoints, index, sourcePage) ++
       TypeOfProtectionGroup2Summary.row(request.userAnswers, waypoints, index, sourcePage, request.readOnly()) ++
