@@ -28,7 +28,7 @@ import org.mockito.Mockito._
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.VersionInfoPage
+import pages.{EventReportingOverviewPage, VersionInfoPage}
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.api.test.Helpers.GET
@@ -85,30 +85,91 @@ class EventReportingOverviewServiceSpec extends SpecBase with BeforeAndAfterEach
       .thenReturn(Future.successful((Seq.empty)))
   }
 
-    "getInProgressYearAndUrl" - {
+  "getInProgressYearAndUrl" - {
 
-      "return the correct in progress years and URLs" in {
-        val captor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-        when(mockUserAnswersCacheConnector.getBySrn(any(), any())(any(), any()))
-          .thenReturn(Future.successful(Some((ua))))
+    "return the correct in progress years and URLs" in {
+      val captor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      when(mockUserAnswersCacheConnector.getBySrn(any(), any())(any(), any()))
+        .thenReturn(Future.successful(Some(ua)))
 
-        whenReady(eventReportingService.getInProgressYearAndUrl(ua, pstr)) { _ =>
-          verify(mockUserAnswersCacheConnector, times(1))
-            .save(ArgumentMatchers.eq(pstr), captor.capture())(any(), any(), any())
-          val actualUAAfterSave = captor.getValue
-          actualUAAfterSave.get(VersionInfoPage) mustBe Some(VersionInfo(2, Compiled))
-        }
+      whenReady(eventReportingService.getInProgressYearAndUrl(ua, pstr)) { _ =>
+        verify(mockUserAnswersCacheConnector, times(1))
+          .save(ArgumentMatchers.eq(pstr), captor.capture())(any(), any(), any())
+        val actualUAAfterSave = captor.getValue
+        actualUAAfterSave.get(VersionInfoPage) mustBe Some(VersionInfo(2, Compiled))
       }
     }
+
+    "use InProgress journey URL when single compiled year also has a submitted version" in {
+      val compiledAndSubmitted = EROverview(
+        LocalDate.of(2020, 4, 6),
+        LocalDate.of(2021, 4, 5),
+        TaxYear("2020"), tpssReportPresent = false,
+        Some(EROverviewVersion(numberOfVersions = 2, compiledVersionAvailable = true, submittedVersionAvailable = true))
+      )
+      val uaWithOverview = ua.setOrException(EventReportingOverviewPage, Seq(compiledAndSubmitted), nonEventTypeData = true)
+      when(mockUserAnswersCacheConnector.getBySrn(any(), any())(any(), any()))
+        .thenReturn(Future.successful(Some(uaWithOverview)))
+
+      val result = eventReportingService.getInProgressYearAndUrl(uaWithOverview, pstr).futureValue
+      result must have size 1
+      result.head._1 mustBe "6 April 2020 to 5 April 2021"
+      result.head._2 must include("InProgress")
+      result.head._2 must not include "PastEventTypes"
+    }
+
+    "return all compiled years when multiple years have compiledVersionAvailable" in {
+      val compiled2020 = EROverview(
+        LocalDate.of(2020, 4, 6), LocalDate.of(2021, 4, 5), TaxYear("2020"), tpssReportPresent = false,
+        Some(EROverviewVersion(numberOfVersions = 2, compiledVersionAvailable = true, submittedVersionAvailable = true))
+      )
+      val compiled2024 = EROverview(
+        LocalDate.of(2024, 4, 6), LocalDate.of(2025, 4, 5), TaxYear("2024"), tpssReportPresent = false,
+        Some(EROverviewVersion(numberOfVersions = 2, compiledVersionAvailable = true, submittedVersionAvailable = true))
+      )
+      val uaWithOverview = ua.setOrException(EventReportingOverviewPage, Seq(compiled2020, compiled2024), nonEventTypeData = true)
+      when(mockUserAnswersCacheConnector.getBySrn(any(), any())(any(), any()))
+        .thenReturn(Future.successful(Some(uaWithOverview)))
+
+      val result = eventReportingService.getInProgressYearAndUrl(uaWithOverview, pstr).futureValue
+      result.map(_._1) must contain allOf ("6 April 2020 to 5 April 2021", "6 April 2024 to 5 April 2025")
+    }
+  }
 
   "getPastYearsAndUrl" - {
 
     "return the correct past years and URLs" in {
       when(mockUserAnswersCacheConnector.getBySrn(any(), any())(any(), any()))
-        .thenReturn(Future.successful(Some((ua))))
+        .thenReturn(Future.successful(Some(ua)))
 
       eventReportingService.getPastYearsAndUrl(ua, pstr).futureValue.size mustBe 7
+    }
 
+    "include years where tpssReportPresent is true even when versionDetails is absent" in {
+      val tpssYear = EROverview(
+        LocalDate.of(2024, 4, 6), LocalDate.of(2025, 4, 5),
+        TaxYear("2024"), tpssReportPresent = true, versionDetails = None
+      )
+      val uaWithOverview = ua.setOrException(EventReportingOverviewPage, Seq(tpssYear), nonEventTypeData = true)
+      when(mockUserAnswersCacheConnector.getBySrn(any(), any())(any(), any()))
+        .thenReturn(Future.successful(Some(uaWithOverview)))
+
+      val result = eventReportingService.getPastYearsAndUrl(uaWithOverview, pstr).futureValue
+      result.map(_._1) must contain("6 April 2024 to 5 April 2025")
+    }
+
+    "include a year with submittedVersionAvailable in past years" in {
+      val submittedYear = EROverview(
+        LocalDate.of(2024, 4, 6), LocalDate.of(2025, 4, 5),
+        TaxYear("2024"), tpssReportPresent = false,
+        Some(EROverviewVersion(numberOfVersions = 1, compiledVersionAvailable = false, submittedVersionAvailable = true))
+      )
+      val uaWithOverview = ua.setOrException(EventReportingOverviewPage, Seq(submittedYear), nonEventTypeData = true)
+      when(mockUserAnswersCacheConnector.getBySrn(any(), any())(any(), any()))
+        .thenReturn(Future.successful(Some(uaWithOverview)))
+
+      val result = eventReportingService.getPastYearsAndUrl(uaWithOverview, pstr).futureValue
+      result.map(_._1) must contain("6 April 2024 to 5 April 2025")
     }
   }
 }

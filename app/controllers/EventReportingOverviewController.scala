@@ -50,12 +50,14 @@ class EventReportingOverviewController @Inject()(
     val ua = request.userAnswers
 
     val ovm = for {
-      pastYears <- service.getPastYearsAndUrl(ua, request.pstr)
-      inProgressYears <- service.getInProgressYearAndUrl(ua, request.pstr)
-      startNewURL <- service.getStartNewUrl(ua, request.pstr)
       seqEROverview <- connector.getOverview(request.pstr, "ER", minStartDateAsString, maxEndDateAsString)
+      updatedUa = ua.setOrException(EventReportingOverviewPage, seqEROverview, nonEventTypeData = true)
+      _ <- userAnswersCacheConnector.save(request.pstr, updatedUa)
+      pastYears <- service.getPastYearsAndUrl(updatedUa, request.pstr)
+      inProgressYears <- service.getInProgressYearAndUrl(updatedUa, request.pstr)
+      startNewURL <- service.getStartNewUrl(updatedUa, request.pstr)
       outstandingAmount <- aftConnector.getErOutstandingPaymentAmount(srn)
-      isAnySubmittedReports = seqEROverview.exists(_.versionDetails.exists(_.submittedVersionAvailable))
+      isAnySubmittedReports = seqEROverview.exists(o => o.versionDetails.exists(_.submittedVersionAvailable) || o.tpssReportPresent)
       isAnyCompiledReports = seqEROverview.exists(_.versionDetails.exists(_.compiledVersionAvailable))
     } yield OverviewViewModel(pastYears = pastYears, yearsInProgress = inProgressYears, schemeName = request.schemeName,
       outstandingAmount = outstandingAmount.toString(), paymentsAndChargesUrl = service.linkForOutstandingAmount(srn, outstandingAmount.toString()),

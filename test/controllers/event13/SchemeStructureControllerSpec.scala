@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.controllers.event13
+package controllers.event13
 
 import base.SpecBase
 import connectors.UserAnswersCacheConnector

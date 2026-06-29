@@ -28,23 +28,19 @@ case class EROverviewVersion(
                             )
 
 object EROverviewVersion {
-  implicit val rds: Reads[Option[EROverviewVersion]] = {
-    (JsPath \ "tpssReportPresent").readNullable[Boolean].flatMap {
-      case Some(true) => Reads(_ => JsSuccess(None))
-      case _ => (
-        (JsPath \ "versionDetails" \ "numberOfVersions").read[Int] and
-          (JsPath \ "versionDetails" \ "submittedVersionAvailable").read[Boolean] and
-          (JsPath \ "versionDetails" \ "compiledVersionAvailable").read[Boolean]
-        ) (
-        (noOfVersions, isSubmitted, isCompiled) =>
-          Some(EROverviewVersion(
-            noOfVersions,
-            isSubmitted,
-            isCompiled
-          )))
-    }
-  }
-    implicit val formats: Format[EROverviewVersion] = Json.format[EROverviewVersion]
+  implicit val rds: Reads[Option[EROverviewVersion]] = (
+    (JsPath \ "versionDetails" \ "numberOfVersions").readNullable[Int] and
+      (JsPath \ "versionDetails" \ "submittedVersionAvailable").readNullable[Boolean] and
+      (JsPath \ "versionDetails" \ "compiledVersionAvailable").readNullable[Boolean]
+    ) (
+    (noOfVersions, isSubmitted, isCompiled) =>
+      noOfVersions.map(n =>
+        EROverviewVersion(
+          n,
+          isSubmitted.getOrElse(false),
+          isCompiled.getOrElse(false)
+        )))
+  implicit val formats: Format[EROverviewVersion] = Json.format[EROverviewVersion]
 }
 
 case class EROverview(

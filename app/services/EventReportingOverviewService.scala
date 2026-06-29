@@ -51,13 +51,12 @@ class EventReportingOverviewService @Inject()(
           compiledVersionsOnly match {
             case Seq(erOverview) =>
               val version = erOverview.versionDetails.map(_.numberOfVersions).getOrElse(1)
-              val submittedVersionAvailable= erOverview.versionDetails.exists(_.submittedVersionAvailable)
               val versionInfo = VersionInfo(version, Compiled)
               val ua = uaFetched
                 .setOrException(TaxYearPage, erOverview.taxYear, nonEventTypeData = true)
                 .setOrException(EventReportingTileLinksPage, InProgress, nonEventTypeData = true)
                 .setOrException(VersionInfoPage, versionInfo, nonEventTypeData = true)
-              val eventType = if (submittedVersionAvailable) "PastEventTypes" else "InProgress"
+              val eventType = "InProgress"
               userAnswersCacheConnector.save(pstr, ua).map { _ =>
                 Seq((s"6 April ${erOverview.taxYear.startYear} to 5 April ${erOverview.taxYear.endYear}",
                   routes.EventReportingOverviewController.onSubmit(erOverview.taxYear.startYear, eventType).url))
@@ -117,7 +116,7 @@ class EventReportingOverviewService @Inject()(
   }
 
   private val yearsWhereSubmittedVersionAvailable: EROverview => Seq[String] = erOverview =>
-    if (erOverview.versionDetails.exists(_.submittedVersionAvailable)) {
+    if (erOverview.versionDetails.exists(_.submittedVersionAvailable) || erOverview.tpssReportPresent) {
       Seq(erOverview.taxYear.startYear)
     } else {
       Nil

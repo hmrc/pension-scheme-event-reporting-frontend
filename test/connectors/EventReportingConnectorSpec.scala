@@ -458,6 +458,61 @@ class EventReportingConnectorSpec
       }
     }
 
+    "preserve versionDetails when backend returns tpssReportPresent true with version data" in {
+      val responseJson: JsArray = Json.arr(
+        Json.obj(
+          "periodStartDate" -> "2023-04-06",
+          "periodEndDate" -> "2024-04-05",
+          "tpssReportPresent" -> true,
+          "versionDetails" -> Json.obj(
+            "numberOfVersions" -> 1,
+            "submittedVersionAvailable" -> true,
+            "compiledVersionAvailable" -> false
+          )
+        )
+      )
+
+      server.stubFor(
+        get(urlEqualTo(getOverviewUrl))
+          .willReturn(ok.withHeader("Content-Type", "application/json").withBody(responseJson.toString()))
+      )
+
+      connector.getOverview(pstr, "ER", "2022-04-06", "2023-04-05").map { response =>
+        response mustBe Seq(EROverview(
+          LocalDate.of(2023, 4, 6),
+          LocalDate.of(2024, 4, 5),
+          TaxYear("2023"),
+          tpssReportPresent = true,
+          Some(EROverviewVersion(1, submittedVersionAvailable = true, compiledVersionAvailable = false))
+        ))
+      }
+    }
+
+    "return None for versionDetails when backend returns tpssReportPresent true with no version data" in {
+      val responseJson: JsArray = Json.arr(
+        Json.obj(
+          "periodStartDate" -> "2023-04-06",
+          "periodEndDate" -> "2024-04-05",
+          "tpssReportPresent" -> true
+        )
+      )
+
+      server.stubFor(
+        get(urlEqualTo(getOverviewUrl))
+          .willReturn(ok.withHeader("Content-Type", "application/json").withBody(responseJson.toString()))
+      )
+
+      connector.getOverview(pstr, "ER", "2022-04-06", "2023-04-05").map { response =>
+        response mustBe Seq(EROverview(
+          LocalDate.of(2023, 4, 6),
+          LocalDate.of(2024, 4, 5),
+          TaxYear("2023"),
+          tpssReportPresent = true,
+          versionDetails = None
+        ))
+      }
+    }
+
     "return JsResultException when the backend has returned errors" in {
       val erOverviewResponseJson: JsArray = Json.arr(
         Json.obj(
