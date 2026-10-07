@@ -64,7 +64,7 @@ class Event1Validator @Inject()(
                                  benefitsPaidEarlyFormProvider: BenefitsPaidEarlyFormProvider,
                                  refundOfContributionsFormProvider: RefundOfContributionsFormProvider,
                                  reasonForTheOverpaymentOrWriteOffFormProvider: ReasonForTheOverpaymentOrWriteOffFormProvider,
-                                 ManualAddressFormProvider: ManualAddressFormProvider,
+                                 manualAddressFormProvider: ManualAddressFormProvider,
                                  memberTangibleMoveablePropertyFormProvider: MemberTangibleMoveablePropertyFormProvider,
                                  memberUnauthorisedPaymentRecipientNameFormProvider: UnauthorisedPaymentRecipientNameFormProvider,
                                  memberPaymentNatureDescriptionFormProvider: MemberPaymentNatureDescriptionFormProvider,
@@ -297,7 +297,7 @@ class Event1Validator @Inject()(
       }
     }
 
-    val form: Form[Address] = ManualAddressFormProvider(retrieveNameUpload(isMemberJourney))
+    val form: Form[Address] = manualAddressFormProvider(retrieveNameUpload(isMemberJourney))
     form.bind(
       Field.seqToMap(fields)
     ).fold(
