@@ -25,24 +25,24 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import forms.address.ManualAddressFormProvider
 import forms.common.MembersDetailsFormProvider
-import forms.event1.employer.{CompanyDetailsFormProvider, LoanDetailsFormProvider, PaymentNatureFormProvider => EmployerPaymentNatureFormProvider, UnauthorisedPaymentRecipientNameFormProvider => EmployerUnauthorisedPaymentRecipientNameFormProvider}
-import forms.event1.member._
-import forms.event1.{PaymentNatureFormProvider => MemberPaymentNatureFormProvider, _}
+import forms.event1.employer.{CompanyDetailsFormProvider, LoanDetailsFormProvider, PaymentNatureFormProvider as EmployerPaymentNatureFormProvider, UnauthorisedPaymentRecipientNameFormProvider as EmployerUnauthorisedPaymentRecipientNameFormProvider}
+import forms.event1.member.*
+import forms.event1.{PaymentNatureFormProvider as MemberPaymentNatureFormProvider, *}
 import models.address.Address
 import models.enumeration.AddressJourneyType.{Event1EmployerAddressJourney, Event1EmployerPropertyAddressJourney, Event1MemberPropertyAddressJourney}
 import models.enumeration.EventType
 import models.enumeration.EventType.Event1
-import models.event1.employer.{CompanyDetails, LoanDetails, PaymentNature => EmployerPaymentNature}
+import models.event1.employer.{CompanyDetails, LoanDetails, PaymentNature as EmployerPaymentNature}
 import models.event1.member.{ReasonForTheOverpaymentOrWriteOff, RefundOfContributions, SchemeDetails, WhoWasTheTransferMade}
-import models.event1.{PaymentDetails, WhoReceivedUnauthPayment, PaymentNature => MemberPaymentNature}
+import models.event1.{PaymentDetails, WhoReceivedUnauthPayment, PaymentNature as MemberPaymentNature}
 import models.fileUpload.FileUploadHeaders
-import models.fileUpload.FileUploadHeaders.Event1FieldNames._
+import models.fileUpload.FileUploadHeaders.Event1FieldNames.*
 import models.fileUpload.FileUploadHeaders.{Event1FieldNames, MemberDetailsFieldNames, valueFormField}
 import pages.address.ManualAddressPage
 import pages.common.MembersDetailsPage
-import pages.event1._
-import pages.event1.employer.{CompanyDetailsPage, EmployerPaymentNatureDescriptionPage, EmployerTangibleMoveablePropertyPage, LoanDetailsPage, PaymentNaturePage => EmployerPaymentNaturePage, UnauthorisedPaymentRecipientNamePage => EmployerUnauthorisedPaymentRecipientNamePage}
-import pages.event1.member.{BenefitInKindBriefDescriptionPage, BenefitsPaidEarlyPage, ErrorDescriptionPage, MemberPaymentNatureDescriptionPage, MemberTangibleMoveablePropertyPage, ReasonForTheOverpaymentOrWriteOffPage, RefundOfContributionsPage, SchemeDetailsPage, UnauthorisedPaymentRecipientNamePage, WhoWasTheTransferMadePage, PaymentNaturePage => MemberPaymentNaturePage}
+import pages.event1.*
+import pages.event1.employer.{CompanyDetailsPage, EmployerPaymentNatureDescriptionPage, EmployerTangibleMoveablePropertyPage, LoanDetailsPage, PaymentNaturePage as EmployerPaymentNaturePage, UnauthorisedPaymentRecipientNamePage as EmployerUnauthorisedPaymentRecipientNamePage}
+import pages.event1.member.{BenefitInKindBriefDescriptionPage, BenefitsPaidEarlyPage, ErrorDescriptionPage, MemberPaymentNatureDescriptionPage, MemberTangibleMoveablePropertyPage, ReasonForTheOverpaymentOrWriteOffPage, RefundOfContributionsPage, SchemeDetailsPage, UnauthorisedPaymentRecipientNamePage, WhoWasTheTransferMadePage, PaymentNaturePage as MemberPaymentNaturePage}
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.libs.json.JsString
@@ -64,7 +64,7 @@ class Event1Validator @Inject()(
                                  benefitsPaidEarlyFormProvider: BenefitsPaidEarlyFormProvider,
                                  refundOfContributionsFormProvider: RefundOfContributionsFormProvider,
                                  reasonForTheOverpaymentOrWriteOffFormProvider: ReasonForTheOverpaymentOrWriteOffFormProvider,
-                                 manualAddressFormProvider: ManualAddressFormProvider,
+                                 ManualAddressFormProvider: ManualAddressFormProvider,
                                  memberTangibleMoveablePropertyFormProvider: MemberTangibleMoveablePropertyFormProvider,
                                  memberUnauthorisedPaymentRecipientNameFormProvider: UnauthorisedPaymentRecipientNameFormProvider,
                                  memberPaymentNatureDescriptionFormProvider: MemberPaymentNatureDescriptionFormProvider,
@@ -280,8 +280,8 @@ class Event1Validator @Inject()(
     val fields = Seq(
       Field(addressLine1, parsedAddress.addressLine1, addressLine1, fieldNumber, Some(Event1FieldNames.addressLine1)),
       Field(addressLine2, parsedAddress.addressLine2, addressLine2, fieldNumber, Some(Event1FieldNames.addressLine2)),
-      Field(townOrCity, parsedAddress.addressLine3, townOrCity, fieldNumber, Some(Event1FieldNames.townOrCity)),
-      Field(county, parsedAddress.addressLine4, county, fieldNumber, Some(Event1FieldNames.county)),
+      Field(addressLine3, parsedAddress.addressLine3, addressLine3, fieldNumber, Some(Event1FieldNames.addressLine3)),
+      Field(addressLine4, parsedAddress.addressLine4, addressLine4, fieldNumber, Some(Event1FieldNames.addressLine4)),
       Field(postCode, parsedAddress.postCode, postCode, fieldNumber, Some(Event1FieldNames.postCode)),
       Field(country, getCountryCode(countryInput), country, fieldNumber, Some(Event1FieldNames.country))
     )
@@ -297,7 +297,7 @@ class Event1Validator @Inject()(
       }
     }
 
-    val form: Form[Address] = manualAddressFormProvider(retrieveNameUpload(isMemberJourney))
+    val form: Form[Address] = ManualAddressFormProvider(retrieveNameUpload(isMemberJourney))
     form.bind(
       Field.seqToMap(fields)
     ).fold(

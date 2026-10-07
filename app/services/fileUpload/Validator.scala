@@ -25,9 +25,10 @@ import models.fileUpload.FileUploadHeaders.MemberDetailsFieldNames
 import org.apache.commons.lang3.StringUtils.EMPTY
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.libs.json._
+import play.api.libs.json.*
 import queries.Gettable
 import services.fileUpload.ValidatorErrorMessages.{HeaderInvalidOrFileIsEmpty, HeaderNotInExpectedFormat, MisMatchInNumberOfColumns, NoDataRowsProvided}
+import utils.DateConstraintHandlers.regexPostcode
 import utils.FastJsonAccumulator
 
 import scala.collection.immutable.HashSet
@@ -61,7 +62,7 @@ object Validator {
 
 trait Validator {
 
-  import Validator._
+  import Validator.*
 
   protected val eventType: EventType
 
@@ -137,7 +138,7 @@ trait Validator {
       ValidationError(index, field.columnNo, formError.message, field.columnName, formError.args)
     }
   }
-  
+
   protected final def createCommitItem[A](index: Int, page: Int => Gettable[?])(implicit writes: Writes[A]): A => CommitItem =
     a => CommitItem(page(index - 1).path, Json.toJson(a))
 
@@ -185,16 +186,40 @@ trait Validator {
   }
 
   protected final def splitAddress(address: String): ParsedAddress = {
-    address.split(",").toSeq match {
-      case Seq(add1, add2, townOrCity, county, postCode, country) => ParsedAddress(add1, add2, townOrCity, county, postCode, country)
-      case Seq(add1, add2, townOrCity, postCode, country) => ParsedAddress(add1, add2, townOrCity, EMPTY, postCode, country)
-      case Seq(add1, townOrCity, postCode, country) => ParsedAddress(add1, EMPTY, townOrCity, EMPTY, postCode, country)
-      case Seq(add1, townOrCity, postCode) => ParsedAddress(add1, EMPTY, townOrCity, EMPTY, postCode, EMPTY)
-      case Seq(add1, townOrCity) => ParsedAddress(add1, EMPTY, townOrCity, EMPTY, EMPTY, EMPTY)
-      case Seq(add1) => ParsedAddress(add1, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY)
-      case _ => ParsedAddress(EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY)
-    }
+    val parts = address.split(",", -1).map(_.trim).filter(_.nonEmpty).toSeq
+    val country = parts.lastOption.getOrElse(EMPTY)
+
+    val isUnitedKingdom =
+      country.equalsIgnoreCase("UK") ||
+        country.equalsIgnoreCase("United Kingdom")
+
+    val addressAndPostcode = parts.dropRight(1)
+
+    val (addressLines, postCode) =
+      if (isUnitedKingdom) {
+        addressAndPostcode.reverse.find(_.matches(regexPostcode)) match {
+          case Some(postcode) =>
+            val postcodeIndex = addressAndPostcode.indexOf(postcode)
+            (addressAndPostcode.take(postcodeIndex), postcode)
+          case None =>
+            (addressAndPostcode, EMPTY)
+        }
+      } else {
+        (addressAndPostcode, EMPTY)
+      }
+
+    val lines = addressLines.padTo(4, EMPTY)
+
+    ParsedAddress(
+      addressLine1 = lines.headOption.getOrElse(EMPTY),
+      addressLine2 = lines.lift(1).getOrElse(EMPTY),
+      addressLine3 = lines.lift(2).getOrElse(EMPTY),
+      addressLine4 = lines.lift(3).getOrElse(EMPTY),
+      postCode = postCode,
+      country = country
+    )
   }
+
 }
 
 case class ValidationError(row: Int, col: Int, error: String, columnName: String = EMPTY, args: Seq[Any] = Nil)
