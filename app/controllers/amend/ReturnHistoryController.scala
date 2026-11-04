@@ -50,19 +50,18 @@ class ReturnHistoryController @Inject()(
     implicit request =>
       val currentTaxYear = getTaxYearFromOption(request.userAnswers)
       erConnector.getListOfVersions(request.pstr, currentTaxYear.toString + "-04-06").map { seqVersionsWithSubmitter =>
-        val compileVersion: Int = seqVersionsWithSubmitter.map(_.versionDetails.version) match {
-          case Nil => 1 // Default to 1 if the collection is empty
-          case versions => versions.max + 1
-        }
-        val latestSubmittedReturn = seqVersionsWithSubmitter.map(_.versionDetails.version).maxOption.getOrElse(1)
+
+        val latestReturn = seqVersionsWithSubmitter.map(_.versionDetails.version).maxOption.getOrElse(1)
         val isDraftExist = seqVersionsWithSubmitter.exists(_.versionDetails.status == Compiled)
+
         val seqRetHistorySummary = seqVersionsWithSubmitter.sortBy(sortExpr).map { versionWithSubmitter =>
           val isSubmitted = versionWithSubmitter.versionDetails.status == Submitted
           val version = versionWithSubmitter.versionDetails.version
           val versionToDisplay = if (isSubmitted) version.toString else "Draft"
-          val versionLabel = if (isSubmitted) version.toString else compileVersion.toString
-          val submitterBy = if (isSubmitted) versionWithSubmitter.submitterName.getOrElse("") else ""
-          val viewOrChange = (isSubmitted, isDraftExist, latestSubmittedReturn == version) match {
+          val versionLabel = if (isSubmitted) version.toString else latestReturn.toString
+          val submittedBy = if (isSubmitted) versionWithSubmitter.submitterName.getOrElse("") else ""
+
+          val viewOrChange = (isSubmitted, isDraftExist, latestReturn == version) match {
             case (true, false, true) => "site.viewOrChange"
             case (false, _, _) => "site.viewOrChange"
             case _ => "site.view"
@@ -71,7 +70,7 @@ class ReturnHistoryController @Inject()(
           ReturnHistorySummary(
             key = versionToDisplay,
             firstValue = getFirstValue(versionWithSubmitter),
-            secondValue = submitterBy,
+            secondValue = submittedBy,
             actions = Some(Actions(
               items = Seq(
                 ActionItem(
