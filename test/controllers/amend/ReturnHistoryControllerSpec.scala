@@ -40,7 +40,7 @@ import views.html.amend.ReturnHistoryView
 import java.time.{LocalDate, Month}
 import scala.concurrent.Future
 
-class ReturnHistoryControllerSpec extends SpecBase with Matchers with BeforeAndAfterEach {
+class ReturnHistoryControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   val mockErConnector: EventReportingConnector = mock[EventReportingConnector]
   val mockUACacheConnector: UserAnswersCacheConnector = mock[UserAnswersCacheConnector]
