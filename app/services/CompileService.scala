@@ -73,10 +73,14 @@ class CompileService @Inject()(
         eventOrDelete match {
           case Left(eventTypeVal) =>
             eventReportingConnector.compileEvent(pstr, updatedUA.eventDataIdentifier(eventTypeVal, Some(newVersionInfo)), currentVersionInfo.version, delete)
-              .map { _ => delay }
+              .flatMap { _ => delay }
           case Right((pstrVal, edi, currentVersionVal, memberIdToDelete)) =>
-            eventReportingConnector.deleteMember(pstrVal, edi, currentVersionVal, memberIdToDelete)
-              .map { _ => delay }
+            val updatedEdi = updatedUA.eventDataIdentifier(
+              edi.eventType,
+              Some(newVersionInfo)
+            )
+            eventReportingConnector.deleteMember(pstrVal, updatedEdi, currentVersionVal, memberIdToDelete)
+              .flatMap { _ => delay }
         }
       }
     }

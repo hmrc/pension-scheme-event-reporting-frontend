@@ -27,7 +27,7 @@ import models.requests.DataRequest
 import models.{EROverview, EROverviewVersion, EventDataIdentifier, LoggedInUser, TaxYear, UserAnswers, VersionInfo}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
-import org.mockito.{ArgumentCaptor, ArgumentMatchers}
+import org.mockito.{ArgumentCaptor, ArgumentMatchers, Mockito}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.RecoverMethods.recoverToSucceededIf
 import org.scalatestplus.mockito.MockitoSugar.mock
@@ -221,6 +221,40 @@ class CompileServiceSpec extends SpecBase with BeforeAndAfterEach {
 
         val actualUAAfterSave = captor.getValue
         actualUAAfterSave.get(VersionInfoPage) mustBe Some(VersionInfo(1, Compiled))
+        succeed
+      }
+    }
+  }
+
+  "deleteMember" - {
+    "must retain current version when deleting from report" in {
+      val edi = EventDataIdentifier(Event1, taxYear, "3")
+      val memberId = "0"
+
+      val userAnswers = emptyUserAnswersWithTaxYear.setOrException(
+        VersionInfoPage,
+        VersionInfo(3, Compiled),
+        nonEventTypeData = true
+      )
+
+      when(
+        mockEventReportingConnector.deleteMember(
+          ArgumentMatchers.eq(pstr),
+          ArgumentMatchers.eq(edi),
+          ArgumentMatchers.eq(3),
+          ArgumentMatchers.eq(memberId),
+        )(any(), any())
+      ).thenReturn(Future.successful((): Unit))
+
+      whenReady(compileService.deleteMember(pstr, edi, 3, memberId, userAnswers)) { _ =>
+        verify(mockEventReportingConnector, times(1))
+          .deleteMember(
+            ArgumentMatchers.eq(pstr),
+            ArgumentMatchers.eq(edi),
+            ArgumentMatchers.eq(3),
+            ArgumentMatchers.eq(memberId),
+          )(any(), any())
+
         succeed
       }
     }
