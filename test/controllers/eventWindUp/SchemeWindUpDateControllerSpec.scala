@@ -40,7 +40,7 @@ import scala.concurrent.Future
 class SchemeWindUpDateControllerSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
 
   private val waypoints = EmptyWaypoints
-  private val openDate = LocalDate.of(2021, 4, 25)
+  private val openDate = LocalDate.of(2022, 5, 1)
   private val taxYear = 2022
   private val expectedHint = "The date must be between 06 April 2022 and 05 April 2023. For example, 22 09 2022"
 
