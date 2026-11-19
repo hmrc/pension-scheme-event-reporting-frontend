@@ -15,7 +15,6 @@
  *@
 
 @import utils.DateErrorTargetHelper.targetField
-@import java.time.LocalDate
 
 @this(
     layout: templates.SchemeLayout,
@@ -25,7 +24,7 @@
     govukButton: GovukButton
 )
 
-@(form: Form[?], waypoints: Waypoints, startDate: LocalDate, endDate: LocalDate)(implicit request: RequiredSchemeDataRequest[?], messages: Messages)
+@(form: Form[?], waypoints: Waypoints, taxYear: Int)(implicit request: RequiredSchemeDataRequest[?], messages: Messages)
 
 @layout(pageTitle = title(form, messages("schemeWindUpDate.title"))) {
 
@@ -40,7 +39,7 @@
                 field  = form("value"),
                 legend = LegendViewModel(messages("schemeWindUpDate.heading")).asPageHeading()
             )
-            .withHint(helpers.DateHelper.dateMustBeBetweenHint(startDate, endDate))
+            .withHint(helpers.DateHelper.dateHintFromTaxYear(taxYear))
         )
 
         @govukButton(

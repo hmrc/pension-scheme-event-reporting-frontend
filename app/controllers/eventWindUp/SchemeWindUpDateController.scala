@@ -48,10 +48,9 @@ class SchemeWindUpDateController @Inject()(val controllerComponents: MessagesCon
   def onPageLoad(waypoints: Waypoints): Action[AnyContent] = (identify andThen getData(eventType)).async { implicit request =>
     schemeConnector.getOpenDate(request.pstr).flatMap { openDate =>
       val taxYear = getTaxYearFromOption(request.userAnswers)
-      val startDate = LocalDate.of(taxYear, 4, 6)
       def form: Form[LocalDate] = formProvider(taxYear, openDate)
       val preparedForm = request.userAnswers.flatMap(_.get(SchemeWindUpDatePage)).fold(form)(form.fill)
-      Future.successful(Ok(view(preparedForm, waypoints, startDate, openDate)))
+      Future.successful(Ok(view(preparedForm, waypoints, taxYear)))
     }
   }
 
@@ -59,11 +58,10 @@ class SchemeWindUpDateController @Inject()(val controllerComponents: MessagesCon
     implicit request =>
       schemeConnector.getOpenDate(request.pstr).flatMap { openDate =>
         val taxYear = getTaxYearFromOption(request.userAnswers)
-        val startDate = LocalDate.of(taxYear, 4, 6)
         def form: Form[LocalDate] = formProvider(taxYear, openDate)
         form.bindFromRequest().fold(
           formWithErrors => {
-            Future.successful(BadRequest(view(formWithErrors, waypoints, startDate, openDate)))
+            Future.successful(BadRequest(view(formWithErrors, waypoints, taxYear)))
           },
           value => {
             val originalUserAnswers = request.userAnswers.fold(UserAnswers())(identity)
