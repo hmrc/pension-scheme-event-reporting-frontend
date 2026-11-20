@@ -41,10 +41,11 @@ class SchemeWindUpDateControllerSpec extends SpecBase with BeforeAndAfterEach wi
 
   private val waypoints = EmptyWaypoints
   private val openDate = LocalDate.of(2022, 5, 1)
+  private val taxYear = 2022
+  private val expectedHint = "The date must be between 06 April 2022 and 05 April 2023. For example, 22 09 2022"
 
   private val formProvider = new SchemeWindUpDateFormProvider
-  private val startDate = LocalDate.of(2022, 4, 6)
-  private val form = formProvider(2022, openDate)
+  private val form = formProvider(taxYear, openDate)
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
   private val mockSchemeConnector = mock[SchemeConnector]
@@ -82,7 +83,9 @@ class SchemeWindUpDateControllerSpec extends SpecBase with BeforeAndAfterEach wi
         val view = application.injector.instanceOf[SchemeWindUpDateView]
 
         status(result) mustEqual OK
-        contentAsString(result).removeAllNonces() mustEqual view(form, waypoints, startDate, openDate)(request, messages(application)).toString
+        val content = contentAsString(result).removeAllNonces()
+        content must include (expectedHint)
+        content mustEqual view(form, waypoints, taxYear)(request, messages(application)).toString
       }
     }
 
@@ -101,7 +104,7 @@ class SchemeWindUpDateControllerSpec extends SpecBase with BeforeAndAfterEach wi
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result).removeAllNonces() mustEqual view(form.fill(validAnswer), waypoints, startDate, openDate)(request, messages(application)).toString
+        contentAsString(result).removeAllNonces() mustEqual view(form.fill(validAnswer), waypoints, taxYear)(request, messages(application)).toString
       }
     }
 
@@ -153,7 +156,9 @@ class SchemeWindUpDateControllerSpec extends SpecBase with BeforeAndAfterEach wi
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result).removeAllNonces() mustEqual view(boundForm, waypoints, startDate, openDate)(request, messages(application)).toString
+        val content = contentAsString(result).removeAllNonces()
+        content must include (expectedHint)
+        content mustEqual view(boundForm, waypoints, taxYear)(request, messages(application)).toString
       }
     }
   }
